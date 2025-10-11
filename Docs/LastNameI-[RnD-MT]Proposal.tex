@@ -29,7 +29,7 @@ A promising way to address this problem is Interactive Reinforcement Learning (I
 
 Despite its potential, a significant bottleneck in traditional IRL is the interface for human feedback. Most systems rely on low-bandwidth, explicit channels such as keyboard presses, button clicks, or simple GUI interactions \citep{Faulkner2020, Loftin2014}. These methods are unnatural and awkward for the human teacher. They also cannot capture the rich details of human communication, like gestures, gaze, and tone of voice \citep{9794595, Lin2020a}. This creates an expressiveness gap, limiting the quality and type of information that can be transferred from human to robot.
 
-At the same time, advances in consumer-grade Virtual Reality (VR) technology have created new opportunities for human-computer interaction. Modern VR headsets have many sensors that can track head pose, hand gestures, eye gaze, and voice input, offering an immersive and intuitive interface for human communication. These sensors can capture detailed human feedback in a natural way \citep{Winkler2022,Luo2024}. However, using VR to collect real-time scalar feedback as part of an IRL system remains largely unexplored.
+At the same time, advances in consumer-grade Virtual Reality (VR) technology have created new opportunities for human-computer interaction. Modern VR headsets have many sensors that can track head pose, hand gestures, eye gaze, and voice input, offering an immersive and intuitive interface for human communication. These sensors can capture detailed human feedback in a natural way \citep{Winkler2022,Luo2024}. Even with this potential, VR and IRL have mostly developed separately. VR is often used to collect demonstration data (e.g., \citep{10904309, Mosbach2022}) and a recent study used it for preference-based learning \citep{Heuvel2025}. However, using VR to collect real-time scalar feedback as part of an IRL system remains largely unexplored.
 
 This project aims to close this gap by developing a novel IRL system that uses VR as an interface for human feedback. The core idea is to allow users to interact with a virtual agent using gestures, gaze, voice, or controller inputs to deliver reinforcement signals in real time. The main goal of this research is to build a proof-of-concept system that demonstrates the feasibility of using immersive technologies for human-in-the-loop RL, making AI training more natural and intuitive.
 
@@ -247,15 +247,13 @@ The project plan will include the following packages:
 \end{enumerate}
 
 \subsection{Project Schedule}
-The project will follow a 6-month timeline. The schedule allocates time for the key development phases with appropriate buffers for troubleshooting and iteration.
+The project will follow a 6-month timeline. The schedule allocates time for the key development phases with appropriate buffers for troubleshooting and iteration. The Gantt chart below visualizes the schedule.
 
-\noindent
-\textbf{Month 1:} Literature review and technical specification (WP1)\\
-\textbf{Month 2:} Environment development and VR interface implementation (WP2)\\
-\textbf{Month 3:} Baseline implementations and system integration (WP3)\\
-\textbf{Month 4:} VR system refinement and preliminary testing\\
-\textbf{Month 5:} Comparative evaluation and analysis (WP4)\\
-\textbf{Month 6:} Report writing and finalization (WP5)
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{images/Behrouz_ganttchart}
+    \caption{Project schedule Gantt chart, showing the planned duration and overlap of Work Packages (WP1-WP5) and the key Milestones (M1-M5). The OnlineGantt web application (www.onlinegantt.com) was used to create this Chart}
+    \label{fig:project_timeline}
+\end{figure}
 
 \subsection{Deliverables}
 
