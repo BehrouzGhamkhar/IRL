@@ -40,7 +40,7 @@ This project is important for several reasons:
 
 \textbf{Practical Impact:} The outcomes of this project will benefit applications that require efficient and intuitive human-in-the-loop training. In robotics, it can provide more natural training interfaces. Domain experts—such as rehabilitation therapists or simulation designers—could potentially train agents more naturally without requiring programming expertise. In the simulation and digital twin industry, animators and designers could use this system to create more realistic and responsive virtual characters \citep{Winkler2022, Luo2024} with less manual effort. Domain experts—such as rehabilitation therapists or simulation designers—will be able to train agents more naturally and effectively, without requiring programming expertise.
 
-\textbf{Technological Advancement:} The project will deliver a functional framework that connects popular VR development platforms (e.g., Unity engine) with standard RL libraries (e.g., PyTorch, ML-Agents). This provides useful infrastructure that that allows other researchers to build upon our work and encourage collaboration in the community. We aim to lower the barrier to entry for future studies in immersive human–agent interaction.
+\textbf{Technological Advancement:} The project will deliver a functional framework that connects popular VR development platforms (e.g., Unity engine) with standard RL libraries (e.g., PyTorch, ML-Agents). This provides useful infrastructure that allows other researchers to build upon our work and encourage collaboration in the community. We aim to lower the barrier to entry for future studies in immersive human–agent interaction.
 
 
 \section{Related Work}
@@ -63,35 +63,18 @@ A review of current research shows that IRL uses many different algorithms. Rese
 The algorithms used in human-robot interaction (HRI) can be divided into three main groups, each with different strengths:
 
 \subsubsection {Value-Based Methods: Stability and Integration}
-Value-based methods, especially Q-learning and its variants, are the most common type. They are popular because they are well-understood, stable in discrete action spaces, and it is straightforward to add human feedback to them.
-\begin{itemize}
-    \item Standard \& Contextual Q-Learning: The foundational tabular Q-learning algorithm is effectively employed in simpler, discrete state-action tasks, such as the sequential object selection task in \citet{9794595} and the grid-world navigation and trust optimization in \citet{Alzahrani2025}. Its simplicity makes the impact of human advice or reward shaping directly observable. \citet{MunguiaGaleano2023} uses a Contextual Q-learning (CQL) approach to leverage affordances, demonstrating how classic value-based methods can be extended for more complex, context-aware HRI.
-    \item Deep Q-Networks (DQN): For higher-dimensional state spaces (e.g., pixel inputs in simulated environments), Deep Q-Networks are the natural evolution. \citet{Moreira2020} uses a DQN with a CNN for an object-sorting task, while \citet{Xu2021} develops a more advanced Bayesian Deep Q-Network (BDQN) to robustly integrate the uncertainty inherent in EEG-based implicit feedback. This shows a trend where value-based methods are scaled using deep learning while maintaining their core principle of learning an action-value function.
-\end{itemize}
+Value-based methods, especially Q-learning and its variants, are the most common type found in the literature. They are popular because they are well-understood, stable in discrete action spaces, and it is straightforward to add human feedback to them. The foundational tabular Q-learning algorithm is effectively employed in simpler, discrete state-action tasks, such as the sequential object selection task in \citet{9794595} and the grid-world navigation and trust optimization in \citet{Alzahrani2025}. Its simplicity makes the impact of human advice or reward shaping directly observable. Furthermore, \citet{MunguiaGaleano2023} uses a Contextual Q-learning (CQL) approach to leverage affordances, demonstrating how classic value-based methods can be extended for more complex, context-aware HRI. For higher-dimensional state spaces, such as pixel inputs in simulated environments, Deep Q-Networks represent the natural evolution. For instance, \citet{Moreira2020} uses a DQN with a CNN for an object-sorting task, while \citet{Xu2021} develops a more advanced Bayesian Deep Q-Network (BDQN) to robustly integrate the uncertainty inherent in EEG-based implicit feedback. This illustrates a trend where value-based methods are scaled using deep learning while maintaining their core principle of learning an action-value function.
 
 
 \subsubsection{Policy Search and Policy Gradient Methods: Direct Optimization}
-Policy Search methods directly optimize the policy parameters. This approach is often chosen for continuous control tasks common in robotics, like manipulation and locomotion.
-\begin{itemize}
-    \item Policy Learning by Weighting Exploration with Returns (PoWER): This algorithm is a key part of policy search in robotics. \citet{8624972} uses PoWER in a latent space to learn a ball-throwing skill, demonstrating how policy search can be effectively guided by discrete human ratings instead of engineered rewards.
-    \item Policy Gradient and Cross-Entropy Method: These are foundational policy optimization techniques. \citet{6147010} uses Policy Gradient and Cross-Entropy methods in their "Augmented RL" framework, showcasing their utility for online weight adaptation between human and environmental rewards. This highlights a key strength: the direct coupling between human feedback (which often critiques the policy) and the policy update rule.
-\end{itemize}
+Policy Search methods directly optimize the policy parameters. This approach is often chosen for continuous control tasks common in robotics, like manipulation and locomotion. The Policy Learning by Weighting Exploration with Returns (PoWER) algorithm is a key part of policy search in robotics. \citet{8624972} uses PoWER in a latent space to learn a ball-throwing skill, demonstrating how policy search can be effectively guided by discrete human ratings instead of engineered rewards. Policy Gradient and Cross-Entropy Method are foundational policy optimization techniques. \citet{6147010} uses Policy Gradient and Cross-Entropy methods in their "Augmented RL" framework, showcasing their utility for online weight adaptation between human and environmental rewards. This highlights a key strength: the direct coupling between human feedback (which often critiques the policy) and the policy update rule.
 
-\subsubsection{Actor-Critic and Advanced Methods} Complexity and Continuous Control
-Actor-Critic methods, which combine value function and policy learning address complex, continuous control problems. Their ability to handle high-dimensional action spaces makes them suitable for modern robotic simulation.
-\begin{itemize}
-    \item Proximal Policy Optimization (PPO): A modern actor-critic algorithm known for its stability, PPO is used in several advanced physics-based simulation studies. It is used for human motion tracking and avatar control in \citet{Winkler2022}, \citet{Ye2022}, and \citet{Luo2024}. In these works, PPO is not typically interactive with a human during training but is used in an imitation learning setting, often trained on motion capture (MoCap) data, which can be seen as a form of offline human demonstration.
-    \item Soft Actor-Critic (SAC): An algorithm that maximizes both expected return and entropy (promoting exploration), SAC is used by \citet{GonzalezSantocildes2024} for its sample efficiency and robustness in learning comfort-aware robot behaviors. Its off-policy nature makes it well-suited for learning from the potentially expensive data gathered in HRI experiments.
-\end{itemize}
+\subsubsection{Actor-Critic and Advanced Methods: Complexity and Continuous Control}
+Actor-Critic methods, which combine value function and policy learning, address complex, continuous control problems. Their ability to handle high-dimensional action spaces makes them suitable for modern robotic simulation. Proximal Policy Optimization (PPO) is a modern actor-critic algorithm known for its stability, used in several advanced physics-based simulation studies. It is used for human motion tracking and avatar control in \citet{Winkler2022}, \citet{Ye2022}, and \citet{Luo2024}. In these works, PPO is not typically interactive with a human during training but is used in an imitation learning setting, often trained on motion capture (MoCap) data, which can be seen as a form of offline human demonstration. Soft Actor-Critic (SAC) is an algorithm that maximizes both expected return and entropy (promoting exploration), used by \citet{GonzalezSantocildes2024} for its sample efficiency and robustness in learning comfort-aware robot behaviors. Its off-policy nature makes it well-suited for learning from the potentially expensive data gathered in HRI experiments.
 
 
 \subsubsection{Human-Feedback-Specific Frameworks}
-A large part of the literature does not use a standard RL algorithm as its core. Instead, it builds a dedicated framework around human input.
-
-\begin{itemize}
-    \item TAMER (Training an Agent Manually via Evaluative Reinforcement): Introduced by \citet{BradleyKnox2008}, TAMER is a key framework that uses supervised learning to model a human's reward function from scalar feedback. It is not RL in the traditional sense but is a cornerstone of IRL. Its influence is clear in studies like \citet{Lin2020a}, which adapts its principles to interpret social feedback, and \citet{Faulkner2020}, which combines it with RL.
-    \item Policy Shaping \& Algorithm-Agnostic Frameworks: Several studies, such as \citet{Faulkner2020} and \citet{KesslerFaulkner2021}, propose meta-frameworks like REPaIR and AMPS. These are designed to filter or interpret human feedback and can be layered on top of various underlying RL algorithms (often Q-learning or policy gradients), making them flexible tools for handling imperfect teachers.
-\end{itemize}
+A large part of the literature does not use a standard RL algorithm as its core. Instead, it builds a dedicated framework around human input. Introduced by \citet{BradleyKnox2008}, TAMER (Training an Agent Manually via Evaluative Reinforcement) is a key framework that uses supervised learning to model a human's reward function from scalar feedback. It is not RL in the traditional sense but is a cornerstone of IRL. Its influence is clear in studies like \citet{Lin2020a}, which adapts its principles to interpret social feedback, and \citet{Faulkner2020}, which combines it with RL. Furthermore, several studies, such as \citet{Faulkner2020} and \citet{KesslerFaulkner2021}, propose meta-frameworks for Policy Shaping that are algorithm-agnostic, like REPaIR and AMPS. These are designed to filter or interpret human feedback and can be layered on top of various underlying RL algorithms (often Q-learning or policy gradients), making them flexible tools for handling imperfect teachers.
 
 A primary challenge in RL is the sample inefficiency in learning from sparse environmental rewards. This project addresses this issue by integrating human feedback to accelerate and guide the learning process, moving beyond traditional RL frameworks that rely only on manually designed reward functions.
 
@@ -101,8 +84,7 @@ Our work sits at the intersection of IRL, HRI, and VR interfaces. We review key 
 \subsubsection{Interactive Reinforcement Learning (IRL)}
 The foundation of this review is based on important papers that shaped the IRL field. Key work by \citet{BradleyKnox2008} introduced TAMER, showing that human evaluative feedback could train agents much faster than autonomous RL. This was extended into social domains by \citet{Lin2020a} and \citet{Lin2020} who provide a comprehensive review of IRL from human social feedback, distinguishing between evaluative feedback (e.g., rewards or punishments that signal approval or disapproval) and instructive feedback (e.g., advice, corrections, or demonstrations that guide the learner toward desired behaviors). 
 
-A number of IRL frameworks have been proposed to integrate human feedback in different ways. The TAMER framework models human feedback as a reward signal that the agent learns to predict and use for policy improvement. This enables the agent to quickly adapt its behavior without relying on pre-defined environmental rewards \citet{BradleyKnox2008}.
-COACH, in contrast, uses human feedback directly to calculate the policy gradient in an actor-critic algorithm. This allows for more flexible guidance, particularly in continuous action spaces, and supports real-time corrective feedback during learning \citep{Lin2020}.
+A number of IRL frameworks have been proposed to integrate human feedback in different ways. COACH uses human feedback directly to calculate the policy gradient in an actor-critic algorithm. This allows for more flexible guidance, particularly in continuous action spaces, and supports real-time corrective feedback during learning \citep{Lin2020}.
 
 Early work by \citet{6147010} explored augmented reinforcement learning for interaction with non-experts. A significant challenge in IRL is the quality of human input; \citet{Loftin2014} investigated using implicit human feedback strategies, while \citet{Faulkner2020} and \citet{KesslerFaulkner2021} developed specific algorithms for learning from inaccurate or imperfect teachers. The field has explored various feedback modalities, including haptics \citep{10490256} and even bio-signals, such as the use of EEG-based implicit human feedback to accelerate learning \citep{Xu2021}.
 
@@ -149,66 +131,24 @@ The key challenges will be the noise and ambiguity of VR signals, and the techni
 \section{Greeting Interaction Scenario}
 
 \subsection{Concept}
-The robot must choose the correct greeting behavior when a human approaches. For example, if the human extends a hand then handshake; if they just walk by then wave; if standing still then bow.
+The core concept of the interaction scenario is for a robot to learn to select the correct greeting behavior based on the cues presented by an approaching human. The desired social mapping is straightforward: if the human avatar extends a hand, the correct response is a handshake; if the human is in a neutral stance at a far distance, the robot should wave; and if the human is standing still in close proximity, a bow is the expected greeting. While a similar greeting task has been explored using multimodal deep reinforcement learning \citep{7803357}, their approach relied on a pre-defined, autonomous reward function. Our work is distinct in its focus on Interactive Reinforcement Learning (IRL), where a human teacher actively provides real-time feedback through a VR interface to shape the robot's policy, rather than relying solely on a pre-programmed reward signal.
 
 \subsection{Environment Setup in Unity}
-\begin{itemize}
-    \item Arena: Small room or open space.
-    \item Human Avatar: Approaches the robot with one of three cues:
-    \begin{itemize}
-        \item Hand extended (wants handshake).
-        \item Neutral stance in far (wants wave).
-        \item Standing still near (expects bow).
-    \end{itemize}
-    \item Robot Avatar: Humanoid capable of 3 animations (wave, handshake, bow).
-\end{itemize}
+The environment will be constructed within the Unity game engine. The virtual arena will consist of a small room or an open space. A human avatar will be programmed to approach the robot, presenting one of three distinct cues to signal its intent: having a hand extended to request a handshake, maintaining a neutral stance while at a far distance to prompt a wave, or standing still when near the robot to create an expectation of a bow. The robot avatar will be a humanoid model rigged with the three necessary greeting animations: waving, performing a handshake, and bowing.
 
 \subsection{State Space}
-\begin{itemize}
-    \item Human distance (discretized: near, medium, far).
-    \item Human gesture cue (hand extended, neutral, standing still).
-    \item Previous robot action (optional for memory).
-\end{itemize}
+The state space for the reinforcement learning agent is designed to capture the essential elements of the social context. It consists of the human's distance from the robot, which will be discretized into three categories: near, medium, and far. It also includes the human's current gesture cue, which can be hand extended, neutral, or standing still. Optionally, the agent's previous action may be included in the state to provide a minimal memory of the interaction history.
 
 \subsection{Action Space}
-\begin{itemize}
-    \item Wave
-    \item Handshake
-    \item Bow
-    \item Do nothing
-    (4 discrete actions).
-\end{itemize}
-
+The agent operates in a discrete action space comprising four possible actions. It can choose to execute one of the three socially appropriate greetings—wave, handshake, or bow—or it can elect to do nothing.
 
 \subsection{Reward Functions}
-\begin{itemize}
-    \item  Normal RL (autonomous):
-    \begin{itemize}
-        \item +10 for correct greeting.
-        \item -5 for incorrect greeting.
-        \item-1 per timestep delay.
-    \end{itemize}
-    \item Interactive RL (keyboard feedback):
-    \begin{itemize}
-        \item Human presses + if correct, - if wrong, after each greeting.
-    \end{itemize}
-    \item Interactive RL (VR multimodal feedback):
-    Including both implicit and explicit human feedback.
-    \begin{itemize}
-        \item Controller input → positive/negative feedback.
-        \item Head nod/shake detection → feedback signal.
-        \item Voice cues ("yes" / "no") - stretch goal.
-    \end{itemize}
-\end{itemize}
+Three distinct reward mechanisms will be implemented and compared. For the normal, autonomous Reinforcement Learning baseline, a pre-defined reward function will be used: the agent receives a +10 reward for performing the correct greeting, a -5 penalty for an incorrect greeting, and a small -1 penalty for every timestep of delay to encourage timely responses. In the Interactive Reinforcement Learning condition with keyboard feedback, the human teacher provides a scalar reward signal by pressing a '+' key for correct behavior and a '-' key for incorrect behavior after each greeting attempt. The final condition, Interactive RL with VR multimodal feedback, aims to utilize more natural human input. This includes explicit controller input for positive or negative feedback, implicit feedback derived from head nod or shake detection, and, as a stretch goal, voice cues such as saying "yes" or "no".
 
 \subsection{Evaluation Metrics}
-\begin{itemize}
-    \item Accuracy of correct greeting selection.
-    \item Time to converge (episodes until 80\% accuracy).
-    \item Error types (e.g., handshake when bow expected).
-    \item Comparison of learning curves across RL, keyboard IRL, VR IRL.
-    \item Qualitative assessment of teaching experience.
-\end{itemize}
+We will measure the system's performance using both numbers and user feedback. The main number-based metrics will be the accuracy of the robot's greetings and how many training sessions it takes to reach 80\% accuracy. We will also use other measures like the total reward the agent collects and a confusion matrix (with its F1 score) to see exactly where the robot gets confused, for example, if it tries to shake hands when it should bow. We will directly compare the learning progress of the three methods: standard RL, keyboard feedback, and VR feedback. Finally, we will collect user opinions to understand the difference between teaching with a keyboard and teaching in VR.
+
+
 
 \section{Project Plan}
 
@@ -284,7 +224,8 @@ The project will follow a 6-month timeline. The schedule allocates time for the 
     \item Exploration of a predictive feedback model (original desired goal).
 \end{itemize}
 
-\vspace{10pt}
+\subsubsection*{Concrete Project Deliverables}
+The following is a list of the concrete deliverables that will be produced as part of this project:
 
 \begin{itemize}
     \item D1: Literature survey report. (From WP1)
