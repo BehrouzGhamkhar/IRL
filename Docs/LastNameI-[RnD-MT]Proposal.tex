@@ -65,11 +65,12 @@ The algorithms used in human-robot interaction (HRI) can be divided into three m
 \subsubsection {Value-Based Methods: Stability and Integration}
 Value-based methods, especially Q-learning and its variants, are the most common type found in the literature. They are popular because they are well-understood, stable in discrete action spaces, and it is straightforward to add human feedback to them \citep{Lin2020}. The foundational tabular Q-learning algorithm is effectively employed in simpler, discrete state-action tasks, such as the sequential object selection task in \citet{9794595} and the grid-world navigation and trust optimization in \citet{Alzahrani2025}. Its simplicity makes the impact of human advice or reward shaping directly observable. Furthermore, \citet{MunguiaGaleano2023} uses a Contextual Q-learning (CQL) approach to leverage affordances, demonstrating how classic value-based methods can be extended for more complex, context-aware HRI. For higher-dimensional state spaces, such as pixel inputs in simulated environments, Deep Q-Networks represent the natural evolution. For instance, \citet{Moreira2020} uses a DQN with a CNN for an object-sorting task, while \citet{Xu2021} develops a more advanced Bayesian Deep Q-Network (BDQN) to robustly integrate the uncertainty inherent in EEG-based implicit feedback. This illustrates a trend where value-based methods are scaled using deep learning while maintaining their core principle of learning an action-value function.
 
+
 \subsubsection{Policy Search and Policy Gradient Methods: Direct Optimization}
 Policy Search methods directly optimize the policy parameters. This approach is often chosen for continuous control tasks common in robotics, like manipulation and locomotion. The Policy Learning by Weighting Exploration with Returns (PoWER) algorithm is a key part of policy search in robotics. \citet{8624972} uses PoWER in a latent space to learn a ball-throwing skill, demonstrating how policy search can be effectively guided by discrete human ratings instead of engineered rewards. Policy Gradient and Cross-Entropy Method are foundational policy optimization techniques. \citet{6147010} uses Policy Gradient and Cross-Entropy methods in their "Augmented RL" framework, showcasing their utility for online weight adaptation between human and environmental rewards. This highlights a key strength: the direct coupling between human feedback (which often critiques the policy) and the policy update rule.
 
 \subsubsection{Actor-Critic and Advanced Methods: Complexity and Continuous Control}
-Actor-Critic methods, which combine value function and policy learning, address complex, continuous control problems. Their ability to handle high-dimensional action spaces makes them suitable for modern robotic simulation. Proximal Policy Optimization (PPO) is a modern actor-critic algorithm known for its stability, used in several advanced physics-based simulation studies. It is used for human motion tracking and avatar control in \citet{Winkler2022}, \citet{Ye2022}, and \citet{Luo2024}. In these works, PPO is not typically interactive with a human during training but is used in an imitation learning setting, often trained on motion capture (MoCap) data, which can be seen as a form of offline human demonstration. Soft Actor-Critic (SAC) is an algorithm that maximizes both expected return and entropy (promoting exploration), used by \citet{GonzalezSantocildes2024} for its sample efficiency and robustness in learning comfort-aware robot behaviors. Its off-policy nature makes it well-suited for learning from the potentially expensive data gathered in HRI experiments.
+Actor-Critic methods, which combine value function and policy learning, address complex, continuous control problems. Their ability to handle high-dimensional action spaces makes them suitable for modern robotic simulation. Proximal Policy Optimization (PPO) is a modern actor-critic algorithm known for its stability, used in several advanced physics-based simulation studies such as dexterous manipulation tasks, locomotion control for humanoid robots, and complex motor skill learning \citep{Escontrela2022, Christen2019}. It is used for human motion tracking and avatar control in \citet{Winkler2022}, \citet{Ye2022}, and \citet{Luo2024}. In these works, PPO is not typically interactive with a human during training but is used in an imitation learning setting, often trained on motion capture (MoCap) data, which can be seen as a form of offline human demonstration. Soft Actor-Critic (SAC) is an algorithm that maximizes both expected return and entropy (promoting exploration), used by \citet{GonzalezSantocildes2024} for its sample efficiency and robustness in learning comfort-aware robot behaviors. Its off-policy nature makes it well-suited for learning from the potentially expensive data gathered in HRI experiments.
 
 
 \subsubsection{Human-Feedback-Specific Frameworks}
@@ -83,7 +84,7 @@ Our work sits at the intersection of IRL, HRI, and VR interfaces. We review key 
 \subsubsection{Interactive Reinforcement Learning (IRL)}
 The foundation of this review is based on important papers that shaped the IRL field. Key work by \citet{BradleyKnox2008} introduced TAMER, showing that human evaluative feedback could train agents much faster than autonomous RL. This was extended into social domains by \citet{Lin2020a} and \citet{Lin2020} who provide a comprehensive review of IRL from human social feedback, distinguishing between evaluative feedback (e.g., rewards or punishments that signal approval or disapproval) and instructive feedback (e.g., advice, corrections, or demonstrations that guide the learner toward desired behaviors). 
 
-A number of IRL frameworks have been proposed to integrate human feedback in different ways. COACH uses human feedback directly to calculate the policy gradient in an actor-critic algorithm. This allows for more flexible guidance, particularly in continuous action spaces, and supports real-time corrective feedback during learning \citep{Lin2020}.
+A number of IRL frameworks have been proposed to integrate human feedback in different ways. COACH uses human feedback directly to calculate the policy gradient in an actor-critic algorithm. This allows for more flexible guidance, particularly in continuous action spaces, as it enables the human teacher to provide feedback on the appropriateness of specific actions in given states, rather than just binary reward signals \citep{Lin2020}. This approach supports real-time corrective feedback during learning, allowing the agent to adjust its policy immediately based on human input.
 
 Early work by \citet{6147010} explored augmented reinforcement learning for interaction with non-experts. A significant challenge in IRL is the quality of human input; \citet{Loftin2014} investigated using implicit human feedback strategies, while \citet{Faulkner2020} and \citet{KesslerFaulkner2021} developed specific algorithms for learning from inaccurate or imperfect teachers. The field has explored various feedback modalities, including haptics \citep{10490256} and even bio-signals, such as the use of EEG-based implicit human feedback to accelerate learning \citep{Xu2021}.
 
@@ -94,10 +95,10 @@ The use of VR as a powerful tool for collecting human data for robot learning is
 While VR for demonstration is mature, its use for providing evaluative feedback is an emerging area. The most directly related work is by \citet{Heuvel2025}, who investigated the impact of VR and 2D interfaces on human feedback in \textit{preference-based} robot learning. Their work focuses on comparing interfaces for offline, comparative feedback. Our project aims to extend this line of inquiry into the domain of real-time, in-the-loop \textit{scalar} feedback, which is a distinct and unexplored challenge.
 
 \subsubsection{Avatar and Motion Control in VR}
-A critical technical challenge is interpreting the sparse sensor data from a VR headset into a meaningful representation of human state. This is an area of intense research in computer vision and graphics. Recent breakthroughs have employed Reinforcement Learning to create physically plausible avatars. \citet{Winkler2022} presented QuestSim, an RL framework that takes sparse signals from an HMD and two controllers to simulate full-body motion. This work was advanced by \citet{Luo2024}, who developed a method for a real-time simulated avatar from head-mounted sensors, a technology crucial for providing the context-aware feedback our system intends to use. Further foundational work includes that of \citet{Ye2022} on generating physically realistic full-body motion for VR users.
+A critical technical challenge is interpreting the sparse sensor data from a VR headset into a meaningful representation of human state. This is an area of intense research in computer vision and graphics. Recent breakthroughs have employed Reinforcement Learning to create physically plausible avatars. \citet{Winkler2022} presented QuestSim, an RL framework that takes sparse signals from a Head-Mounted Display and two controllers to simulate full-body motion. This work was advanced by \citet{Luo2024}, who developed a method for a real-time simulated avatar from head-mounted sensors, a technology crucial for providing the context-aware feedback our system intends to use. Further foundational work includes that of \citet{Ye2022} on generating physically realistic full-body motion for VR users.
 
 \subsubsection{Other Relevant Works}
-Other relevant works include the integration of feedback in latent space for skill learning \citep{8624972}, the use of fairness-sensitive policy gradients to reduce bias in robotic assistance \citep{10731257}, and the comparison of feedback motion planning with learning from demonstration \citep{6386040}. The method of using adversarial motion priors as substitutes for complex reward functions \citep{Escontrela2022} is also relevant for shaping agent behavior without manually engineering rewards.
+Other relevant works include the integration of feedback in latent space for skill learning \citep{8624972} and the use of fairness-sensitive policy gradients to reduce bias in robotic assistance \citep{10731257}. The method of using adversarial motion priors as substitutes for complex reward functions \citep{Escontrela2022} is also relevant for shaping agent behavior without manually engineering rewards.
 
 
 \subsection{Limitation and Deficits in the State of the Art}
@@ -105,8 +106,8 @@ The current state of the art reveals several significant limitations that our pr
 \begin{enumerate}
     \item \textbf{Expressiveness Gap in IRL}: Existing IRL methods predominantly rely on low-dimensional, often binary feedback mechanisms such as keyboard presses or button clicks \citep{Faulkner2020, Loftin2014}. These interfaces fail to capture the rich, nuanced feedback that humans can naturally provide through gestures, gaze, and body language, creating an expressiveness bottleneck in human-robot communication.
     
-    \item \textbf{Underutilization of VR's Potential for Real-time Feedback}: While VR has been successfully used for collecting demonstration data \citep{10904309, Mosbach2022} and more recently for preference elicitation \citep{Heuvel2025}, its potential for capturing real-time, in-the-loop scalar feedback within IRL frameworks remains largely unexplored. The multimodal sensing capabilities of modern VR headsets has not been fully used yet for interactive machine learning.
-    
+    \item \textbf{Underutilization of VR's Potential for Real-time Feedback}: While VR has been successfully used for collecting demonstration data \citep{10904309, Mosbach2022} and more recently for preference elicitation \citep{Heuvel2025}, its potential for capturing real-time, in-the-loop scalar feedback within IRL frameworks remains largely unexplored. The multimodal sensing capabilities of modern VR headsets offer distinct advantages over camera-based solutions for IRL applications: inherent 3D spatial awareness with precise head and hand tracking without calibration drift, and robust performance that is unaffected by lighting conditions, occlusions, or camera viewpoint limitations. Additionally,  multimodal sensing combining pose, gaze, voice, and controller inputs in a single synchronized platform. These capabilities have not been fully leveraged for interactive machine learning.
+        
     \item \textbf{Lack of Multimodal Signal Fusion for Feedback}: While VR provides a multitude of signals (gaze, pose, voice), no existing work in RL systematically investigates which combinations are most effective for providing feedback or how to fuse them robustly for simple HRI tasks.
 \end{enumerate}
 
@@ -114,9 +115,9 @@ This project directly addresses these deficits by developing a novel VR-based IR
 
 
 \section{Problem Statement}
-The deficits identified in the state of the art—the expressiveness gap in IRL, the limited use of VR for real-time feedback, and the unresolved challenge of multimodal signal fusion define the core problem of this work: Human feedback is a powerful way to guide RL agents, but existing methods of collecting it are unnatural and provide only a narrow feedback channel (low-bandwidth), and cannot scale to match the pace of modern deep RL training.
+The deficits identified in the state of the art—the expressiveness gap in IRL, the limited use of VR for real-time feedback, and the unresolved challenge of multimodal signal fusion define the core problem of this work: Human feedback is a powerful way to guide RL agents, but existing methods of collecting it are unnatural and provide only a narrow feedback channel (low-bandwidth), and cannot scale to match the pace of modern RL training.
 
-We aim to develop a proof-of-concept IRL system that utilizes intuitive, multimodal feedback from a VR headset for a human-robot greeting interaction. Our approach will implement a single-phase pipeline: developing a VR interface that allows a human teacher to naturally give feedback to an RL agent within a simulated greeting task using a combination of inputs (e.g., controller buttons, gestures, gaze direction, and head pose).
+We aim to develop a proof-of-concept IRL system that utilizes intuitive, multimodal feedback from a VR headset for a human-robot greeting interaction \citep{7803357}. Our approach will implement a single-phase pipeline: developing a VR interface that allows a human teacher to naturally give feedback to an RL agent within a simulated greeting task using a combination of inputs (e.g., controller buttons, gestures, gaze direction, and head pose).
 
 The success of this approach will be evaluated by answering the following core research questions:
 \begin{enumerate}
@@ -130,22 +131,22 @@ The key challenges will be the noise and ambiguity of VR signals, and the techni
 \section{Greeting Interaction Scenario}
 
 \subsection{Concept}
-The core concept of the interaction scenario is for a robot to learn to select the correct greeting behavior based on the cues presented by an approaching human. The desired social mapping is straightforward: if the human avatar extends a hand, the correct response is a handshake; if the human is in a neutral stance at a far distance, the robot should wave; and if the human is standing still in close proximity, a bow is the expected greeting. While a similar greeting task has been explored using multimodal deep reinforcement learning \citep{7803357}, their approach relied on a pre-defined, autonomous reward function. Our work is distinct in its focus on Interactive Reinforcement Learning (IRL), where a human teacher actively provides real-time feedback through a VR interface to shape the robot's policy, rather than relying solely on a pre-programmed reward signal.
+The core concept of the interaction scenario is for a robot to learn to select the correct greeting behavior based on the cues presented by an approaching human. The desired social mapping is straightforward: if the human avatar extends a hand, the correct response is a handshake; if the human is in a neutral stance at a far distance, the robot should wave; and if the human is standing still in close proximity, a bow is the expected greeting. While a similar greeting task has been explored using multimodal deep reinforcement learning \citep{7803357}, their approach relied on a pre-defined reward function. Our work is distinct in its focus on Interactive Reinforcement Learning (IRL), where a human teacher actively provides real-time feedback through a VR interface to shape the robot's policy, rather than relying solely on a pre-programmed reward signal.
 
 \subsection{Environment Setup in Unity}
 The environment will be constructed within the Unity game engine. The virtual arena will consist of a small room or an open space. A human avatar will be programmed to approach the robot, presenting one of three distinct cues to signal its intent: having a hand extended to request a handshake, maintaining a neutral stance while at a far distance to prompt a wave, or standing still when near the robot to create an expectation of a bow. The robot avatar will be a humanoid model rigged with the three necessary greeting animations: waving, performing a handshake, and bowing.
 
 \subsection{State Space}
-The state space for the reinforcement learning agent is designed to capture the essential elements of the social context. It consists of the human's distance from the robot, which will be discretized into three categories: near, medium, and far. It also includes the human's current gesture cue, which can be hand extended, neutral, or standing still. Optionally, the agent's previous action may be included in the state to provide a minimal memory of the interaction history.
+The state space for the reinforcement learning agent is designed to capture the essential elements of the social context. It consists of the human's distance from the robot, which will be discretized into three categories: near, medium, and far. It also includes the human's current gesture cue, which can be hand extended, neutral, or standing still. Optionally, the agent's previous action may be included in the state to provide a minimal memory of the interaction history. This memory helps the robot avoid switching too quickly between different greetings and makes its behavior seem more natural and consistent over time.
 
 \subsection{Action Space}
 The agent operates in a discrete action space comprising four possible actions. It can choose to execute one of the three socially appropriate greetings—wave, handshake, or bow—or it can elect to do nothing.
 
 \subsection{Reward Functions}
-Three distinct reward mechanisms will be implemented and compared. For the normal, autonomous Reinforcement Learning baseline, a pre-defined reward function will be used: the agent receives a +10 reward for performing the correct greeting, a -5 penalty for an incorrect greeting, and a small -1 penalty for every timestep of delay to encourage timely responses. In the Interactive Reinforcement Learning condition with keyboard feedback, the human teacher provides a scalar reward signal by pressing a '+' key for correct behavior and a '-' key for incorrect behavior after each greeting attempt. The final condition, Interactive RL with VR multimodal feedback, aims to utilize more natural human input. This includes explicit controller input for positive or negative feedback, implicit feedback derived from head nod or shake detection, and, as a stretch goal, voice cues such as saying "yes" or "no".
+Three distinct reward mechanisms will be implemented and compared. For the normal, autonomous Reinforcement Learning baseline, a pre-defined reward function will be used: the agent receives a +10 reward for performing the correct greeting, a -5 penalty for an incorrect greeting, and a small -1 penalty for every timestep of delay to encourage timely responses. These specific values were chosen to create a clear distinction between success and failure, with the correct action providing a strong positive signal that outweighs the penalty for mistakes, while the small time penalty encourages the agent to learn efficiently without overwhelming the primary learning objective. In the Interactive Reinforcement Learning condition with keyboard feedback, the human teacher provides a scalar reward signal by pressing a '+' key for correct behavior and a '-' key for incorrect behavior after each greeting attempt. The final condition, Interactive RL with VR multimodal feedback, aims to utilize more natural human input. This includes explicit controller input for positive or negative feedback, implicit feedback derived from head nod or shake detection, and, as a stretch goal, voice cues such as saying "yes" or "no".
 
 \subsection{Evaluation Metrics}
-We will measure the system's performance using both numbers and user feedback. The main number-based metrics will be the accuracy of the robot's greetings and how many training sessions it takes to reach 80\% accuracy. We will also use other measures like the total reward the agent collects and a confusion matrix (with its F1 score) to see exactly where the robot gets confused, for example, if it tries to shake hands when it should bow. We will directly compare the learning progress of the three methods: standard RL, keyboard feedback, and VR feedback. Finally, we will collect user opinions to understand the difference between teaching with a keyboard and teaching in VR.
+We will measure the system's performance using both quantitative metrics and qualitative user feedback. The main quantitative metrics will be the accuracy of the robot's greetings and how many training sessions it takes to reach 80\% accuracy. We will also use other measures like the total reward the agent collects and a confusion matrix (with its F1 score) to see exactly where the robot gets confused, for example, if it tries to shake hands when it should bow. We will directly compare the learning progress of the three methods: standard RL, keyboard feedback, and VR feedback. Finally, we will collect user opinions to understand the difference between teaching with a keyboard and teaching in VR.
 
 
 
@@ -198,6 +199,7 @@ The project will follow a 6-month timeline. The schedule allocates time for the 
 
 \subsubsection*{Minimum Viable}
 \begin{itemize}
+    \item A literature review report on IRL, VR interfaces, and human-robot interaction.
     \item A functional Unity environment for the greeting interaction task.
     \item A basic keyboard-based IRL interface.
     \item A trained autonomous RL baseline agent.
@@ -206,25 +208,23 @@ The project will follow a 6-month timeline. The schedule allocates time for the 
 
 \subsubsection*{Expected}
 \begin{itemize}
-    \item All Minimum Viable deliverables, plus:
     \item A fully operational VR-based feedback system for the greeting task.
     \item A trained keyboard IRL agent and a VR IRL agent.
     \item Quantitative comparison showing performance differences between autonomous RL, keyboard IRL, and VR IRL.
     \item Qualitative analysis of the user experience differences between interfaces.
-    \item A final report with clear analysis and conclusions.
+
 \end{itemize}
 
 \subsubsection*{Desired / Future Work}
 \begin{itemize}
-    \item All Expected deliverables, plus:
     \item Implementation of multiple feedback modalities in VR (beyond basic controller input).
     \item Extended evaluation with additional participants.
     \item A well-documented, open-sourced code repository to support future research.
-    \item Exploration of a predictive feedback model (original desired goal).
+    \item Exploration of a predictive feedback model. This model would be trained on initial human feedback collected in VR and could then generate synthetic feedback at scale across many parallel simulations, addressing the fundamental scalability bottleneck in human-in-the-loop systems.
 \end{itemize}
 
-\subsubsection*{Concrete Project Deliverables}
-The following is a list of the concrete deliverables that will be produced as part of this project:
+
+\noindent The following is a list of the concrete deliverables that will be produced as part of this project:
 
 \begin{itemize}
     \item D1: Literature survey report. (From WP1)
