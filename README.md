@@ -2,6 +2,7 @@
 
 ## 1. System Architecture Overview
 
+### 1.1 System Architecture
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Unity Client  │◄──►│  Communication   │◄──►│  Python AI      │
@@ -29,7 +30,7 @@ The system follows a distributed client-server architecture with three main comp
 - Manages training pipelines and experience replay
 - Handles model evaluation and performance tracking
 
-## 1.2 Hardware & software stack
+### 1.2 Hardware & software stack
 - **VR headset**: HTC Vive Pro Eye
 - **Unity**: 6 LTS. Use OpenXR plugin.
 [Unity Documentation](https://docs.unity3d.com/Manual/index.html)
@@ -39,6 +40,60 @@ The system follows a distributed client-server architecture with three main comp
 - **PyTorch**: 2.1.x (to match ML-Agents envs updates) — used for policy nets and human model
 - **ROS2**: Alternative communication framework
 - **ZeroMQ/gRPC (or)**: Low-latency streaming and Real-time communication
+- **Experiment tracking**: TensorBoard + Weights & Biases.
+
+---
+
+## 4. Algorithmic architecture
+
+### 4.1 Overall design
+We are using PPO as the main learner, a Deep-TAMER-style reward model to interpret human VR feedback, and COACH-style corrections to make the agent responsive. They are complementary, not alternatives, and together they form a robust IRL system for multimodal VR teaching.
+1. **Agent core (PPO)** trains on environment observations and a composite reward signal:
+   `r_total = α_env * r_env + α_human * r_human_model(s,a,t)`
+   * `r_env` = engineered environment reward (used for baseline)
+   * `r_human_model` = predicted scalar from the human-feedback model (see below)
+   * α coefficients are tunable and can be scheduled (warmup, annealing).
+2. **Human feedback model (Deep TAMER / reward regressor)**
+
+   * A lightweight neural regressor maps time-aligned multimodal feature vectors to scalar feedback. Trained online with teacher labels (controller + implicit signals mapped to “positive/negative” labels).
+   * Outputs both mean prediction and confidence (e.g., Gaussian output or small Bayesian head) used to weight feedback.
+3. **Immediate corrective module (COACH-inspired, optional)**
+
+   * When the human provides an explicit instantaneous correction (button press, explicit gesture), generate a high-priority update signal used to nudge policy parameters in the short term (policy gradient shaped by the feedback). This is done in addition to the model-based reward (not instead of).
+4. **Credit assignment & temporal alignment**
+
+   * Use eligibility traces (TD(λ)) or short fixed temporal windows to assign a human label to preceding state-action sequence. Also use a small RNN or temporal buffer on the human model to capture short time dependencies.
+
+### 4.2 Losses and update rules (concrete)
+
+* PPO policy loss + value loss as baseline: `L_PPO = L_policy + c1 * L_value - c2 * S_entropy`
+* Augment policy gradient with *feedback gradient term* when immediate corrective signal f_t is received: add policy gradient update proportional to `w_conf * f_t * ∇_θ log π(a_t|s_t)`.
+* Train human reward model using mean squared error (or negative log likelihood if probabilistic output): `L_hr = (r_human_label - hr_model(f_vec))^2 + β_reg * ||θ||^2`.
+* Composite reward used for the PPO update: `r_total = r_env + λ_h * hr_model(f_vec)` where λ_h scales with model confidence and a tunable schedule.
+
+### 4.3 Credit assignment / eligibility
+
+* Maintain a short fixed-length ring buffer (e.g., 2–5 seconds, sampled at env step rate) containing (s, a, t, model_features).
+* When human signals arrive, retroactively assign the scalar to the buffer entries using a temporal kernel (e.g., exponential decay). This produces soft labels for several recent time steps (better than hard single-step assignment).
+* For more rigorous handling, use *eligibility traces* (TD(λ)) on the critic to propagate feedback over preceding states.
+
+### 4.4 Handling delay & noise (practical)
+
+* **Delay compensation:** timestamp all inputs (controller, gaze, audio) using synchronized clocks; use cross-correlation to estimate average human reaction latency and shift labels accordingly.
+* **Noise model:** the human model outputs a variance/confidence; use that to weight the influence of `hr_model` on `r_total`. Optionally model teacher as a noisy oracle with a Beta/Bernoulli model for discrete approvals.
+* **Smoothing:** apply exponential smoothing to gaze/hand features to reduce jitter before feeding the model.
+* **Teacher calibration phase:** at beginning of each session run a 30–60 s calibration where teacher gives a few known approvals/denials to bootstrap the hr_model and calibrate timings.
+
+### 4.5 How They Work Together
+Here is the **actual flow**, very simple:
+
+```
+VR teacher → Human Reward Model → Reward → PPO → Agent actions
+                         ↓
+             COACH correction (only when explicit)
+```
+---
+
 
 
 ## 2. Detailed Technical Design
