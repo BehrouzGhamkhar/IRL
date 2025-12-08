@@ -332,4 +332,4 @@ communication:
 ## 7. Evaluation Framework
 
 
-This technical design provides a comprehensive blueprint for implementing the VR-based interactive reinforcement learning system while maintaining clear separation between simulation (Unity) and AI (Python) components. The architecture supports real-time human-in-the-loop training with multimodal feedback integration and enables rigorous evaluation of the proposed research questions.
+This technical design provides a comprehensive blueprint for implementing the VR-based interactive reinforcement learning system while maintaining clear separation between simulation (Unity) and AI (Python) components. The architecture supports real-time human-in-the-loop training with multimodal feedback integration and  the system is built to accurately test its performance.
