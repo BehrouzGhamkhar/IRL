@@ -159,6 +159,7 @@ Implements various RL algorithms with specific adaptations for human feedback in
 #### 2.2.3 Communication Bridge
 Establishes reliable bidirectional communication with Unity using publish-subscribe patterns. Handles message routing, data serialization, and connection health monitoring.
 
+---
 
 ## 3. Project Folder Structure Organization
 
@@ -290,6 +291,41 @@ VR_IRL_Project/
 └── README.md
 ```
 
+---
+
+## 6. Unity / VR integration & data pipeline
+
+### 6.1 Unity environment
+
+* Use **Unity engine** for the greeting scene (proposal choice). Use **Unity ML-Agents** for instrumentation and communication between Unity and Python training process. ML-Agents is maintained and supports sending observations and receiving actions via a Python API.
+* Use **OpenXR** + vendor SDKs to access eye-tracking and hand tracking. The Vive docs and OpenXR eye examples show data access patterns for gaze data in Unity. [Docs](https://developer.vive.com/resources/openxr/unity/)
+
+### 6.2 Communication pattern
+
+Two valid patterns; both are supported by ML-Agents:
+
+A. **ML-Agents default socket/gRPC pipeline**
+
+* Unity runs the environment, streams observations and extra telemetry (multimodal features) to the Python trainer via ML-Agents gRPC socket. Python computes actions and returns them. Use this for synchronous training loop.
+
+B. **Custom sidechannel / websocket** (recommended for richer, lower-latency human channels)
+
+* Use Unity→Python **side-channel** or a dedicated **ZeroMQ / gRPC** link for streaming high-rate sensor data (eye gaze 120Hz, hand poses). Use JSON for messages. The training loop still uses ML-Agents actions; sidechannel provides continuous human signal stream for the human modelling service.
+
+
+### 6.3 Time sync & timestamps
+
+* Unity timestamps every sensor sample with a monotonic Unity clock. Python side uses the timestamp to align human events with agent timesteps. Record both device timestamps and system timestamps to correct drift.
+
+### 6.4 Data formats
+
+* **Sensor frame:** `{timestamp, head_pose, left_hand_pose, right_hand_pose, gaze_origin, gaze_dir, audio_chunk_id, controller_buttons}`
+* **Teacher label message:** `{timestamp, label_type: explicit/implicit, value: +1/-1/0, confidence_source: controller/gaze/nod/ASR, raw_modalities_snapshot_id}`
+
+---
+
+
+
 ## 4. Data Structures and Message Protocols
 
 ### 4.1 Unity to Python Communication
@@ -312,6 +348,7 @@ Communicates AI decisions back to the simulation with supporting information for
 **Response Components**
 - Action selection and behavioral commands
 
+---
 
 ## 5. Configuration Management System
 
@@ -383,10 +420,13 @@ communication:
   timeout_ms: 1000
   retry_attempts: 3
 ```
+---
 
 ## 6. Implementation Specifications
 
-## 7. Evaluation Framework
 
+---
+
+## 7. Evaluation Framework
 
 This technical design provides a comprehensive blueprint for implementing the VR-based interactive reinforcement learning system while maintaining clear separation between simulation (Unity) and AI (Python) components. The architecture supports real-time human-in-the-loop training with multimodal feedback integration and  the system is built to accurately test its performance.
