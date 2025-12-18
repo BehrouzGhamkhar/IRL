@@ -34,10 +34,10 @@ The system follows a distributed client-server architecture with three main comp
 * **VR headset**: HTC Vive Pro Eye
 * **Unity**: 6 LTS. Use OpenXR plugin.
   [Unity Documentation](https://docs.unity3d.com/Manual/index.html)
-* **Unity ML-Agents (4.x)** — use Unity-to-Python API for actions & observations; provides helpers for logging and inference. (ML-Agents 4.x requires Unity >= 6000.0)
+* **Unity ML-Agents (4.0.0 for C# and mlagents 1.1.0 for python)** — use Unity-to-Python API for actions & observations; provides helpers for logging and inference. (ML-Agents 4.x requires Unity >= 6000.0)
   [GitHub](https://github.com/Unity-Technologies/ml-agents/releases)
-* **Python**: 3.8+ (ML-Agents envs use modern Python; recent ML-Agents upgraded PyTorch 2.1.1)
-* **PyTorch**: 2.1.x (to match ML-Agents envs updates) — used for policy nets and human model
+* **Python**: 3.10.12 (ML-Agents envs use modern Python; recent ML-Agents upgraded PyTorch 2.1.1)
+* **PyTorch**: 2.1.1 (to match ML-Agents envs updates) — used for policy nets and human model
 * **ROS2**: Alternative communication framework
 * **ZeroMQ/gRPC (or ML-Agents)**: Low-latency streaming and Real-time communication
 * **Experiment tracking**: TensorBoard + Weights & Biases.
