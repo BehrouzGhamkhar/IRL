@@ -446,9 +446,62 @@ communication:
 
 ## 8. Implementation Specifications
 
+This section describes how the previously defined system design is realized in practice. It focuses on implementation responsibilities and execution flow, without repeating architectural, algorithmic, or data structure details already presented in earlier sections.
+
+### 8.1 Implementation Scope
+
+The implementation follows the system design exactly as specified in this document. Unity is used only for simulation, VR interaction, and data collection, while all learning, optimization, and feedback interpretation logic is implemented in Python. No learning logic is embedded inside the Unity project.
+
+The implemented system supports three training modes:
+
+* Autonomous reinforcement learning
+* Interactive reinforcement learning with keyboard input
+* Interactive reinforcement learning with VR-based multimodal feedback
+
+These modes share the same environment and learning pipeline and differ only in how feedback is generated and weighted.
 
 ---
 
-## 9. Evaluation Framework
+### 8.2 Unity Implementation Responsibilities
 
-This technical design provides a comprehensive blueprint for implementing the VR-based interactive reinforcement learning system while maintaining clear separation between simulation (Unity) and AI (Python) components. The architecture supports real-time human-in-the-loop training with multimodal feedback integration and  the system is built to accurately test its performance.
+On the Unity side, the implementation includes:
+
+* The greeting interaction environment and episode logic
+* The robot avatar and its executable greeting actions
+* VR device integration and sensor data capture
+* Packaging of observations and human feedback into structured messages
+
+Unity acts as a real-time simulator and input collector. It does not evaluate behavior quality, assign meaning to feedback, or update learning models. All collected data is forwarded unchanged to the Python side for processing and learning.
+
+---
+
+### 8.3 Communication Implementation
+
+The communication layer is implemented using **Unity ML-Agents**, which handles the exchange of observations, actions, rewards, and episode signals between Unity and the Python training process. Human feedback that does not follow the agent step loop is transmitted through **ML-Agents side channels**, allowing asynchronous feedback with preserved timestamps. This enables the learning system to correctly align delayed or high-frequency human feedback with agent behavior.
+
+---
+
+### 8.4 Learning System Implementation
+
+The Python implementation integrates the reinforcement learning agent, the human feedback model, and the training loop into a single pipeline. The agent is trained only in Python, using observations and feedback received from Unity.
+
+Human feedback is processed through a learned model before influencing the agent’s updates. This design choice allows the system to handle noisy, delayed, or partial feedback and avoids relying on raw human input as a direct reward signal.
+
+All training runs, intermediate models, and evaluation data are logged automatically to support later comparison and analysis.
+
+---
+
+### 8.5 Temporal Handling and Feedback Assignment
+
+The implementation includes a lightweight mechanism for associating human feedback with recent agent behavior. Instead of assuming perfect timing, feedback is linked to short windows of past interaction.
+
+This allows the system to remain robust to natural human reaction delays and variation in feedback timing, without requiring strict synchronization.
+
+---
+
+### 8.6 Configuration and Reproducibility
+
+All implementation parameters are controlled through configuration files. This includes training settings, feedback weighting, and runtime options.
+
+As a result, different experimental conditions can be reproduced and compared without modifying the implementation code, supporting systematic evaluation.
+
