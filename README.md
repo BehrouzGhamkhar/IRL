@@ -39,7 +39,7 @@ The system follows a distributed client-server architecture with three main comp
 * **Python**: 3.8+ (ML-Agents envs use modern Python; recent ML-Agents upgraded PyTorch 2.1.1)
 * **PyTorch**: 2.1.x (to match ML-Agents envs updates) — used for policy nets and human model
 * **ROS2**: Alternative communication framework
-* **ZeroMQ/gRPC (or)**: Low-latency streaming and Real-time communication
+* **ZeroMQ/gRPC (or ML-Agents)**: Low-latency streaming and Real-time communication
 * **Experiment tracking**: TensorBoard + Weights & Biases.
 
 ---
@@ -156,9 +156,32 @@ Implements various RL algorithms with specific adaptations for human feedback in
 - Feedback Integration
 
 
-#### 3.2.3 Communication Bridge
-Establishes reliable bidirectional communication with Unity using publish-subscribe patterns. Handles message routing, data serialization, and connection health monitoring.
+#### 3.2.3 Communication Bridge: Using ML-Agents for Python-Based Training
+For this project, we will use **Unity ML-Agents** as a bridge to connect the Unity environment with a Python-based PyTorch implementation of reinforcement learning. This allows all AI logic, including policy networks, training, and optimization, to be handled entirely in Python, without writing any C# code for intelligence inside Unity.
 
+Advantages of this approach:
+
+* **Full Python control**: All neural networks, PPO/SAC algorithms, and training loops are implemented in PyTorch, leveraging the flexibility of Python.
+* **Seamless Unity integration**: ML-Agents handles communication between Unity and Python, providing observations, rewards, and done flags directly to the Python trainer.
+* **Parallelisation support**: Multiple instances of the Unity environment can run concurrently, letting the agent collect more experience per training step and improving sample efficiency.
+
+The training loop works as follows: the Python agent receives observations from Unity, computes actions with its policy network, sends the actions back to Unity, and receives rewards and episode termination information. This cycle repeats continuously, enabling the agent to learn from interactions entirely through Python while Unity provides the simulation environment.
+#### Step loop (what actually happens)
+Per Unity physics step:
+
+```
+CollectObservations()
+↓
+Python receives observations
+↓
+Python sends action
+↓
+OnActionReceived()
+↓
+AddReward()
+↓
+done? EndEpisode()
+```
 ---
 
 ## 4. Project Folder Structure Organization
