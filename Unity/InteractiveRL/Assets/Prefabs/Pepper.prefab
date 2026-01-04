@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   robotAnimator: {fileID: 5984435420237209653}
-  headBone: {fileID: 3167506353080435349}
+  headBone: {fileID: 881440186745511034}
   headRotationSpeed: 5
   rotationSpeed: 2
   lookAtDuration: 3
@@ -109,11 +109,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c6f19d4771d3b82f0ba287f13de5c46b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c6f19d4771d3b82f0ba287f13de5c46b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c6f19d4771d3b82f0ba287f13de5c46b, type: 3}
       propertyPath: m_LocalRotation.y
@@ -125,7 +125,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c6f19d4771d3b82f0ba287f13de5c46b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c6f19d4771d3b82f0ba287f13de5c46b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -145,9 +145,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6f19d4771d3b82f0ba287f13de5c46b, type: 3}
---- !u!4 &3167506353080435349 stripped
+--- !u!4 &881440186745511034 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: -6081470830831867213, guid: c6f19d4771d3b82f0ba287f13de5c46b, type: 3}
+  m_CorrespondingSourceObject: {fileID: -8334762609546709924, guid: c6f19d4771d3b82f0ba287f13de5c46b, type: 3}
   m_PrefabInstance: {fileID: 31376483871811622}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &4978109746396742460 stripped
