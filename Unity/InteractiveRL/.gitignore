@@ -55,6 +55,9 @@ ExportedObj/
 *.mdb.meta
 *.meta
 *.asset
+!Assets/Scripts/ScriptableObjects/*.asset
+
+
 # Unity3D generated file on crash reports
 sysinfo.txt
  
@@ -69,9 +72,3 @@ crashlytics-build.properties
 /UserSettings/EditorUserSettings.asset
 /.idea/.idea.oskol-unity/.idea/workspace.xml
 /Assets/StreamingAssets/build_info
-
-#Fill It Up Project
-/Assets/EasyRoads3D/SRP Support Packages
-/Assets/EasyRoads3D/SRP Support Packages/
-/Assets/EasyRoads3D/SRP Support Packages/HDRP_10_3_2.unitypackage.meta
-/Assets/JMO Assets/Toony Colors Pro/Demo TCP2/Cat Demo URP.unitypackage.meta
