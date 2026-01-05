@@ -15,5 +15,5 @@ MonoBehaviour:
   taskName: Handshake
   targetObjectName: IntractionPointClose
   acceptanceRadius: 0.1
-  animationName: anim_WavingNPC
+  animationName: anim_HandshakeNPC
   taskDuration: 5

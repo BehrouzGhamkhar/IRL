@@ -15,5 +15,5 @@ MonoBehaviour:
   taskName: ExitRoom
   targetObjectName: ExitLocation
   acceptanceRadius: 0.1
-  animationName: anim_WavingNPC
+  animationName: anim_idle
   taskDuration: 3

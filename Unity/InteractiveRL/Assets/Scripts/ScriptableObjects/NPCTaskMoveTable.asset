@@ -15,5 +15,5 @@ MonoBehaviour:
   taskName: MoveToTable
   targetObjectName: TableTaskLocation
   acceptanceRadius: 0.1
-  animationName: anim_WavingNPC
+  animationName: anim_idle
   taskDuration: 3
