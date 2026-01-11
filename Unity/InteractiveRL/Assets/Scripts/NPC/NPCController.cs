@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using ScriptableObjects;
+using UnityEngine.Events; // Add this namespace
+
 public class NPCController : MonoBehaviour
 {
     [Header("Tasks")]
@@ -10,12 +12,17 @@ public class NPCController : MonoBehaviour
     [Header("Settings")]
     public float timeBetweenTasks = 3f;
     
+    [Header("State Events")]
+    public UnityEvent<NPCState> onStateChanged; // Event that passes the new state
+    public UnityEvent<NPCTask> onTaskChanged; // Event for task changes
+    
     // Components
     private NavMeshAgent agent;
     private Animator animator;
     private float timer;
     private NPCTask currentTask;
     private Transform currentTarget;
+    private NPCState previousState; // Track previous state to avoid duplicate events
     
     public enum NPCState
     {
@@ -26,14 +33,41 @@ public class NPCController : MonoBehaviour
         Transitioning
     }
     
-    public NPCState CurrentState { get; private set; } = NPCState.Idle;
-    public NPCTask CurrentTask { get { return currentTask; } }
+    private NPCState currentState = NPCState.Idle;
     
+    // Modified property to fire event when state changes
+    public NPCState CurrentState 
+    { 
+        get { return currentState; }
+        private set
+        {
+            if (currentState != value)
+            {
+                previousState = currentState;
+                currentState = value;
+                // Fire the event
+                if (onStateChanged != null)
+                {
+                    onStateChanged.Invoke(currentState);
+                }
+            }
+        }
+    }
+    
+    public NPCTask CurrentTask => currentTask;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
         timer = 0;
+        
+        // Initialize events if they're null
+        if (onStateChanged == null)
+            onStateChanged = new UnityEvent<NPCState>();
+        if (onTaskChanged == null)
+            onTaskChanged = new UnityEvent<NPCTask>();
+        
         // Start first random task
         PickRandomTask();
         CurrentState = NPCState.Idle;
@@ -88,6 +122,12 @@ public class NPCController : MonoBehaviour
                     animator.SetBool("IsIdle", true);
                     CurrentState = NPCState.PerformingTask;
                     
+                    // Fire task changed event
+                    if (onTaskChanged != null)
+                    {
+                        onTaskChanged.Invoke(currentTask);
+                    }
+
                     if (!string.IsNullOrEmpty(currentTask.animationName) && animator != null)
                     {
                         animator.Play(currentTask.animationName);
@@ -116,6 +156,7 @@ public class NPCController : MonoBehaviour
         int randomIndex = Random.Range(0, allTasks.Count);
         currentTask = allTasks[randomIndex];
         currentTarget = null; // Reset target so we can find it by name
+        
         CurrentState = NPCState.Transitioning;
         
         Debug.Log($"NPC now doing: {currentTask.taskName}");
