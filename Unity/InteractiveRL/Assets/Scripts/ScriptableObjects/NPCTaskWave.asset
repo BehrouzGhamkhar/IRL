@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: NPCTaskWave
   m_EditorClassIdentifier: 
   taskName: WaveFromDistance
-  description: Stay far from Pepper robot and wave
   targetObjectName: IntractionPointFar
   acceptanceRadius: 0.1
   animationName: anim_WavingNPC
-  taskDuration: 3
+  taskDuration: 4

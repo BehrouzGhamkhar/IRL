@@ -15,5 +15,5 @@ MonoBehaviour:
   taskName: IdleInMiddle
   targetObjectName: IntractionPointMiddle
   acceptanceRadius: 0.1
-  animationName: anim_idle
+  animationName: anim_TalkNPC
   taskDuration: 3

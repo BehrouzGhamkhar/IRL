@@ -15,5 +15,5 @@ MonoBehaviour:
   taskName: MoveToCouch
   targetObjectName: CouchTaskLocation
   acceptanceRadius: 0.1
-  animationName: anim_idle
-  taskDuration: 3
+  animationName: anim_StandToSitNPC
+  taskDuration: 5
