@@ -2,14 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System;
 using DG.Tweening;
+using Pepper;
 using ScriptableObjects;
 
 public class PepperController : MonoBehaviour
 {
-    [SerializeField] private Animator robotAnimator;
+    [SerializeField] private PepperAnimationController animationController;
     [SerializeField] private Transform headBone;
     [SerializeField] private float headRotationSpeed = 5f;
-    [SerializeField] private float rotationSpeed = 2f;
     [SerializeField] private float lookAtDuration = 3f;
     
     [Header("NPC Monitoring")]
@@ -30,10 +30,10 @@ public class PepperController : MonoBehaviour
 
     void Start()
     {
-        if (robotAnimator == null)
+        if (animationController == null)
         {
-            robotAnimator = GetComponent<Animator>();
-            if (robotAnimator == null)
+            animationController = GetComponent<PepperAnimationController>();
+            if (animationController == null)
             {
                 Debug.LogError("Robot Animator not found!");
             }
@@ -188,7 +188,7 @@ public class PepperController : MonoBehaviour
     
     private void ActionWait()
     {
-        robotAnimator.SetTrigger("Idle");
+        animationController.PlayIdle();
     }
 
     private void ActionLook()
@@ -205,12 +205,12 @@ public class PepperController : MonoBehaviour
 
     private void ActionWave()
     {
-        robotAnimator.SetTrigger("Wave");
+        animationController.PlayWave();
     }
 
     IEnumerator ActionHandshake(float delayTime)
     {
-        robotAnimator.SetTrigger("TryHandshake");
+        animationController.PlayTryHandshake();
         var closestPerson = FindNearestPerson();
         yield return new WaitForSeconds(delayTime);
         if (closestPerson != null)
@@ -218,18 +218,18 @@ public class PepperController : MonoBehaviour
             Vector3 targetPosition = closestPerson.position;
             if (Vector3.Distance(transform.position, targetPosition) < 2.0f)
             {
-                robotAnimator.SetTrigger("Handshake");
+                animationController.PlayHandshake();
             }
             else
             {
                 Debug.LogWarning("Too far to handshake.");
-                robotAnimator.SetTrigger("Idle");
+                animationController.PlayIdle();
             }
         }
         else
         {
             Debug.LogWarning("No person found to handshake with.");
-            robotAnimator.SetTrigger("Idle");
+            animationController.PlayIdle();
         }
     }
     
