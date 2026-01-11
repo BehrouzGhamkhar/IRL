@@ -38,9 +38,10 @@ public class DataDisplay : MonoBehaviour
             
             // Color code the state
             string stateColor = GetNPCStateColor(npc.CurrentState);
-            
-            npcLogText.text = $"<color={stateColor}><b>NPC State: {stateText}</b></color>\n" +
-                            $"Task: {taskText}";
+
+            // Apply color using rich text tags
+            npcLogText.text = $"NPC State: <color={stateColor}>{stateText}</color>\n" +
+                              $"Task: {taskText}";
         }
         
         // Update Pepper Display
@@ -51,8 +52,9 @@ public class DataDisplay : MonoBehaviour
             
             // Color code the state
             string stateColor = GetPepperStateColor(pepper.CurrentState);
-            
-            pepperLogText.text = $"<color={stateColor}><b>Pepper State: {stateText}</b></color>";
+
+            // Apply color using rich text tags
+            pepperLogText.text = $"Pepper State: <color={stateColor}>{stateText}</color>";
         }
     }
     
@@ -61,38 +63,38 @@ public class DataDisplay : MonoBehaviour
         switch (state)
         {
             case NPCController.NPCState.Idle:
-                return "gray";
+                return "#D3D3D3"; // gray
             case NPCController.NPCState.WaitingBetweenTasks:
-                return "lightgray";
+                return "#D3D3D3"; // gray
             case NPCController.NPCState.MovingToTask:
-                return "yellow";
+                return "#FFFF00"; // yellow
             case NPCController.NPCState.PerformingTask:
-                return "green";
+                return "#00FF00"; // green
             case NPCController.NPCState.SearchingForTarget:
-                return "orange";
+                return "#FFA500"; // orange
             case NPCController.NPCState.Transitioning:
-                return "blue";
+                return "#0000FF"; // blue
             default:
-                return "white";
+                return "#FFFFFF"; // white
         }
     }
-    
+
     private string GetPepperStateColor(PepperController.PepperState state)
     {
         switch (state)
         {
             case PepperController.PepperState.Idle:
-                return "gray";
+                return "#D3D3D3"; // gray
             case PepperController.PepperState.Looking:
-                return "cyan";
+                return "#00FFFF"; // cyan
             case PepperController.PepperState.Waving:
-                return "magenta";
+                return "#FF00FF"; // magenta
             case PepperController.PepperState.Handshaking:
-                return "blue";
+                return "#0000FF"; // blue
             case PepperController.PepperState.PerformingAction:
-                return "yellow";
+                return "#FFFF00"; // yellow
             default:
-                return "white";
+                return "#FFFFFF"; // white
         }
     }
 }
