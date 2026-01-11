@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using ScriptableObjects;
-
 public class NPCController : MonoBehaviour
 {
     [Header("Tasks")]
@@ -18,6 +17,17 @@ public class NPCController : MonoBehaviour
     private NPCTask currentTask;
     private Transform currentTarget;
     
+    public enum NPCState
+    {
+        Idle,
+        MovingToTask,
+        PerformingTask,
+        SearchingForTarget,
+        Transitioning
+    }
+    
+    public NPCState CurrentState { get; private set; } = NPCState.Idle;
+    
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -25,15 +35,18 @@ public class NPCController : MonoBehaviour
         timer = 0;
         // Start first random task
         PickRandomTask();
+        CurrentState = NPCState.Idle;
     }
     
     void Update()
     {
-        
         timer += Time.deltaTime;
+        
         if (!currentTask && timer >= timeBetweenTasks)
+        {
             PickRandomTask();
-
+            CurrentState = NPCState.Transitioning;
+        }
         
         // If we have a task, find the target and move there
         if (currentTask)
@@ -43,7 +56,9 @@ public class NPCController : MonoBehaviour
                 // Move to next random task
                 PickRandomTask();
                 timer = 0;
+                CurrentState = NPCState.Transitioning;
             }
+            
             // Find the target by name if we haven't already
             if (currentTarget == null && !string.IsNullOrEmpty(currentTask.targetObjectName))
             {
@@ -51,6 +66,7 @@ public class NPCController : MonoBehaviour
                 if (targetObj != null)
                 {
                     currentTarget = targetObj.transform;
+                    CurrentState = NPCState.SearchingForTarget;
                 }
             }
             
@@ -60,6 +76,8 @@ public class NPCController : MonoBehaviour
                 agent.SetDestination(currentTarget.position);
                 animator.SetBool("IsWalking", true);
                 animator.SetBool("IsIdle", false);
+                CurrentState = NPCState.MovingToTask;
+                
                 // Check if close enough
                 float distance = Vector3.Distance(transform.position, currentTarget.position);
                 if (distance < currentTask.acceptanceRadius)
@@ -67,22 +85,37 @@ public class NPCController : MonoBehaviour
                     // Play animation if we have one
                     animator.SetBool("IsWalking", false);
                     animator.SetBool("IsIdle", true);
+                    CurrentState = NPCState.PerformingTask;
+                    
                     if (!string.IsNullOrEmpty(currentTask.animationName) && animator != null)
                     {
                         animator.Play(currentTask.animationName);
                     }
                 }
             }
+            else if (CurrentState != NPCState.SearchingForTarget)
+            {
+                CurrentState = NPCState.SearchingForTarget;
+            }
+        }
+        else if (CurrentState != NPCState.Idle && CurrentState != NPCState.Transitioning)
+        {
+            CurrentState = NPCState.Idle;
         }
     }
     
     void PickRandomTask()
     {
-        if (allTasks.Count == 0) return;
+        if (allTasks.Count == 0) 
+        {
+            CurrentState = NPCState.Idle;
+            return;
+        }
         
         int randomIndex = Random.Range(0, allTasks.Count);
         currentTask = allTasks[randomIndex];
         currentTarget = null; // Reset target so we can find it by name
+        CurrentState = NPCState.Transitioning;
         
         Debug.Log($"NPC now doing: {currentTask.taskName}");
     }
