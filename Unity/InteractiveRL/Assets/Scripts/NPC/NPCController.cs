@@ -50,7 +50,7 @@ public class NPCController : MonoBehaviour
             {
                 previousState = currentState;
                 currentState = value;
-                
+            
                 // Reset timing flags when state changes
                 if (currentState == NPCState.MovingToTask)
                 {
@@ -58,14 +58,18 @@ public class NPCController : MonoBehaviour
                 }
                 else if (currentState == NPCState.PerformingTask)
                 {
-                    hasStartedTask = true;
                     taskTimer = 0f;
                 }
                 else if (currentState == NPCState.WaitingBetweenTasks)
                 {
                     waitTimer = 0f;
                 }
-                
+                else if (currentState == NPCState.Transitioning)
+                {
+                    // Reset task flag when transitioning to a new task
+                    hasStartedTask = false;
+                }
+            
                 if (onStateChanged != null)
                 {
                     onStateChanged.Invoke(currentState);
@@ -174,7 +178,12 @@ public class NPCController : MonoBehaviour
             // Play task-specific animation
             if (!string.IsNullOrEmpty(currentTask.animationName) && animator != null)
             {
+                Debug.Log($"Playing animation clip: {currentTask.animationName}");
                 animator.Play(currentTask.animationName);
+            }
+            else
+            {
+                Debug.Log($"No animation specified for task: {currentTask.taskName}");
             }
         }
         
@@ -182,11 +191,10 @@ public class NPCController : MonoBehaviour
         
         if (taskTimer >= currentTask.taskDuration)
         {
-            // Task complete, wait before next task
+            Debug.Log($"Task completed: {currentTask.taskName}");
             hasStartedTask = false;
             currentTask = null;
             currentTarget = null;
-            
             CurrentState = NPCState.WaitingBetweenTasks;
         }
     }
