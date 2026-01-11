@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 using DG.Tweening;
+using ScriptableObjects;
 
 public class PepperController : MonoBehaviour
 {
@@ -11,7 +12,9 @@ public class PepperController : MonoBehaviour
     [SerializeField] private float rotationSpeed = 2f;
     [SerializeField] private float lookAtDuration = 3f;
     
-
+    [Header("NPC Monitoring")]
+    [SerializeField] private NPCController npcToMonitor; // Drag ONE NPC here in the inspector
+    
     private Transform currentLookTarget;
     private float lookEndTime;
     private bool isLooking;
@@ -27,7 +30,6 @@ public class PepperController : MonoBehaviour
 
     void Start()
     {
-
         if (robotAnimator == null)
         {
             robotAnimator = GetComponent<Animator>();
@@ -36,6 +38,15 @@ public class PepperController : MonoBehaviour
                 Debug.LogError("Robot Animator not found!");
             }
         }
+        
+        // Subscribe to NPC events
+        SetupNPCEventListener();
+    }
+
+    void OnDestroy()
+    {
+        // Clean up event listener when destroyed
+        CleanupNPCEventListener();
     }
 
     void Update()
@@ -58,6 +69,87 @@ public class PepperController : MonoBehaviour
 
         HandleKeyboardInput();
     }
+
+    #region NPC Event Handling
+    
+    private void SetupNPCEventListener()
+    {
+        if (npcToMonitor != null)
+        {
+            // Subscribe to state changes
+            if (npcToMonitor.onStateChanged != null)
+            {
+                npcToMonitor.onStateChanged.AddListener(OnNPCStateChanged);
+            }
+            
+            // Subscribe to task changes
+            if (npcToMonitor.onTaskChanged != null)
+            {
+                npcToMonitor.onTaskChanged.AddListener(OnNPCTaskChanged);
+            }
+            
+            Debug.Log($"Pepper is now monitoring NPC: {npcToMonitor.gameObject.name}");
+            
+            // Log initial state
+            LogNPCState(npcToMonitor.CurrentState);
+            if (npcToMonitor.CurrentTask != null)
+            {
+                LogNPCTask(npcToMonitor.CurrentTask);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No NPC assigned to monitor. Drag an NPC into the 'npcToMonitor' field in the inspector.");
+        }
+    }
+    
+    private void CleanupNPCEventListener()
+    {
+        if (npcToMonitor != null)
+        {
+            if (npcToMonitor.onStateChanged != null)
+            {
+                npcToMonitor.onStateChanged.RemoveListener(OnNPCStateChanged);
+            }
+            
+            if (npcToMonitor.onTaskChanged != null)
+            {
+                npcToMonitor.onTaskChanged.RemoveListener(OnNPCTaskChanged);
+            }
+        }
+    }
+    
+    private void OnNPCStateChanged(NPCController.NPCState newState)
+    {
+        LogNPCState(newState);
+    }
+    
+    private void OnNPCTaskChanged(NPCTask newTask)
+    {
+        LogNPCTask(newTask);
+    }
+    
+    private void LogNPCState(NPCController.NPCState state)
+    {
+        string npcName = npcToMonitor != null ? npcToMonitor.gameObject.name : "Unknown NPC";
+        // todo: I can use the npc state data here
+    }
+    
+    private void LogNPCTask(NPCTask task)
+    {
+        string npcName = npcToMonitor != null ? npcToMonitor.gameObject.name : "Unknown NPC";
+        
+        if (task != null)
+        {
+            // todo: I can use the npc task data here
+        }
+        else
+        {
+            Debug.Log($"[NPC Task] '{npcName}' has no current task");
+        }
+    }
+    
+    #endregion
 
     private void ExecuteAction(AgentAction rAction)
     {
@@ -166,6 +258,7 @@ public class PepperController : MonoBehaviour
         }
         return closestPerson;
     }
+    
     private void HandleKeyboardInput()
     {
         if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Alpha0))
@@ -187,6 +280,38 @@ public class PepperController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.Alpha4))
         {
             ExecuteAction(AgentAction.HandShake);
+        }
+        
+        // Optional: Add a key to manually log NPC state
+        if (Input.GetKeyDown(KeyCode.N) && npcToMonitor != null)
+        {
+            LogNPCState(npcToMonitor.CurrentState);
+            LogNPCTask(npcToMonitor.CurrentTask);
+        }
+        
+        // Optional: Quick action based on NPC state
+        if (Input.GetKeyDown(KeyCode.M) && npcToMonitor != null)
+        {
+            ReactToNPCState();
+        }
+    }
+    
+    // Optional: Example of reacting to NPC state
+    private void ReactToNPCState()
+    {
+        if (npcToMonitor == null) return;
+        
+        switch (npcToMonitor.CurrentState)
+        {
+            case NPCController.NPCState.Idle:
+                Debug.Log("NPC is idle - Pepper could approach");
+                break;
+            case NPCController.NPCState.PerformingTask:
+                Debug.Log("NPC is busy - Pepper should wait");
+                break;
+            case NPCController.NPCState.MovingToTask:
+                Debug.Log("NPC is moving - Pepper could follow");
+                break;
         }
     }
 }
