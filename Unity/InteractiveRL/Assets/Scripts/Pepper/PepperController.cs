@@ -282,36 +282,5 @@ public class PepperController : MonoBehaviour
             ExecuteAction(AgentAction.HandShake);
         }
         
-        // Optional: Add a key to manually log NPC state
-        if (Input.GetKeyDown(KeyCode.N) && npcToMonitor != null)
-        {
-            LogNPCState(npcToMonitor.CurrentState);
-            LogNPCTask(npcToMonitor.CurrentTask);
-        }
-        
-        // Optional: Quick action based on NPC state
-        if (Input.GetKeyDown(KeyCode.M) && npcToMonitor != null)
-        {
-            ReactToNPCState();
-        }
-    }
-    
-    // Optional: Example of reacting to NPC state
-    private void ReactToNPCState()
-    {
-        if (npcToMonitor == null) return;
-        
-        switch (npcToMonitor.CurrentState)
-        {
-            case NPCController.NPCState.Idle:
-                Debug.Log("NPC is idle - Pepper could approach");
-                break;
-            case NPCController.NPCState.PerformingTask:
-                Debug.Log("NPC is busy - Pepper should wait");
-                break;
-            case NPCController.NPCState.MovingToTask:
-                Debug.Log("NPC is moving - Pepper could follow");
-                break;
-        }
     }
 }
