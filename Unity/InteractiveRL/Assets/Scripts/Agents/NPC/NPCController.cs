@@ -1,9 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
-using DG.Tweening;
 
 namespace Agents.NPC
 {
@@ -18,7 +18,7 @@ namespace Agents.NPC
 
         // Components
         private NavMeshAgent agent;
-        private Animator animator;
+        [SerializeField] private NPCAnimationController animationController;
         private NPCTask currentTask;
         private Transform currentTarget;
         private NPCState previousState;
@@ -83,7 +83,8 @@ namespace Agents.NPC
         void Start()
         {
             agent = GetComponent<NavMeshAgent>();
-            animator = GetComponentInChildren<Animator>();
+            if (!animationController)
+                animationController = GetComponent<NPCAnimationController>();
 
             // Initialize events if they're null
             if (onStateChanged == null)
@@ -144,29 +145,42 @@ namespace Agents.NPC
                 CurrentState = NPCState.SearchingForTarget;
                 return;
             }
-
-            // Set destination and animation
+            
             agent.SetDestination(currentTarget.position);
-            animator.SetBool("IsWalking", true);
-            animator.SetBool("IsIdle", false);
+            
+            if (animationController != null)
+            {
+                animationController.PlayWalk();
+            }
 
             // Check if we've reached the target
             float distance = Vector3.Distance(transform.position, currentTarget.position);
             if (distance <= currentTask.acceptanceRadius && !hasReachedTarget)
             {
-                animator.SetBool("IsWalking", false);
-                animator.SetBool("IsIdle", true);
-                transform.DORotate(currentTarget.eulerAngles, 0.5f, RotateMode.Fast)
-                    .OnComplete(() => hasReachedTarget = true);
+                if (animationController != null)
+                {
+                    animationController.PlayIdle();
+                }
+                
+                StartCoroutine(RotateToTargetAndContinue());
 
                 // Fire task changed event when we first reach the target
                 if (onTaskChanged != null)
                 {
                     onTaskChanged.Invoke(currentTask);
                 }
-
-                CurrentState = NPCState.PerformingTask;
             }
+        }
+        
+        IEnumerator RotateToTargetAndContinue()
+        {
+            if (animationController != null && currentTarget != null)
+            {
+                yield return animationController.RotateToTargetCoroutine(currentTarget, 0.5f);
+            }
+            
+            hasReachedTarget = true;
+            CurrentState = NPCState.PerformingTask;
         }
 
         void UpdatePerformingState()
@@ -177,12 +191,11 @@ namespace Agents.NPC
                 taskTimer = 0f;
 
                 // Play task-specific animation
-                if (!string.IsNullOrEmpty(currentTask.animationName) && animator != null)
+                if (animationController != null && currentTask != null && !string.IsNullOrEmpty(currentTask.animationName))
                 {
-                    Debug.Log($"Playing animation clip: {currentTask.animationName}");
-                    animator.Play(currentTask.animationName);
+                    animationController.PlayTaskAnimation(currentTask.animationName);
                 }
-                else
+                else if (currentTask != null)
                 {
                     Debug.Log($"No animation specified for task: {currentTask.taskName}");
                 }
