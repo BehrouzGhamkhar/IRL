@@ -1,4 +1,6 @@
-using ScriptableObjects;
+using Agents.NPC;
+using Agents.Robot;
+using Tasks;
 using TMPro;
 using UnityEngine;
 
