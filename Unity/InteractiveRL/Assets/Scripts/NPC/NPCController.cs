@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using ScriptableObjects;
-using UnityEngine.Events; // Add this namespace
+using UnityEngine.Events;
 
 public class NPCController : MonoBehaviour
 {
@@ -13,20 +13,26 @@ public class NPCController : MonoBehaviour
     public float timeBetweenTasks = 3f;
     
     [Header("State Events")]
-    public UnityEvent<NPCState> onStateChanged; // Event that passes the new state
-    public UnityEvent<NPCTask> onTaskChanged; // Event for task changes
+    public UnityEvent<NPCState> onStateChanged;
+    public UnityEvent<NPCTask> onTaskChanged;
     
     // Components
     private NavMeshAgent agent;
     private Animator animator;
-    private float timer;
     private NPCTask currentTask;
     private Transform currentTarget;
-    private NPCState previousState; // Track previous state to avoid duplicate events
+    private NPCState previousState;
+    
+    // Timing variables
+    private float waitTimer;
+    private float taskTimer;
+    private bool hasStartedTask = false;
+    private bool hasReachedTarget = false;
     
     public enum NPCState
     {
         Idle,
+        WaitingBetweenTasks,
         MovingToTask,
         PerformingTask,
         SearchingForTarget,
@@ -35,7 +41,6 @@ public class NPCController : MonoBehaviour
     
     private NPCState currentState = NPCState.Idle;
     
-    // Modified property to fire event when state changes
     public NPCState CurrentState 
     { 
         get { return currentState; }
@@ -45,7 +50,22 @@ public class NPCController : MonoBehaviour
             {
                 previousState = currentState;
                 currentState = value;
-                // Fire the event
+                
+                // Reset timing flags when state changes
+                if (currentState == NPCState.MovingToTask)
+                {
+                    hasReachedTarget = false;
+                }
+                else if (currentState == NPCState.PerformingTask)
+                {
+                    hasStartedTask = true;
+                    taskTimer = 0f;
+                }
+                else if (currentState == NPCState.WaitingBetweenTasks)
+                {
+                    waitTimer = 0f;
+                }
+                
                 if (onStateChanged != null)
                 {
                     onStateChanged.Invoke(currentState);
@@ -60,7 +80,6 @@ public class NPCController : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-        timer = 0;
         
         // Initialize events if they're null
         if (onStateChanged == null)
@@ -68,80 +87,166 @@ public class NPCController : MonoBehaviour
         if (onTaskChanged == null)
             onTaskChanged = new UnityEvent<NPCTask>();
         
-        // Start first random task
-        PickRandomTask();
-        CurrentState = NPCState.Idle;
+        // Start with waiting between tasks
+        CurrentState = NPCState.WaitingBetweenTasks;
+        waitTimer = 0f;
     }
     
     void Update()
     {
-        timer += Time.deltaTime;
-        
-        if (!currentTask && timer >= timeBetweenTasks)
+        switch (CurrentState)
         {
-            PickRandomTask();
-            CurrentState = NPCState.Transitioning;
-        }
-        
-        // If we have a task, find the target and move there
-        if (currentTask)
-        {
-            if (timer >= timeBetweenTasks + currentTask.taskDuration)
-            {
-                // Move to next random task
-                PickRandomTask();
-                timer = 0;
-                CurrentState = NPCState.Transitioning;
-            }
-            
-            // Find the target by name if we haven't already
-            if (currentTarget == null && !string.IsNullOrEmpty(currentTask.targetObjectName))
-            {
-                GameObject targetObj = GameObject.Find(currentTask.targetObjectName);
-                if (targetObj != null)
-                {
-                    currentTarget = targetObj.transform;
-                    CurrentState = NPCState.SearchingForTarget;
-                }
-            }
-            
-            // Move to target if we found it
-            if (currentTarget != null)
-            {
-                agent.SetDestination(currentTarget.position);
-                animator.SetBool("IsWalking", true);
-                animator.SetBool("IsIdle", false);
-                CurrentState = NPCState.MovingToTask;
+            case NPCState.WaitingBetweenTasks:
+                UpdateWaitingState();
+                break;
                 
-                // Check if close enough
-                float distance = Vector3.Distance(transform.position, currentTarget.position);
-                if (distance < currentTask.acceptanceRadius)
-                {
-                    // Play animation if we have one
-                    animator.SetBool("IsWalking", false);
-                    animator.SetBool("IsIdle", true);
-                    CurrentState = NPCState.PerformingTask;
-                    
-                    // Fire task changed event
-                    if (onTaskChanged != null)
-                    {
-                        onTaskChanged.Invoke(currentTask);
-                    }
-
-                    if (!string.IsNullOrEmpty(currentTask.animationName) && animator != null)
-                    {
-                        animator.Play(currentTask.animationName);
-                    }
-                }
-            }
-            else if (CurrentState != NPCState.SearchingForTarget)
+            case NPCState.MovingToTask:
+                UpdateMovingState();
+                break;
+                
+            case NPCState.PerformingTask:
+                UpdatePerformingState();
+                break;
+                
+            case NPCState.SearchingForTarget:
+                UpdateSearchingState();
+                break;
+                
+            case NPCState.Idle:
+                UpdateIdleState();
+                break;
+                
+            case NPCState.Transitioning:
+                UpdateTransitioningState();
+                break;
+        }
+    }
+    
+    void UpdateWaitingState()
+    {
+        waitTimer += Time.deltaTime;
+        
+        if (waitTimer >= timeBetweenTasks)
+        {
+            // Wait time complete, pick a new task
+            PickRandomTask();
+        }
+    }
+    
+    void UpdateMovingState()
+    {
+        if (currentTarget == null)
+        {
+            CurrentState = NPCState.SearchingForTarget;
+            return;
+        }
+        
+        // Set destination and animation
+        agent.SetDestination(currentTarget.position);
+        animator.SetBool("IsWalking", true);
+        animator.SetBool("IsIdle", false);
+        
+        // Check if we've reached the target
+        float distance = Vector3.Distance(transform.position, currentTarget.position);
+        if (distance <= currentTask.acceptanceRadius && !hasReachedTarget)
+        {
+            hasReachedTarget = true;
+            animator.SetBool("IsWalking", false);
+            animator.SetBool("IsIdle", true);
+            
+            // Fire task changed event when we first reach the target
+            if (onTaskChanged != null)
             {
-                CurrentState = NPCState.SearchingForTarget;
+                onTaskChanged.Invoke(currentTask);
+            }
+            
+            CurrentState = NPCState.PerformingTask;
+        }
+    }
+    
+    void UpdatePerformingState()
+    {
+        if (!hasStartedTask)
+        {
+            hasStartedTask = true;
+            taskTimer = 0f;
+            
+            // Play task-specific animation
+            if (!string.IsNullOrEmpty(currentTask.animationName) && animator != null)
+            {
+                animator.Play(currentTask.animationName);
             }
         }
-        else if (CurrentState != NPCState.Idle && CurrentState != NPCState.Transitioning)
+        
+        taskTimer += Time.deltaTime;
+        
+        if (taskTimer >= currentTask.taskDuration)
         {
-            CurrentState = NPCState.Idle;
+            // Task complete, wait before next task
+            hasStartedTask = false;
+            currentTask = null;
+            currentTarget = null;
+            
+            CurrentState = NPCState.WaitingBetweenTasks;
+        }
+    }
+    
+    void UpdateSearchingState()
+    {
+        if (currentTask == null)
+        {
+            CurrentState = NPCState.WaitingBetweenTasks;
+            return;
+        }
+        
+        // Try to find the target
+        if (string.IsNullOrEmpty(currentTask.targetObjectName))
+        {
+            // No target specified, just perform the task
+            CurrentState = NPCState.PerformingTask;
+            return;
+        }
+        
+        GameObject targetObj = GameObject.Find(currentTask.targetObjectName);
+        if (targetObj != null)
+        {
+            currentTarget = targetObj.transform;
+            CurrentState = NPCState.MovingToTask;
+        }
+        else
+        {
+            // Target not found, skip this task after a delay
+            if (taskTimer > 5f) // 5 second search timeout
+            {
+                Debug.LogWarning($"Target '{currentTask.targetObjectName}' not found for task '{currentTask.taskName}'");
+                currentTask = null;
+                currentTarget = null;
+                CurrentState = NPCState.WaitingBetweenTasks;
+            }
+            taskTimer += Time.deltaTime;
+        }
+    }
+    
+    void UpdateIdleState()
+    {
+        // No tasks available, just idle
+        if (allTasks.Count > 0)
+        {
+            CurrentState = NPCState.WaitingBetweenTasks;
+        }
+    }
+    
+    void UpdateTransitioningState()
+    {
+        // This state is for any transitions or setup
+        // Immediately move to next appropriate state
+        if (currentTask != null)
+        {
+            CurrentState = NPCState.SearchingForTarget;
+        }
+        else
+        {
+            CurrentState = NPCState.WaitingBetweenTasks;
         }
     }
     
@@ -155,10 +260,12 @@ public class NPCController : MonoBehaviour
         
         int randomIndex = Random.Range(0, allTasks.Count);
         currentTask = allTasks[randomIndex];
-        currentTarget = null; // Reset target so we can find it by name
-        
-        CurrentState = NPCState.Transitioning;
+        currentTarget = null;
+        hasReachedTarget = false;
+        hasStartedTask = false;
         
         Debug.Log($"NPC now doing: {currentTask.taskName}");
+        
+        CurrentState = NPCState.Transitioning;
     }
 }
