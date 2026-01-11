@@ -16,21 +16,43 @@ public class DataDisplay : MonoBehaviour
         // Subscribe to NPC events
         if (npcController != null)
         {
-            // Subscribe to state changes
             if (npcController.onStateChanged != null)
             {
                 npcController.onStateChanged.AddListener(OnNPCStateChanged);
             }
             
-            // Subscribe to task changes
             if (npcController.onTaskChanged != null)
             {
                 npcController.onTaskChanged.AddListener(OnNPCTaskChanged);
             }
-            
-            // Display initial state
-            UpdateDisplay();
         }
+        
+        // Subscribe to Pepper events
+        if (pepperController != null)
+        {
+            if (pepperController.onStateChanged != null)
+            {
+                pepperController.onStateChanged.AddListener(OnPepperStateChanged);
+            }
+            
+            if (pepperController.onActionPerformed != null)
+            {
+                pepperController.onActionPerformed.AddListener(OnPepperActionPerformed);
+            }
+            
+            if (pepperController.onNPCStateChanged != null)
+            {
+                pepperController.onNPCStateChanged.AddListener(OnPepperNPCStateChanged);
+            }
+            
+            if (pepperController.onNPCTaskChanged != null)
+            {
+                pepperController.onNPCTaskChanged.AddListener(OnPepperNPCTaskChanged);
+            }
+        }
+        
+        // Display initial state
+        UpdateDisplay();
     }
     
     void OnDestroy()
@@ -48,16 +70,66 @@ public class DataDisplay : MonoBehaviour
                 npcController.onTaskChanged.RemoveListener(OnNPCTaskChanged);
             }
         }
+        
+        if (pepperController != null)
+        {
+            if (pepperController.onStateChanged != null)
+            {
+                pepperController.onStateChanged.RemoveListener(OnPepperStateChanged);
+            }
+            
+            if (pepperController.onActionPerformed != null)
+            {
+                pepperController.onActionPerformed.RemoveListener(OnPepperActionPerformed);
+            }
+            
+            if (pepperController.onNPCStateChanged != null)
+            {
+                pepperController.onNPCStateChanged.RemoveListener(OnPepperNPCStateChanged);
+            }
+            
+            if (pepperController.onNPCTaskChanged != null)
+            {
+                pepperController.onNPCTaskChanged.RemoveListener(OnPepperNPCTaskChanged);
+            }
+        }
     }
     
-    // Event handler for NPC state changes
-    private void OnNPCStateChanged(NPCController.NPCState newState)
+    // Event handlers for Pepper
+    private void OnPepperStateChanged(PepperController.PepperState newState)
     {
-        Debug.Log($"<color={GetStateColor(newState)}>[NPC State] State changed to: <b>{newState}</b></color>");
+        Debug.Log($"<color={GetPepperStateColor(newState)}>[Pepper State] State changed to: <b>{newState}</b></color>");
         UpdateDisplay();
     }
     
-    // Event handler for NPC task changes
+    private void OnPepperActionPerformed(PepperController.AgentAction action)
+    {
+        Debug.Log($"[Pepper Action] Performing action: <b>{action}</b>");
+        UpdateDisplay();
+    }
+    
+    private void OnPepperNPCStateChanged(NPCController.NPCState npcState)
+    {
+        Debug.Log($"[Pepper Monitoring] NPC state observed: <b>{npcState}</b>");
+        UpdateDisplay();
+    }
+    
+    private void OnPepperNPCTaskChanged(NPCTask npcTask)
+    {
+        if (npcTask != null)
+        {
+            Debug.Log($"[Pepper Monitoring] NPC task observed: <b>{npcTask.taskName}</b>");
+        }
+        UpdateDisplay();
+    }
+    
+    // Event handlers for NPC (kept from original)
+    private void OnNPCStateChanged(NPCController.NPCState newState)
+    {
+        Debug.Log($"<color={GetNPCStateColor(newState)}>[NPC State] State changed to: <b>{newState}</b></color>");
+        UpdateDisplay();
+    }
+    
     private void OnNPCTaskChanged(NPCTask newTask)
     {
         if (newTask != null)
@@ -82,13 +154,25 @@ public class DataDisplay : MonoBehaviour
                 ? npcController.CurrentTask.taskName 
                 : "None";
                 
-            string color = GetStateColor(npcController.CurrentState);
+            string color = GetNPCStateColor(npcController.CurrentState);
             npcLogText.text = $"<color={color}>NPC State: {stateText}</color>\n" +
                             $"Task: {taskText}";
         }
+        
+        if (pepperController != null && pepperLogText != null)
+        {
+            string stateText = pepperController.CurrentState.ToString();
+            string stateColor = GetPepperStateColor(pepperController.CurrentState);
+            string description = pepperController.GetCurrentStateDescription();
+            string actionDescription = pepperController.GetCurrentActionDescription();
+            
+            pepperLogText.text = $"<color={stateColor}>Pepper State: {stateText}</color>\n" +
+                               $"{description}\n" +
+                               $"Action: {actionDescription}\n";
+        }
     }
     
-    private string GetStateColor(NPCController.NPCState state)
+    private string GetNPCStateColor(NPCController.NPCState state)
     {
         switch (state)
         {
@@ -102,6 +186,27 @@ public class DataDisplay : MonoBehaviour
                 return "orange";
             case NPCController.NPCState.Transitioning:
                 return "blue";
+            default:
+                return "white";
+        }
+    }
+    
+    private string GetPepperStateColor(PepperController.PepperState state)
+    {
+        switch (state)
+        {
+            case PepperController.PepperState.Idle:
+                return "gray";
+            case PepperController.PepperState.Looking:
+                return "cyan";
+            case PepperController.PepperState.Waving:
+                return "magenta";
+            case PepperController.PepperState.Handshaking:
+                return "blue";
+            case PepperController.PepperState.PerformingAction:
+                return "yellow";
+            case PepperController.PepperState.MonitoringNPC:
+                return "green";
             default:
                 return "white";
         }
