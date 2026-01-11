@@ -27,6 +27,7 @@ public class NPCController : MonoBehaviour
     }
     
     public NPCState CurrentState { get; private set; } = NPCState.Idle;
+    public NPCTask CurrentTask { get { return currentTask; } }
     
     void Start()
     {
