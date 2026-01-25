@@ -24,7 +24,7 @@ public class CommunicationManager : MonoBehaviour
     private Coroutine currentHandshakeCoroutine;
     public PepperController PepperController => pepperController;
     public NPCController NpcController => npcController;
-    
+    private bool keysEnabled = true;
     private void Start()
     {
         ValidateReferences();
@@ -34,6 +34,11 @@ public class CommunicationManager : MonoBehaviour
     private void OnDestroy()
     {
         UnsubscribeFromEvents();
+    }
+
+    void Update()
+    {
+        HandleKeyboardInput();
     }
 
     private void ValidateReferences()
@@ -283,6 +288,44 @@ public class CommunicationManager : MonoBehaviour
         if (logInteractions)
             Debug.Log("[CommunicationManager] Agents updated");
     }
+    
+    private void HandleKeyboardInput()
+    {
+        if (!keysEnabled) return;
+
+        if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            RequestPepperAction(PepperController.AgentAction.Wait);
+        }
+        else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            RequestPepperAction(PepperController.AgentAction.DoNothing);
+        }
+        else if (Input.GetKeyDown(KeyCode.H) || Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            RequestPepperAction(PepperController.AgentAction.Look);
+        }
+        else if (Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            RequestPepperAction(PepperController.AgentAction.Wave);
+        }
+        else if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            RequestPepperAction(PepperController.AgentAction.HandShake);
+        }
+    }
+    
+    private void RequestPepperAction(PepperController.AgentAction action)
+    {
+        if (pepperController == null)
+        {
+            Debug.LogWarning("[Comm] Cannot send action — PepperController reference is null");
+            return;
+        }
+
+        LogInteraction($"Player requested Pepper action: {action}");
+        pepperController.ExecuteAction(action);
+    }
 
     public bool IsInteractionAvailable()
     {
@@ -296,4 +339,6 @@ public class CommunicationManager : MonoBehaviour
     }
 
     #endregion
+    
+    
 }

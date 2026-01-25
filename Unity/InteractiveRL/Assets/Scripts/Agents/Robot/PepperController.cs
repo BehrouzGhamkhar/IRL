@@ -89,11 +89,9 @@ namespace Agents.Robot
                 if (CurrentState == PepperState.Looking)
                     CurrentState = PepperState.Idle;
             }
-
-            HandleKeyboardInput();
         }
 
-        private void ExecuteAction(AgentAction rAction)
+        public void ExecuteAction(AgentAction rAction)
         {
             CurrentState = PepperState.PerformingAction;
             onActionPerformed?.Invoke(rAction);
@@ -218,20 +216,6 @@ namespace Agents.Robot
                 Debug.LogWarning("No person found to look at.");
                 
             return closestPerson;
-        }
-    
-        private void HandleKeyboardInput()
-        {
-            if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Alpha0))
-                ExecuteAction(AgentAction.Wait);
-            else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Alpha1))
-                ExecuteAction(AgentAction.DoNothing);
-            else if (Input.GetKeyDown(KeyCode.H) || Input.GetKeyDown(KeyCode.Alpha2))
-                ExecuteAction(AgentAction.Look);
-            else if (Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.Alpha3))
-                ExecuteAction(AgentAction.Wave);
-            else if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.Alpha4))
-                ExecuteAction(AgentAction.HandShake);
         }
         
         public string GetCurrentStateDescription()
