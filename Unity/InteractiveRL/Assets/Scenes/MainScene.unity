@@ -2198,6 +2198,12 @@ MonoBehaviour:
   npcController: {fileID: 1920598912}
   interactionDistanceThreshold: 3
   handshakeCooldown: 3
+  keyWait: 105
+  keyDoNothing: 119
+  keyLook: 104
+  keyWave: 108
+  keyHandshake: 114
+  pepperAgent: {fileID: 0}
   logInteractions: 1
 --- !u!1 &1792271369
 GameObject:
@@ -2490,6 +2496,11 @@ Transform:
   - {fileID: 410087041}
   m_Father: {fileID: 959752518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2129032501 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4345779840986717370, guid: e56544b1bab9f0b45bdba5266b723022, type: 3}
+  m_PrefabInstance: {fileID: 6747602875816051991}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5882563140593273652
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2642,7 +2653,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4345779840986717370, guid: e56544b1bab9f0b45bdba5266b723022, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6747602875816051999}
+    - targetCorrespondingSourceObject: {fileID: 4345779840986717370, guid: e56544b1bab9f0b45bdba5266b723022, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6747602875816051998}
+    - targetCorrespondingSourceObject: {fileID: 4345779840986717370, guid: e56544b1bab9f0b45bdba5266b723022, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6747602875816051997}
   m_SourcePrefab: {fileID: 100100000, guid: e56544b1bab9f0b45bdba5266b723022, type: 3}
 --- !u!4 &6747602875816051992 stripped
 Transform:
@@ -2654,12 +2674,76 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4516865689799223475, guid: e56544b1bab9f0b45bdba5266b723022, type: 3}
   m_PrefabInstance: {fileID: 6747602875816051991}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2129032501}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be4fa189480933342871ab1cebfd8728, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6747602875816051997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129032501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 5
+  DecisionStep: 0
+  TakeActionsBetweenDecisions: 1
+--- !u!114 &6747602875816051998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129032501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f86b483737d2644e9d7a6248aecf4f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 0
+  pepperController: {fileID: 6747602875816051994}
+  communicationManager: {fileID: 1707967906}
+--- !u!114 &6747602875816051999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129032501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    VectorObservationSize: 1
+    NumStackedVectorObservations: 1
+    m_ActionSpec:
+      m_NumContinuousActions: 0
+      BranchSizes: 05000000
+    VectorActionSize: 05000000
+    VectorActionDescriptions: []
+    VectorActionSpaceType: 0
+    hasUpgradedBrainParametersWithActionSpec: 1
+  m_Model: {fileID: 0}
+  m_InferenceDevice: 0
+  m_BehaviorType: 0
+  m_BehaviorName: PepperGreeting
+  TeamId: 0
+  m_UseChildSensors: 1
+  m_UseChildActuators: 1
+  m_DeterministicInference: 0
+  m_ObservableAttributeHandling: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
