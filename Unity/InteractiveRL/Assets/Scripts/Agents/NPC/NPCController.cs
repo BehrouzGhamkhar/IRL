@@ -21,7 +21,6 @@ namespace Agents.NPC
         [SerializeField] private NPCAnimationController animationController;
         private NPCTask currentTask;
         private Transform currentTarget;
-        private NPCState previousState;
 
         // Timing variables
         private float waitTimer;
@@ -44,11 +43,10 @@ namespace Agents.NPC
         public NPCState CurrentState
         {
             get { return currentState; }
-            private set
+            set
             {
                 if (currentState != value)
                 {
-                    previousState = currentState;
                     currentState = value;
 
                     // Reset timing flags when state changes
@@ -206,13 +204,28 @@ namespace Agents.NPC
             if (taskTimer >= currentTask.taskDuration)
             {
                 Debug.Log($"Task completed: {currentTask.taskName}");
-                hasStartedTask = false;
-                currentTask = null;
-                currentTarget = null;
-                CurrentState = NPCState.WaitingBetweenTasks;
+                ClearCurrentTask();
             }
         }
 
+        public void ClearCurrentTask()
+        {
+            hasStartedTask = false;
+            currentTask = null;
+            currentTarget = null;
+            CurrentState = NPCState.WaitingBetweenTasks;
+        }
+
+        public void StopNavMeshAgent()
+        {
+            
+            if (agent != null)
+            {
+                agent.ResetPath();
+                agent.velocity = Vector3.zero;
+            }
+        }
+        
         void UpdateSearchingState()
         {
             if (currentTask == null)

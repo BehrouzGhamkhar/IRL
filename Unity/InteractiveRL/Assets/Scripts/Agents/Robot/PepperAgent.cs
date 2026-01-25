@@ -76,7 +76,8 @@ namespace Agents.Robot
         {
             if (communicationManager != null)
             {
-                communicationManager.ResetHandshake();
+                communicationManager.ResetSimulation();
+                Debug.Log("[PepperAgent] Episode begin – environment reset");
             }
         }
 

@@ -2203,7 +2203,7 @@ MonoBehaviour:
   keyLook: 104
   keyWave: 108
   keyHandshake: 114
-  pepperAgent: {fileID: 0}
+  pepperAgent: {fileID: 6747602875816051998}
   logInteractions: 1
 --- !u!1 &1792271369
 GameObject:

@@ -42,7 +42,7 @@ namespace Agents.Robot
         public PepperState CurrentState
         {
             get { return currentState; }
-            private set
+            set
             {
                 if (currentState != value)
                 {
@@ -85,9 +85,7 @@ namespace Agents.Robot
             }
             else if (isLooking && Time.time >= lookEndTime)
             {
-                isLooking = false;
-                if (CurrentState == PepperState.Looking)
-                    CurrentState = PepperState.Idle;
+                StopLooking();
             }
         }
 
@@ -152,6 +150,13 @@ namespace Agents.Robot
                 Debug.LogWarning("[Pepper Action] No person found to look at");
                 CurrentState = PepperState.Idle;
             }
+        }
+
+        public void StopLooking()
+        {
+            isLooking = false;
+            if (CurrentState == PepperState.Looking)
+                CurrentState = PepperState.Idle;
         }
 
         private void ActionWave()
