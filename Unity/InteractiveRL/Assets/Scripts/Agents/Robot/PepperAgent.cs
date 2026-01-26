@@ -138,7 +138,7 @@ namespace Agents.Robot
 
         public void EndEpisodeSuccess(string reason = "Success")
         {
-            AddReward(2.8f);   // strong positive reward
+            AddReward(2.8f);  
             EndEpisodeWithReason(reason);
         }
 

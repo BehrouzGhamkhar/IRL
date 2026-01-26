@@ -97,11 +97,9 @@ namespace Managers
         {
             HandleKeyboardInput();
 
-            // real-time debug (comment out in production)
             if (logInteractions)
             {
-                Debug.Log(
-                    $"[Comm Status] Pepper: {CurrentPepperState,-12} | NPC: {CurrentNPCState,-12} | Dist: {CurrentDistance:F1}m | HS: {(isHandshakeInProgress ? "active" : "ready")}");
+               // Debug.Log($"[Comm Status] Pepper: {CurrentPepperState,-12} | NPC: {CurrentNPCState,-12} | Dist: {CurrentDistance:F1}m | HS: {(isHandshakeInProgress ? "active" : "ready")}");
             }
         }
 
@@ -220,8 +218,8 @@ namespace Managers
 
         private void HandlePepperAction(PepperController.AgentAction action)
         {
-            if (logInteractions)
-                Debug.Log($"[Pepper Action] {action}");
+            //if (logInteractions)
+            //    Debug.Log($"[Pepper Action] {action}");
 
             float distance = CurrentDistance;
 
@@ -286,7 +284,7 @@ namespace Managers
             if (task == null) return;
 
             if (logInteractions)
-                Debug.Log($"[NPC Task] Started: {task.taskName}");
+               // Debug.Log($"[NPC Task] Started: {task.taskName}");
 
             HandleNPCToPepperReaction(task);
         }
@@ -316,9 +314,9 @@ namespace Managers
                 LogInteraction("Handshake completed successfully");
 
                 // Optional positive reward signal for ML-Agents
-                if (pepperAgent != null)
-                    pepperAgent.AddReward(3.0f);
-
+                if (pepperAgent != null){
+                    pepperAgent.EndEpisodeSuccess("Handshake success");
+                }
                 ResetHandshake();
             }
         }
@@ -421,7 +419,7 @@ namespace Managers
         {
             if (logInteractions)
             {
-                Debug.Log($"[Interaction] {message}");
+                // Debug.Log($"[Interaction] {message}");
             }
         }
 

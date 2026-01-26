@@ -2713,6 +2713,8 @@ MonoBehaviour:
   MaxStep: 0
   pepperController: {fileID: 6747602875816051994}
   communicationManager: {fileID: 1707967906}
+  maxDecisionSteps: 2000
+  maxEpisodeDurationSeconds: 60
 --- !u!114 &6747602875816051999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2726,7 +2728,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 1
+    VectorObservationSize: 16
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0

@@ -143,11 +143,11 @@ namespace Agents.Robot
             {
                 isLooking = true;
                 lookEndTime = Time.time + lookAtDuration;
-                Debug.Log("[Pepper Action] Looking at nearest person");
+                //Debug.Log("[Pepper Action] Looking at nearest person");
             }
             else
             {
-                Debug.LogWarning("[Pepper Action] No person found to look at");
+                //Debug.LogWarning("[Pepper Action] No person found to look at");
                 CurrentState = PepperState.Idle;
             }
         }
