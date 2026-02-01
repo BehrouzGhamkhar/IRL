@@ -210,10 +210,10 @@ namespace Agents.NPC
 
         public void ClearCurrentTask()
         {
+            CurrentState = NPCState.WaitingBetweenTasks;
             hasStartedTask = false;
             currentTask = null;
             currentTarget = null;
-            CurrentState = NPCState.WaitingBetweenTasks;
         }
 
         public void StopNavMeshAgent()

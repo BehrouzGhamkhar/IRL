@@ -125,10 +125,10 @@ MonoBehaviour:
   allTasks:
   - {fileID: 11400000, guid: 9a3cdf2271f95e5409863fd773384043, type: 2}
   - {fileID: 11400000, guid: f9c9698352991654b8371b73ee974e0e, type: 2}
-  - {fileID: 11400000, guid: 4f2ea06ba42744843829d8db83adc2a2, type: 2}
   - {fileID: 11400000, guid: 53155b5c14a45e145ac8cacfc0744865, type: 2}
   - {fileID: 11400000, guid: e1bc9741e902c0d479e803f86fe42f06, type: 2}
   - {fileID: 11400000, guid: 60eb84bff7c9f4b41a84c6bbe2a60899, type: 2}
+  - {fileID: 11400000, guid: 4f2ea06ba42744843829d8db83adc2a2, type: 2}
   - {fileID: 11400000, guid: 612a566f91b719e4a9274e28de6783fd, type: 2}
   timeBetweenTasks: 2
   onStateChanged:
@@ -268,7 +268,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_AnimatePhysics: 1
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1

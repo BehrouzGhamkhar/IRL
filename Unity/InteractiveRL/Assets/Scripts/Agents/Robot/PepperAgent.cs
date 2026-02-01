@@ -80,6 +80,8 @@ namespace Agents.Robot
             }
 
             // Total ~ 5 + 6 + 1 + 2 + 2 = 16 observations 
+             // Debug.Log($"[ML-Agents] Collecting {sensor.GetObservationSpec().Shape[0]} observations");
+
         }
 
         public override void OnActionReceived(ActionBuffers actionBuffers)
