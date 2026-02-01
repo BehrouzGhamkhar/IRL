@@ -201,7 +201,7 @@ namespace Agents.NPC
 
             taskTimer += Time.deltaTime;
 
-            if (taskTimer >= currentTask.taskDuration)
+            if (currentTask && taskTimer >= currentTask.taskDuration)
             {
                 Debug.Log($"Task completed: {currentTask.taskName}");
                 ClearCurrentTask();
