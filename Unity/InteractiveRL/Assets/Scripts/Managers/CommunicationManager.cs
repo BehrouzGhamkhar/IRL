@@ -8,29 +8,26 @@ namespace Managers
 {
     public class CommunicationManager : MonoBehaviour
     {
-        [Header("Agent References")] [SerializeField]
-        private PepperController pepperController;
-
+        [Header("Agent References")]
+        [SerializeField] private PepperController pepperController;
         [SerializeField] private NPCController npcController;
 
-        [Header("Interaction Settings")] [SerializeField]
-        private float interactionDistanceThreshold = 3.0f;
-
+        [Header("Interaction Settings")]
+        [SerializeField] private float interactionDistanceThreshold = 3.0f;
         [SerializeField] private float handshakeCooldown = 3.0f;
 
-        [Header("Keyboard Controls")] [SerializeField]
-        private KeyCode keyWait = KeyCode.I; // or Alpha0
+        [Header("Keyboard Controls")]
+        [SerializeField] private KeyCode keyWait = KeyCode.I;
+        [SerializeField] private KeyCode keyDoNothing = KeyCode.W;
+        [SerializeField] private KeyCode keyLook = KeyCode.H;
+        [SerializeField] private KeyCode keyWave = KeyCode.L;
+        [SerializeField] private KeyCode keyHandshake = KeyCode.R;
 
-        [SerializeField] private KeyCode keyDoNothing = KeyCode.W; // or Alpha1
-        [SerializeField] private KeyCode keyLook = KeyCode.H; // or Alpha2
-        [SerializeField] private KeyCode keyWave = KeyCode.L; // or Alpha3
-        [SerializeField] private KeyCode keyHandshake = KeyCode.R; // or Alpha4
+        [Header("AI / ML-Agents")]
+        [SerializeField] private PepperAgent pepperAgent;
 
-        [Header("AI / ML-Agents")] [SerializeField]
-        private PepperAgent pepperAgent;
-
-        [Header("Debug")] [SerializeField] private bool logInteractions = true;
-
+        [Header("Debug")]
+        [SerializeField] private bool logInteractions = true;
 
         private bool isHandshakeInProgress = false;
         private bool canHandshake = true;
@@ -67,7 +64,6 @@ namespace Managers
         
         private void Awake()
         {
-            // Cache starting transforms (do this once)
             if (pepperController != null)
             {
                 initialPepperPosition = pepperController.transform.position;
@@ -81,20 +77,16 @@ namespace Managers
             }
         }
 
-
         private void Start()
         {
             ValidateReferences();
             SubscribeToEvents();
 
-
             if (pepperAgent == null)
             {
                 pepperAgent = FindFirstObjectByType<PepperAgent>();
                 if (pepperAgent != null)
-                {
                     pepperAgent.SetCommunicationManager(this);
-                }
             }
         }
 
@@ -116,18 +108,10 @@ namespace Managers
         private void ValidateReferences()
         {
             if (pepperController == null)
-            {
                 pepperController = FindFirstObjectByType<PepperController>();
-                if (pepperController != null && logInteractions)
-                    Debug.Log("[CommunicationManager] Found PepperController in scene");
-            }
 
             if (npcController == null)
-            {
                 npcController = FindFirstObjectByType<NPCController>();
-                if (npcController != null && logInteractions)
-                    Debug.Log("[CommunicationManager] Found NPCController in scene");
-            }
         }
 
         private void SubscribeToEvents()
@@ -165,60 +149,82 @@ namespace Managers
         private void HandleKeyboardInput()
         {
             if (Input.GetKeyDown(keyWait) || Input.GetKeyDown(KeyCode.Alpha0))
-            {
                 ExecutePepperAction(PepperController.AgentAction.Wait);
-            }
             else if (Input.GetKeyDown(keyDoNothing) || Input.GetKeyDown(KeyCode.Alpha1))
-            {
                 ExecutePepperAction(PepperController.AgentAction.DoNothing);
-            }
             else if (Input.GetKeyDown(keyLook) || Input.GetKeyDown(KeyCode.Alpha2))
-            {
                 ExecutePepperAction(PepperController.AgentAction.Look);
-            }
             else if (Input.GetKeyDown(keyWave) || Input.GetKeyDown(KeyCode.Alpha3))
-            {
                 ExecutePepperAction(PepperController.AgentAction.Wave);
-            }
             else if (Input.GetKeyDown(keyHandshake) || Input.GetKeyDown(KeyCode.Alpha4))
-            {
                 ExecutePepperAction(PepperController.AgentAction.HandShake);
-            }
         }
 
         #endregion
 
-        #region Central Action Entry Point (used by keyboard + AI + future VR)
+        #region Action Execution
 
         public void ExecutePepperAction(PepperController.AgentAction action)
         {
             if (pepperController == null)
-            {
-                Debug.LogWarning("[Comm] Cannot execute action — PepperController is null");
                 return;
-            }
 
-            // block or modify actions based on state (example)
-            if (action == PepperController.AgentAction.HandShake && !CanHandshake)
-            {
+            if (action == PepperController.AgentAction.HandShake && !canHandshake){
                 LogInteraction("Handshake blocked - on cooldown or too far");
                 return;
             }
 
-            LogInteraction($"Executing action: {action}");
             pepperController.ExecuteAction(action);
 
-            // sparse environment reward feedback for ML-Agents
-            if (pepperAgent != null)
+            // TASK-BASED RL REWARD
+            EvaluatePepperActionReward(action);
+        }
+
+        #endregion
+
+        #region Reward Logic
+
+        private void EvaluatePepperActionReward(PepperController.AgentAction action)
+        {
+            if (pepperAgent == null)
+                return;
+
+            int taskId = CurrentNPCTaskId;
+            float distance = CurrentDistance;
+
+            bool correct = false;
+
+            switch (taskId)
             {
-                if (action == PepperController.AgentAction.HandShake && CurrentDistance <= 2.0f)
-                {
-                    pepperAgent.AddReward(1.5f);
-                }
-                else if (action == PepperController.AgentAction.Wave && CurrentDistance <= interactionDistanceThreshold)
-                {
-                    pepperAgent.AddReward(0.4f);
-                }
+                case 2: // Handshake
+                    correct = action == PepperController.AgentAction.HandShake;
+                    break;
+
+                case 7: // WaveFromDistance
+                    correct = action == PepperController.AgentAction.Wave;
+                    break;
+
+                case 6: // TalkInMiddle
+                    correct = action == PepperController.AgentAction.Wait;
+                    break;
+
+                default:
+                    if (distance <= 3.0f)
+                        correct = action == PepperController.AgentAction.Look;
+                    else
+                        correct = action == PepperController.AgentAction.DoNothing;
+                    break;
+            }
+
+            if (correct)
+            {
+                pepperAgent.AddReward(1.0f);
+                if (logInteractions)
+                    Debug.Log($"[Reward +] Task {taskId} | Action {action}");
+            }
+            else
+            {
+                pepperAgent.AddReward(-0.1f);
             }
         }
 
@@ -228,107 +234,53 @@ namespace Managers
 
         private void HandlePepperAction(PepperController.AgentAction action)
         {
-            //if (logInteractions)
-            //    Debug.Log($"[Pepper Action] {action}");
-
             float distance = CurrentDistance;
 
-            switch (action)
+            if (action == PepperController.AgentAction.HandShake &&
+                canHandshake && distance <= interactionDistanceThreshold)
             {
-                case PepperController.AgentAction.Wave:
-                    if (distance <= interactionDistanceThreshold)
-                    {
-                        NotifyNPCAboutPepperAction("wave");
-                        LogInteraction("Pepper waved at NPC");
-                    }
-
-                    break;
-
-                case PepperController.AgentAction.HandShake:
-                    if (canHandshake && distance <= interactionDistanceThreshold)
-                    {
-                        StartHandshakeInteraction();
-                    }
-                    else if (!canHandshake)
-                    {
-                        LogInteraction("Handshake is on cooldown");
-                    }
-                    else
-                    {
-                        LogInteraction($"NPC too far for handshake (Dist: {distance:F1}m)");
-                    }
-
-                    break;
-
-                case PepperController.AgentAction.Look:
-                    if (distance <= interactionDistanceThreshold * 1.5f)
-                    {
-                        LogInteraction("Pepper is looking at NPC");
-                    }
-
-                    break;
+                StartHandshakeInteraction();
             }
         }
 
         private void HandlePepperStateChange(PepperController.PepperState state)
         {
             if (state == PepperController.PepperState.Idle && isHandshakeInProgress)
-            {
                 ResetHandshake();
-            }
         }
 
         private void HandleNPCStateChange(NPCController.NPCState state)
         {
-            if (logInteractions)
-                Debug.Log($"[NPC State] {state}");
-
             if (isHandshakeInProgress && state == NPCController.NPCState.PerformingTask)
-            {
                 CompleteHandshake();
-            }
         }
 
         private void HandleNPCTaskChange(NPCTask task)
         {
-            if (task == null) return;
-
-            if (logInteractions)
-               // Debug.Log($"[NPC Task] Started: {task.taskName}");
-
-            HandleNPCToPepperReaction(task);
+            // Task changes are handled implicitly by reward logic
         }
 
         #endregion
 
-        #region Interaction Logic
+        #region Handshake Logic
 
         private void StartHandshakeInteraction()
         {
             isHandshakeInProgress = true;
             canHandshake = false;
 
-            LogInteraction("Pepper initiated handshake with NPC");
-
             if (currentHandshakeCoroutine != null)
                 StopCoroutine(currentHandshakeCoroutine);
-            currentHandshakeCoroutine = StartCoroutine(HandshakeCooldown());
 
-            NotifyNPCAboutPepperAction("handshake");
+            currentHandshakeCoroutine = StartCoroutine(HandshakeCooldown());
         }
 
         private void CompleteHandshake()
         {
-            if (isHandshakeInProgress)
-            {
-                LogInteraction("Handshake completed successfully");
+            if (pepperAgent != null)
+                pepperAgent.EndEpisodeSuccess("Handshake success");
 
-                // Optional positive reward signal for ML-Agents
-                if (pepperAgent != null){
-                    pepperAgent.EndEpisodeSuccess("Handshake success");
-                }
-                ResetHandshake();
-            }
+            ResetHandshake();
         }
 
         public void ResetHandshake()
@@ -380,34 +332,6 @@ namespace Managers
         {
             yield return new WaitForSeconds(handshakeCooldown);
             canHandshake = true;
-            LogInteraction("Handshake cooldown complete");
-        }
-
-        private void HandleNPCToPepperReaction(NPCTask task)
-        {
-            string taskName = task.taskName.ToLower();
-
-            if (taskName.Contains("wave") || taskName.Contains("greet"))
-            {
-                if (pepperController.CurrentState == PepperController.PepperState.Looking)
-                {
-                    LogInteraction("NPC is waving back at Pepper");
-                }
-            }
-            else if (taskName.Contains("handshake") || taskName.Contains("shake"))
-            {
-                if (!isHandshakeInProgress && canHandshake)
-                {
-                    LogInteraction("NPC wants to handshake");
-                    // Future: could auto-trigger Pepper response here
-                }
-            }
-        }
-
-        private void NotifyNPCAboutPepperAction(string action)
-        {
-            LogInteraction($"NPC notified about Pepper's {action} action");
-            // Future extension point: set NPC state, trigger animation, inject task, etc.
         }
 
         #endregion
@@ -424,7 +348,6 @@ namespace Managers
                 npcController.transform.position
             );
         }
-
         private void LogInteraction(string message)
         {
             if (logInteractions)
@@ -432,35 +355,6 @@ namespace Managers
                 // Debug.Log($"[Interaction] {message}");
             }
         }
-
-        #endregion
-
-        #region Public Utility Methods
-
-        public void SetAgents(PepperController pepper, NPCController npc)
-        {
-            UnsubscribeFromEvents();
-
-            pepperController = pepper;
-            npcController = npc;
-
-            SubscribeToEvents();
-
-            if (logInteractions)
-                Debug.Log("[CommunicationManager] Agents updated");
-        }
-
-        public bool IsInteractionAvailable()
-        {
-            return canHandshake && CurrentDistance <= interactionDistanceThreshold;
-        }
-
-        public string GetInteractionStatus()
-        {
-            float distance = CurrentDistance;
-            return $"Distance: {distance:F1}m | Handshake Ready: {canHandshake} | In Progress: {isHandshakeInProgress}";
-        }
-
         #endregion
     }
 }
