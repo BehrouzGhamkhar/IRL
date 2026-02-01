@@ -6,6 +6,7 @@ namespace Tasks
     public class NPCTask : ScriptableObject
     {
         [Header("Task Information")]
+        public int id;
         public string taskName;
         [Header("Target Information")]
         public string targetObjectName; 

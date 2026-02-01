@@ -54,8 +54,8 @@ namespace Agents.Robot
             // 1. Pepper state (one-hot) – 5 values
             sensor.AddOneHotObservation((int)communicationManager.CurrentPepperState, 5);
 
-            // 2. NPC state (one-hot) – 6 values
-            sensor.AddOneHotObservation((int)communicationManager.CurrentNPCState, 6);
+            // 2. Current NPC Task - 1 value (task id)
+            sensor.AddObservation(communicationManager.CurrentNPCTaskId);                      // single float = task id (0 = no task)
 
             // 3. Normalized distance – 1 value
             float normDist = Mathf.Clamp01(communicationManager.CurrentDistance / 10f);
@@ -79,7 +79,7 @@ namespace Agents.Robot
                 sensor.AddObservation(0f);
             }
 
-            // Total ~ 5 + 6 + 1 + 2 + 2 = 16 observations 
+            // Total ~ 5 + 1 + 1 + 2 + 2 = 11 observations 
              // Debug.Log($"[ML-Agents] Collecting {sensor.GetObservationSpec().Shape[0]} observations");
 
         }

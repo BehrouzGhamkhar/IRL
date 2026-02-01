@@ -9,7 +9,7 @@ import time
 
 # Simple PPO Model (Actor-Critic)
 class SimplePPO(torch.nn.Module):
-    def __init__(self, obs_size=16, act_size=5, hidden_size=128):
+    def __init__(self, obs_size=11, act_size=5, hidden_size=128):
         super().__init__()
         # Shared backbone
         self.fc1 = torch.nn.Linear(obs_size, hidden_size)
@@ -40,14 +40,15 @@ def train():
 
     # Connect to Unity
     channel = EngineConfigurationChannel()
-    env = UnityEnvironment(file_name='D:\jozavat\MAS\Semester4\R&D\docs\git\Data\Build\InteractiveRL.exe', side_channels=[channel])  # None = connect to running Unity
+    env = UnityEnvironment(file_name=None, side_channels=[channel])  # None = connect to running Unity
+    #env = UnityEnvironment(file_name='D:\jozavat\MAS\Semester4\R&D\docs\git\Data\Build\InteractiveRL.exe', side_channels=[channel])  # None = connect to running Unity
     env.reset()
     behavior_name = list(env.behavior_specs.keys())[0]  # 'PepperGreeting'
     spec = env.behavior_specs[behavior_name]
 
     # Model + optimizer
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = SimplePPO(obs_size=16, act_size=5).to(device)
+    model = SimplePPO(obs_size=11, act_size=5).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=hp['learning_rate'])
 
     print(f"Starting training on {device}...")
@@ -115,4 +116,5 @@ def train():
 
 
 if __name__ == '__main__':
-    train()
+    print(torch.version.cuda)
+    print(torch.__file__)

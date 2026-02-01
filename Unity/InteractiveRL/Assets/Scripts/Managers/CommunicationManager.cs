@@ -55,6 +55,16 @@ namespace Managers
         private Vector3 initialNPCPosition;
         private Quaternion initialNPCRotation;
 
+        public int CurrentNPCTaskId
+        {
+            get
+            {
+                if (npcController == null || npcController.CurrentTask == null)
+                    return 0;   // no task = 0
+                return npcController.CurrentTask.id;
+            }
+        }
+        
         private void Awake()
         {
             // Cache starting transforms (do this once)
