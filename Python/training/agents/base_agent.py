@@ -9,7 +9,6 @@ import torch.nn.functional as F
 import torch.nn as nn
 import matplotlib.pyplot as plt
 import os
-import json
 from datetime import datetime
 
 
@@ -182,117 +181,61 @@ class PPOAgent:
         self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
 
-class TrainingLogger:
-    def __init__(self, log_dir="training_logs"):
-        self.log_dir = log_dir
-        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.full_log_dir = os.path.join(log_dir, f"run_{self.timestamp}")
-        os.makedirs(self.full_log_dir, exist_ok=True)
+def plot_training_results(episode_rewards, save_path=None):
 
-        # Data storage
-        self.episode_rewards = []
-        self.episode_lengths = []
-        self.average_rewards = []
-        self.total_steps_history = []
+    if len(episode_rewards) == 0:
+        print("No data to plot!")
+        return
 
-    def log_episode(self, episode_num, episode_reward, episode_length, total_steps, avg_reward_last_100):
-        self.episode_rewards.append(episode_reward)
-        self.episode_lengths.append(episode_length)
-        self.average_rewards.append(avg_reward_last_100)
-        self.total_steps_history.append(total_steps)
+    episodes = list(range(1, len(episode_rewards) + 1))
 
-        # Save to JSON file periodically
-        if episode_num % 10 == 0:
-            self.save_to_json()
+    # Calculate cumulative rewards
+    cumulative_rewards = np.cumsum(episode_rewards)
 
-    def save_to_json(self):
-        data = {
-            'episode_rewards': self.episode_rewards,
-            'episode_lengths': self.episode_lengths,
-            'average_rewards': self.average_rewards,
-            'total_steps_history': self.total_steps_history,
-            'timestamp': self.timestamp,
-            'total_episodes': len(self.episode_rewards)
-        }
+    # Calculate moving average (last 100 episodes)
+    window_size = min(100, len(episode_rewards))
+    moving_avg = []
+    for i in range(len(episode_rewards)):
+        start = max(0, i - window_size + 1)
+        moving_avg.append(np.mean(episode_rewards[start:i + 1]))
 
-        json_path = os.path.join(self.full_log_dir, 'training_data.json')
-        with open(json_path, 'w') as f:
-            json.dump(data, f, indent=2)
+    # Create the plot
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
-    def create_plots(self, show_plot=True, save_plot=True):
-        if len(self.episode_rewards) == 0:
-            print("No data to plot!")
-            return
+    # Plot 1: Cumulative Reward vs Episodes
+    ax1.plot(episodes, cumulative_rewards, 'b-', linewidth=2)
+    ax1.set_xlabel('Episode')
+    ax1.set_ylabel('Cumulative Reward')
+    ax1.set_title('Cumulative Reward vs Episodes')
+    ax1.grid(True, alpha=0.3)
 
-        episodes = list(range(1, len(self.episode_rewards) + 1))
+    # Plot 2: Average Reward vs Episodes
+    ax2.plot(episodes, episode_rewards, 'g-', alpha=0.6, linewidth=1, label='Episode Reward')
+    ax2.plot(episodes, moving_avg, 'r-', linewidth=2, label=f'Moving Avg ({window_size} eps)')
+    ax2.set_xlabel('Episode')
+    ax2.set_ylabel('Reward')
+    ax2.set_title('Reward vs Episodes')
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
 
-        fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+    plt.tight_layout()
 
-        # Plot 1: Episode Rewards
-        axes[0, 0].plot(episodes, self.episode_rewards, 'b-', alpha=0.6, label='Episode Reward')
-        axes[0, 0].set_xlabel('Training Episodes')
-        axes[0, 0].set_ylabel('Episode Reward')
-        axes[0, 0].set_title('Episode Rewards Over Time')
-        axes[0, 0].grid(True, alpha=0.3)
-        axes[0, 0].legend()
+    if save_path:
+        plt.savefig(save_path, dpi=150, bbox_inches='tight')
+        print(f"Plot saved to: {save_path}")
 
-        # Plot 2: Moving Average (last 100 episodes)
-        if len(self.average_rewards) > 0:
-            axes[0, 1].plot(episodes, self.average_rewards, 'r-', linewidth=2, label='Moving Avg (100 episodes)')
-            axes[0, 1].set_xlabel('Training Episodes')
-            axes[0, 1].set_ylabel('Average Reward')
-            axes[0, 1].set_title('Moving Average Reward (Last 100 Episodes)')
-            axes[0, 1].grid(True, alpha=0.3)
-            axes[0, 1].legend()
+    plt.show()
 
-        # Plot 3: Cumulative Reward
-        cumulative_rewards = np.cumsum(self.episode_rewards)
-        axes[1, 0].plot(episodes, cumulative_rewards, 'g-', linewidth=2)
-        axes[1, 0].set_xlabel('Training Episodes')
-        axes[1, 0].set_ylabel('Cumulative Reward')
-        axes[1, 0].set_title('Cumulative Total Reward')
-        axes[1, 0].grid(True, alpha=0.3)
 
-        # Plot 4: Episode Lengths
-        axes[1, 1].plot(episodes, self.episode_lengths, 'm-', alpha=0.6)
-        axes[1, 1].set_xlabel('Training Episodes')
-        axes[1, 1].set_ylabel('Episode Length (steps)')
-        axes[1, 1].set_title('Episode Lengths Over Time')
-        axes[1, 1].grid(True, alpha=0.3)
-
-        plt.suptitle(f'PPO Training Progress - {self.timestamp}', fontsize=16)
-        plt.tight_layout()
-
-        if save_plot:
-            plot_path = os.path.join(self.full_log_dir, 'training_plots.png')
-            plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-            print(f"Plot saved to: {plot_path}")
-
-        if show_plot:
-            plt.show()
-
-        # Create a separate detailed plot for cumulative reward
-        plt.figure(figsize=(10, 6))
-        plt.plot(episodes, cumulative_rewards, 'b-', linewidth=2)
-        plt.fill_between(episodes, cumulative_rewards, alpha=0.3, color='blue')
-        plt.xlabel('Training Episodes', fontsize=12)
-        plt.ylabel('Cumulative Total Reward', fontsize=12)
-        plt.title('Total Feedback (Accumulated Reward) Over Training', fontsize=14)
-        plt.grid(True, alpha=0.3)
-
-        # Add trend line
-        if len(episodes) > 1:
-            z = np.polyfit(episodes, cumulative_rewards, 1)
-            p = np.poly1d(z)
-            plt.plot(episodes, p(episodes), "r--", alpha=0.8, label=f'Trend: y={z[0]:.2f}x+{z[1]:.2f}')
-            plt.legend()
-
-        if save_plot:
-            detailed_path = os.path.join(self.full_log_dir, 'cumulative_reward.png')
-            plt.savefig(detailed_path, dpi=300, bbox_inches='tight')
-
-        if show_plot:
-            plt.show()
+def save_rewards_to_file(episode_rewards, filepath):
+    """Save rewards to a simple text file"""
+    with open(filepath, 'w') as f:
+        f.write("Episode,Reward,Cumulative Reward\n")
+        cumulative = 0
+        for i, reward in enumerate(episode_rewards, 1):
+            cumulative += reward
+            f.write(f"{i},{reward:.2f},{cumulative:.2f}\n")
+    print(f"Rewards saved to: {filepath}")
 
 
 def train():
@@ -308,18 +251,23 @@ def train():
     behavior_name = list(env.behavior_specs.keys())[0]
     spec = env.behavior_specs[behavior_name]
 
-    # Initialize agent and logger
+    # Initialize agent
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     agent = PPOAgent(obs_size=11, act_size=5, device=device)
-    logger = TrainingLogger()
 
-    print(f"Starting PPO training on {device}...")
-    print(f"Logs will be saved to: {logger.full_log_dir}")
-
-    # Training statistics
+    # SIMPLIFIED: Just track episode rewards
+    episode_rewards = []
     episode_rewards_buffer = deque(maxlen=100)
     total_steps = 0
     episode_count = 0
+
+    # Create output directory
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = f"training_logs/run_{timestamp}"
+    os.makedirs(output_dir, exist_ok=True)
+
+    print(f"Starting PPO training on {device}...")
+    print(f"Logs will be saved to: {output_dir}")
 
     # Get initial state
     env.reset()
@@ -369,7 +317,7 @@ def train():
                 step_count += 1
                 total_steps += 1
 
-                # Logging
+                # Logging every 100 steps
                 if total_steps % 100 == 0:
                     print(f"Step {total_steps} | Episode {episode_count} | Reward: {episode_reward:.2f}")
 
@@ -390,23 +338,29 @@ def train():
                     agent.update(next_value)
 
                 # Track statistics
+                episode_rewards.append(episode_reward)
                 episode_rewards_buffer.append(episode_reward)
                 avg_reward_last_100 = np.mean(episode_rewards_buffer) if episode_rewards_buffer else 0
 
-                # Log episode data
-                logger.log_episode(episode_count, episode_reward, step_count, total_steps, avg_reward_last_100)
-
-                print(f"Episode {episode_count} ended | Steps: {step_count} | "
+                # Simple printout
+                print(f"Episode {episode_count} | Steps: {step_count} | "
                       f"Reward: {episode_reward:.2f} | "
-                      f"Avg Reward (last 100): {avg_reward_last_100:.2f}")
+                      f"Avg (100): {avg_reward_last_100:.2f}")
 
                 episode_count += 1
 
                 # Save model periodically
-                if episode_count % 10 == 0:
-                    model_path = os.path.join(logger.full_log_dir, f'ppo_model_ep{episode_count}.pt')
+                if episode_count % 100 == 0:
+                    model_path = os.path.join(output_dir, f'ppo_model_ep{episode_count}.pt')
                     agent.save(model_path)
                     print(f"Model saved to: {model_path}")
+
+                    # Also save rewards and plot periodically
+                    rewards_file = os.path.join(output_dir, 'rewards.csv')
+                    save_rewards_to_file(episode_rewards, rewards_file)
+
+                    plot_file = os.path.join(output_dir, f'training_plot_ep{episode_count}.png')
+                    plot_training_results(episode_rewards, plot_file)
 
                 # Reset environment for next episode
                 env.reset()
@@ -427,43 +381,31 @@ def train():
         env.close()
 
         # Save final model
-        final_model_path = os.path.join(logger.full_log_dir, 'ppo_model_final.pt')
+        final_model_path = os.path.join(output_dir, 'ppo_model_final.pt')
         agent.save(final_model_path)
         print(f"Final model saved to: {final_model_path}")
 
-        # Save all training data
-        logger.save_to_json()
+        # Save final rewards and plot
+        rewards_file = os.path.join(output_dir, 'rewards_final.csv')
+        save_rewards_to_file(episode_rewards, rewards_file)
 
-        # Create and display plots
-        print("\n" + "=" * 50)
-        print("Generating training plots...")
-        print("=" * 50)
-        logger.create_plots(show_plot=True, save_plot=True)
+        plot_file = os.path.join(output_dir, 'training_plot_final.png')
+        plot_training_results(episode_rewards, plot_file)
 
-        # Print summary
+        # Simple summary
         print("\n" + "=" * 50)
         print("TRAINING SUMMARY")
         print("=" * 50)
         print(f"Total episodes: {episode_count}")
         print(f"Total steps: {total_steps}")
-        if len(logger.episode_rewards) > 0:
-            print(f"Best episode reward: {max(logger.episode_rewards):.2f}")
-            print(f"Worst episode reward: {min(logger.episode_rewards):.2f}")
-            print(f"Average episode reward: {np.mean(logger.episode_rewards):.2f}")
-            print(f"Total cumulative reward: {np.sum(logger.episode_rewards):.2f}")
-        print(f"Logs directory: {logger.full_log_dir}")
+        if len(episode_rewards) > 0:
+            print(f"Best reward: {max(episode_rewards):.2f}")
+            print(f"Worst reward: {min(episode_rewards):.2f}")
+            print(f"Average reward: {np.mean(episode_rewards):.2f}")
+            print(f"Total cumulative reward: {np.sum(episode_rewards):.2f}")
+        print(f"Output directory: {output_dir}")
         print("=" * 50)
 
 
 if __name__ == '__main__':
-    # Check if matplotlib is available
-    try:
-        import matplotlib
-
-        # Use non-interactive backend if running in a headless environment
-        matplotlib.use('Agg')
-    except ImportError:
-        print("Warning: matplotlib not installed. Install with: pip install matplotlib")
-        print("Running without plotting functionality...")
-
     train()
