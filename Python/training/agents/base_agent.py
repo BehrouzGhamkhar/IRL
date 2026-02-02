@@ -7,6 +7,10 @@ import yaml
 from collections import deque
 import torch.nn.functional as F
 import torch.nn as nn
+import matplotlib.pyplot as plt
+import os
+import json
+from datetime import datetime
 
 
 # Simple PPO Model (Actor-Critic)
@@ -178,6 +182,119 @@ class PPOAgent:
         self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
 
+class TrainingLogger:
+    def __init__(self, log_dir="training_logs"):
+        self.log_dir = log_dir
+        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.full_log_dir = os.path.join(log_dir, f"run_{self.timestamp}")
+        os.makedirs(self.full_log_dir, exist_ok=True)
+
+        # Data storage
+        self.episode_rewards = []
+        self.episode_lengths = []
+        self.average_rewards = []
+        self.total_steps_history = []
+
+    def log_episode(self, episode_num, episode_reward, episode_length, total_steps, avg_reward_last_100):
+        self.episode_rewards.append(episode_reward)
+        self.episode_lengths.append(episode_length)
+        self.average_rewards.append(avg_reward_last_100)
+        self.total_steps_history.append(total_steps)
+
+        # Save to JSON file periodically
+        if episode_num % 10 == 0:
+            self.save_to_json()
+
+    def save_to_json(self):
+        data = {
+            'episode_rewards': self.episode_rewards,
+            'episode_lengths': self.episode_lengths,
+            'average_rewards': self.average_rewards,
+            'total_steps_history': self.total_steps_history,
+            'timestamp': self.timestamp,
+            'total_episodes': len(self.episode_rewards)
+        }
+
+        json_path = os.path.join(self.full_log_dir, 'training_data.json')
+        with open(json_path, 'w') as f:
+            json.dump(data, f, indent=2)
+
+    def create_plots(self, show_plot=True, save_plot=True):
+        if len(self.episode_rewards) == 0:
+            print("No data to plot!")
+            return
+
+        episodes = list(range(1, len(self.episode_rewards) + 1))
+
+        fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+
+        # Plot 1: Episode Rewards
+        axes[0, 0].plot(episodes, self.episode_rewards, 'b-', alpha=0.6, label='Episode Reward')
+        axes[0, 0].set_xlabel('Training Episodes')
+        axes[0, 0].set_ylabel('Episode Reward')
+        axes[0, 0].set_title('Episode Rewards Over Time')
+        axes[0, 0].grid(True, alpha=0.3)
+        axes[0, 0].legend()
+
+        # Plot 2: Moving Average (last 100 episodes)
+        if len(self.average_rewards) > 0:
+            axes[0, 1].plot(episodes, self.average_rewards, 'r-', linewidth=2, label='Moving Avg (100 episodes)')
+            axes[0, 1].set_xlabel('Training Episodes')
+            axes[0, 1].set_ylabel('Average Reward')
+            axes[0, 1].set_title('Moving Average Reward (Last 100 Episodes)')
+            axes[0, 1].grid(True, alpha=0.3)
+            axes[0, 1].legend()
+
+        # Plot 3: Cumulative Reward
+        cumulative_rewards = np.cumsum(self.episode_rewards)
+        axes[1, 0].plot(episodes, cumulative_rewards, 'g-', linewidth=2)
+        axes[1, 0].set_xlabel('Training Episodes')
+        axes[1, 0].set_ylabel('Cumulative Reward')
+        axes[1, 0].set_title('Cumulative Total Reward')
+        axes[1, 0].grid(True, alpha=0.3)
+
+        # Plot 4: Episode Lengths
+        axes[1, 1].plot(episodes, self.episode_lengths, 'm-', alpha=0.6)
+        axes[1, 1].set_xlabel('Training Episodes')
+        axes[1, 1].set_ylabel('Episode Length (steps)')
+        axes[1, 1].set_title('Episode Lengths Over Time')
+        axes[1, 1].grid(True, alpha=0.3)
+
+        plt.suptitle(f'PPO Training Progress - {self.timestamp}', fontsize=16)
+        plt.tight_layout()
+
+        if save_plot:
+            plot_path = os.path.join(self.full_log_dir, 'training_plots.png')
+            plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+            print(f"Plot saved to: {plot_path}")
+
+        if show_plot:
+            plt.show()
+
+        # Create a separate detailed plot for cumulative reward
+        plt.figure(figsize=(10, 6))
+        plt.plot(episodes, cumulative_rewards, 'b-', linewidth=2)
+        plt.fill_between(episodes, cumulative_rewards, alpha=0.3, color='blue')
+        plt.xlabel('Training Episodes', fontsize=12)
+        plt.ylabel('Cumulative Total Reward', fontsize=12)
+        plt.title('Total Feedback (Accumulated Reward) Over Training', fontsize=14)
+        plt.grid(True, alpha=0.3)
+
+        # Add trend line
+        if len(episodes) > 1:
+            z = np.polyfit(episodes, cumulative_rewards, 1)
+            p = np.poly1d(z)
+            plt.plot(episodes, p(episodes), "r--", alpha=0.8, label=f'Trend: y={z[0]:.2f}x+{z[1]:.2f}')
+            plt.legend()
+
+        if save_plot:
+            detailed_path = os.path.join(self.full_log_dir, 'cumulative_reward.png')
+            plt.savefig(detailed_path, dpi=300, bbox_inches='tight')
+
+        if show_plot:
+            plt.show()
+
+
 def train():
     with open('config.yaml', 'r') as f:
         config = yaml.safe_load(f)
@@ -191,14 +308,16 @@ def train():
     behavior_name = list(env.behavior_specs.keys())[0]
     spec = env.behavior_specs[behavior_name]
 
-    # Initialize agent
+    # Initialize agent and logger
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     agent = PPOAgent(obs_size=11, act_size=5, device=device)
+    logger = TrainingLogger()
 
     print(f"Starting PPO training on {device}...")
+    print(f"Logs will be saved to: {logger.full_log_dir}")
 
     # Training statistics
-    episode_rewards = deque(maxlen=100)
+    episode_rewards_buffer = deque(maxlen=100)
     total_steps = 0
     episode_count = 0
 
@@ -212,89 +331,139 @@ def train():
 
     obs = decision_steps.obs[0][0]
 
-    while total_steps < config['behaviors']['PepperGreeting']['max_steps']:
-        episode_reward = 0
-        done = False
-        step_count = 0
+    try:
+        while total_steps < config['behaviors']['PepperGreeting']['max_steps']:
+            episode_reward = 0
+            done = False
+            step_count = 0
 
-        while not done:
-            # Act
-            action, value, log_prob = agent.act(obs)
+            while not done:
+                # Act
+                action, value, log_prob = agent.act(obs)
 
-            # Send action to Unity
-            action_tuple = ActionTuple()
-            action_tuple.add_discrete(np.array([[action]]))
-            env.set_actions(behavior_name, action_tuple)
-            env.step()
+                # Send action to Unity
+                action_tuple = ActionTuple()
+                action_tuple.add_discrete(np.array([[action]]))
+                env.set_actions(behavior_name, action_tuple)
+                env.step()
 
-            # Get result
-            decision_steps, terminal_steps = env.get_steps(behavior_name)
+                # Get result
+                decision_steps, terminal_steps = env.get_steps(behavior_name)
 
-            if len(terminal_steps) > 0:
-                reward = terminal_steps.reward[0]
-                done = True
-                next_obs = terminal_steps.obs[0][0] if len(terminal_steps.obs) > 0 else np.zeros(11)
-                next_value = 0  # terminal state
-            else:
-                reward = decision_steps.reward[0]
-                next_obs = decision_steps.obs[0][0]
-                _, next_value, _ = agent.act(next_obs, deterministic=True)
+                if len(terminal_steps) > 0:
+                    reward = terminal_steps.reward[0]
+                    done = True
+                    next_obs = terminal_steps.obs[0][0] if len(terminal_steps.obs) > 0 else np.zeros(11)
+                    next_value = 0  # terminal state
+                else:
+                    reward = decision_steps.reward[0]
+                    next_obs = decision_steps.obs[0][0]
+                    _, next_value, _ = agent.act(next_obs, deterministic=True)
 
-            # Store transition
-            agent.store_transition(obs, action, reward, value, log_prob, done)
+                # Store transition
+                agent.store_transition(obs, action, reward, value, log_prob, done)
 
-            # Update
-            obs = next_obs
-            episode_reward += reward
-            step_count += 1
-            total_steps += 1
+                # Update
+                obs = next_obs
+                episode_reward += reward
+                step_count += 1
+                total_steps += 1
 
-            # Logging
-            if total_steps % 100 == 0:
-                print(f"Step {total_steps} | Episode {episode_count} | Reward: {episode_reward:.2f}")
+                # Logging
+                if total_steps % 100 == 0:
+                    print(f"Step {total_steps} | Episode {episode_count} | Reward: {episode_reward:.2f}")
 
-            # Episode length limit
-            if step_count >= 1000:
-                done = True
+                # Episode length limit
+                if step_count >= 1000:
+                    done = True
 
-        # End of episode - perform PPO update
-        if done:
-            # Get value for last state if not terminal
-            if len(terminal_steps) == 0:  # Episode ended due to length limit
-                _, next_value, _ = agent.act(obs, deterministic=True)
-            else:
-                next_value = 0
+            # End of episode - perform PPO update
+            if done:
+                # Get value for last state if not terminal
+                if len(terminal_steps) == 0:  # Episode ended due to length limit
+                    _, next_value, _ = agent.act(obs, deterministic=True)
+                else:
+                    next_value = 0
 
-            # Update if we have enough experience
-            if len(agent.observations) > 0:
-                agent.update(next_value)
+                # Update if we have enough experience
+                if len(agent.observations) > 0:
+                    agent.update(next_value)
 
-            # Track statistics
-            episode_rewards.append(episode_reward)
-            avg_reward = np.mean(episode_rewards) if episode_rewards else 0
+                # Track statistics
+                episode_rewards_buffer.append(episode_reward)
+                avg_reward_last_100 = np.mean(episode_rewards_buffer) if episode_rewards_buffer else 0
 
-            print(f"Episode {episode_count} ended | Steps: {step_count} | "
-                  f"Reward: {episode_reward:.2f} | "
-                  f"Avg Reward (last 100): {avg_reward:.2f}")
+                # Log episode data
+                logger.log_episode(episode_count, episode_reward, step_count, total_steps, avg_reward_last_100)
 
-            episode_count += 1
+                print(f"Episode {episode_count} ended | Steps: {step_count} | "
+                      f"Reward: {episode_reward:.2f} | "
+                      f"Avg Reward (last 100): {avg_reward_last_100:.2f}")
 
-            # Save model periodically
-            if episode_count % 10 == 0:
-                agent.save(f'pepper_ppo_model_ep{episode_count}.pt')
+                episode_count += 1
 
-            # Reset environment for next episode
-            env.reset()
-            decision_steps, terminal_steps = env.get_steps(behavior_name)
-            if len(decision_steps) > 0:
-                obs = decision_steps.obs[0][0]
-            else:
-                obs = np.zeros(11)
+                # Save model periodically
+                if episode_count % 10 == 0:
+                    model_path = os.path.join(logger.full_log_dir, f'ppo_model_ep{episode_count}.pt')
+                    agent.save(model_path)
+                    print(f"Model saved to: {model_path}")
 
-    env.close()
-    agent.save('pepper_ppo_model_final.pt')
-    print("Training completed!")
+                # Reset environment for next episode
+                env.reset()
+                decision_steps, terminal_steps = env.get_steps(behavior_name)
+                if len(decision_steps) > 0:
+                    obs = decision_steps.obs[0][0]
+                else:
+                    obs = np.zeros(11)
+
+    except KeyboardInterrupt:
+        print("\nTraining interrupted by user!")
+    except Exception as e:
+        print(f"\nTraining error: {e}")
+        import traceback
+        traceback.print_exc()
+    finally:
+        # Clean up
+        env.close()
+
+        # Save final model
+        final_model_path = os.path.join(logger.full_log_dir, 'ppo_model_final.pt')
+        agent.save(final_model_path)
+        print(f"Final model saved to: {final_model_path}")
+
+        # Save all training data
+        logger.save_to_json()
+
+        # Create and display plots
+        print("\n" + "=" * 50)
+        print("Generating training plots...")
+        print("=" * 50)
+        logger.create_plots(show_plot=True, save_plot=True)
+
+        # Print summary
+        print("\n" + "=" * 50)
+        print("TRAINING SUMMARY")
+        print("=" * 50)
+        print(f"Total episodes: {episode_count}")
+        print(f"Total steps: {total_steps}")
+        if len(logger.episode_rewards) > 0:
+            print(f"Best episode reward: {max(logger.episode_rewards):.2f}")
+            print(f"Worst episode reward: {min(logger.episode_rewards):.2f}")
+            print(f"Average episode reward: {np.mean(logger.episode_rewards):.2f}")
+            print(f"Total cumulative reward: {np.sum(logger.episode_rewards):.2f}")
+        print(f"Logs directory: {logger.full_log_dir}")
+        print("=" * 50)
 
 
 if __name__ == '__main__':
+    # Check if matplotlib is available
+    try:
+        import matplotlib
+
+        # Use non-interactive backend if running in a headless environment
+        matplotlib.use('Agg')
+    except ImportError:
+        print("Warning: matplotlib not installed. Install with: pip install matplotlib")
+        print("Running without plotting functionality...")
+
     train()
