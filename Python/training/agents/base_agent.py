@@ -122,7 +122,9 @@ class PPOAgent:
             indices = np.arange(len(self.observations))
             np.random.shuffle(indices)
 
-            for start in range(0, len(indices), self.num_mini_batch):
+            mini_batch_size = len(indices) // self.num_mini_batch
+
+            for start in range(0, len(indices), mini_batch_size):
                 end = start + self.num_mini_batch
                 idx = indices[start:end]
 
