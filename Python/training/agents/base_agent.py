@@ -52,7 +52,7 @@ class PPOAgent:
         self.num_mini_batch = 4
         self.value_loss_coef = 0.5
         self.entropy_coef = 0.01
-        self.gamma = 0.99
+        self.gamma = 0.99 # todo: tune (should be 0 in IRL)
         self.tau = 0.95  # GAE parameter
         self.max_grad_norm = 0.5
 
@@ -150,6 +150,10 @@ class PPOAgent:
 
                 value_loss = F.mse_loss(values.squeeze(), return_batch)
 
+                # todo: reference the paper: https://github.com/openai/baselines/blob/master/baselines/ppo2/model.py
+                # https://arxiv.org/abs/1707.06347
+                # todo: also try to remove entropy to see the results
+                # try fixing adjusting the reward
                 loss = policy_loss + self.value_loss_coef * value_loss - self.entropy_coef * entropy
 
                 # Optimize

@@ -224,7 +224,7 @@ namespace Managers
             }
             else
             {
-                pepperAgent.AddReward(-0.1f);
+                pepperAgent.AddReward(-1f);
             }
         }
 
