@@ -106,7 +106,7 @@ namespace Agents.Robot
             decisionStepCount++;
 
             // 2. Small living penalty → encourages finishing quickly
-            AddReward(-0.008f);  
+            AddReward(-0.002f);  
 
             // 3. Check termination conditions
             if (decisionStepCount >= maxDecisionSteps)
