@@ -47,12 +47,12 @@ class PPOAgent:
         self.optimizer = torch.optim.Adam(self.actor_critic.parameters(), lr=3e-4)
 
         # PPO hyperparameters
-        self.clip_param = 0.2
+        self.clip_param = 0.1
         self.ppo_epoch = 4
         self.num_mini_batch = 4
         self.value_loss_coef = 0.5
-        self.entropy_coef = 0.01
-        self.gamma = 0.99 # todo: tune (should be 0 in IRL)
+        self.entropy_coef = 0.05
+        self.gamma = 0.0  # todo: tune (should be 0 in IRL)
         self.tau = 0.95  # GAE parameter
         self.max_grad_norm = 0.5
 
