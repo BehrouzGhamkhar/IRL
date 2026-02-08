@@ -111,14 +111,14 @@ namespace Agents.Robot
             // 3. Check termination conditions
             if (decisionStepCount >= maxDecisionSteps)
             {
-                AddReward(-0.6f);
+                AddReward(-0.2f);
                 EndEpisodeWithReason("Timeout: max steps");
                 return;
             }
 
             if (Time.time - episodeStartTime >= maxEpisodeDurationSeconds)
             {
-                AddReward(-0.9f);
+                AddReward(-0.3f);
                 EndEpisodeWithReason("Timeout: max duration");
             }
         }
