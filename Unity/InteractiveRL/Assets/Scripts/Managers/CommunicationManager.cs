@@ -8,26 +8,28 @@ namespace Managers
 {
     public class CommunicationManager : MonoBehaviour
     {
-        [Header("Agent References")]
-        [SerializeField] private PepperController pepperController;
+        [Header("Agent References")] [SerializeField]
+        private PepperController pepperController;
+
         [SerializeField] private NPCController npcController;
 
-        [Header("Interaction Settings")]
-        [SerializeField] private float interactionDistanceThreshold = 3.0f;
+        [Header("Interaction Settings")] [SerializeField]
+        private float interactionDistanceThreshold = 3.0f;
+
         [SerializeField] private float handshakeCooldown = 3.0f;
 
-        [Header("Keyboard Controls")]
-        [SerializeField] private KeyCode keyWait = KeyCode.I;
+        [Header("Keyboard Controls")] [SerializeField]
+        private KeyCode keyWait = KeyCode.I;
+
         [SerializeField] private KeyCode keyDoNothing = KeyCode.W;
         [SerializeField] private KeyCode keyLook = KeyCode.H;
         [SerializeField] private KeyCode keyWave = KeyCode.L;
         [SerializeField] private KeyCode keyHandshake = KeyCode.R;
 
-        [Header("AI / ML-Agents")]
-        [SerializeField] private PepperAgent pepperAgent;
+        [Header("AI / ML-Agents")] [SerializeField]
+        private PepperAgent pepperAgent;
 
-        [Header("Debug")]
-        [SerializeField] private bool logInteractions = true;
+        [Header("Debug")] [SerializeField] private bool logInteractions = true;
 
         private bool isHandshakeInProgress = false;
         private bool canHandshake = true;
@@ -57,11 +59,11 @@ namespace Managers
             get
             {
                 if (npcController == null || npcController.CurrentTask == null)
-                    return 0;   // no task = 0
+                    return 0; // no task = 0
                 return npcController.CurrentTask.id;
             }
         }
-        
+
         private void Awake()
         {
             if (pepperController != null)
@@ -101,7 +103,7 @@ namespace Managers
 
             if (logInteractions)
             {
-               // Debug.Log($"[Comm Status] Pepper: {CurrentPepperState,-12} | NPC: {CurrentNPCState,-12} | Dist: {CurrentDistance:F1}m | HS: {(isHandshakeInProgress ? "active" : "ready")}");
+                // Debug.Log($"[Comm Status] Pepper: {CurrentPepperState,-12} | NPC: {CurrentNPCState,-12} | Dist: {CurrentDistance:F1}m | HS: {(isHandshakeInProgress ? "active" : "ready")}");
             }
         }
 
@@ -169,7 +171,8 @@ namespace Managers
             if (pepperController == null)
                 return;
 
-            if (action == PepperController.AgentAction.HandShake && !canHandshake){
+            if (action == PepperController.AgentAction.HandShake && !canHandshake)
+            {
                 LogInteraction("Handshake blocked - on cooldown or too far");
                 return;
             }
@@ -193,19 +196,23 @@ namespace Managers
             float distance = CurrentDistance;
 
             bool correct = false;
+            float rewardValue = 0f;
 
             switch (taskId)
             {
                 case 2: // Handshake
                     correct = action == PepperController.AgentAction.HandShake;
+                    rewardValue = correct ? 2.0f : -0.5f;
                     break;
 
                 case 7: // WaveFromDistance
                     correct = action == PepperController.AgentAction.Wave;
+                    rewardValue = correct ? 1.5f : -0.3f;
                     break;
 
                 case 6: // TalkInMiddle
                     correct = action == PepperController.AgentAction.Wait;
+                    rewardValue = correct ? 1.0f : -0.2f;
                     break;
 
                 default:
@@ -213,19 +220,14 @@ namespace Managers
                         correct = action == PepperController.AgentAction.Look;
                     else
                         correct = action == PepperController.AgentAction.DoNothing;
+
+                    rewardValue = correct ? 0.5f : -0.1f;
                     break;
             }
 
-            if (correct)
-            {
-                pepperAgent.AddReward(1.0f);
-                if (logInteractions)
-                    Debug.Log($"[Reward +] Task {taskId} | Action {action}");
-            }
-            else
-            {
-                pepperAgent.AddReward(-1f);
-            }
+            pepperAgent.AddReward(rewardValue);
+            if (logInteractions)
+                Debug.Log($"[Reward {rewardValue}] Task {taskId} | Action {action}");
         }
 
         #endregion
@@ -348,6 +350,7 @@ namespace Managers
                 npcController.transform.position
             );
         }
+
         private void LogInteraction(string message)
         {
             if (logInteractions)
@@ -355,6 +358,7 @@ namespace Managers
                 // Debug.Log($"[Interaction] {message}");
             }
         }
+
         #endregion
     }
 }
