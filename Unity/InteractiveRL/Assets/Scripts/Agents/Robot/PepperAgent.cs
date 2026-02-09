@@ -93,7 +93,7 @@ namespace Agents.Robot
             PepperController.AgentAction selectedAction = actionIndex switch
             {
                 0 => PepperController.AgentAction.DoNothing,
-                1 => PepperController.AgentAction.Wait,
+                1 => PepperController.AgentAction.Talk,
                 2 => PepperController.AgentAction.Look,
                 3 => PepperController.AgentAction.Wave,
                 4 => PepperController.AgentAction.HandShake,
@@ -138,19 +138,7 @@ namespace Agents.Robot
 
         // Public methods called from CommunicationManager
 
-        public void EndEpisodeSuccess(string reason = "Success")
-        {
-            AddReward(2.8f);  
-            EndEpisodeWithReason(reason);
-        }
-
-        public void EndEpisodeFailure(string reason = "Failed")
-        {
-            AddReward(-1.4f);
-            EndEpisodeWithReason(reason);
-        }
-
-        private void EndEpisodeWithReason(string reason)
+        public void EndEpisodeWithReason(string reason)
         {
             Debug.Log($"[Episode End] {reason} | Step: {decisionStepCount} | Time: {(Time.time - episodeStartTime):F1}s | Reward so far: {GetCumulativeReward():F3}");
             EndEpisode();

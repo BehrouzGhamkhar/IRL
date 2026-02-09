@@ -24,7 +24,7 @@ namespace Agents.Robot
         public enum AgentAction
         {
             DoNothing = 0,
-            Wait = 1,
+            Talk = 1,
             Look = 2,
             Wave = 3,
             HandShake = 6
@@ -96,8 +96,8 @@ namespace Agents.Robot
             
             switch (rAction)
             {
-                case AgentAction.Wait:
-                    ActionWait();
+                case AgentAction.Talk:
+                    ActionTalk();
                     break;
                 
                 case AgentAction.Look:
@@ -128,10 +128,10 @@ namespace Agents.Robot
 
         #region Action Implementations
     
-        private void ActionWait()
+        private void ActionTalk()
         {
             animationController.PlayIdle();
-            Debug.Log("[Pepper Action] Waiting");
+            Debug.Log("[Pepper Action] Talking");
             CurrentState = PepperState.Idle;
         }
 

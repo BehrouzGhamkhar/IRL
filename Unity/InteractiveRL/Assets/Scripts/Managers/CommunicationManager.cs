@@ -151,7 +151,7 @@ namespace Managers
         private void HandleKeyboardInput()
         {
             if (Input.GetKeyDown(keyWait) || Input.GetKeyDown(KeyCode.Alpha0))
-                ExecutePepperAction(PepperController.AgentAction.Wait);
+                ExecutePepperAction(PepperController.AgentAction.Talk);
             else if (Input.GetKeyDown(keyDoNothing) || Input.GetKeyDown(KeyCode.Alpha1))
                 ExecutePepperAction(PepperController.AgentAction.DoNothing);
             else if (Input.GetKeyDown(keyLook) || Input.GetKeyDown(KeyCode.Alpha2))
@@ -198,30 +198,38 @@ namespace Managers
             bool correct = false;
             float rewardValue = 0f;
 
+            if (npcController.CurrentState != NPCController.NPCState.PerformingTask)
+            {
+                correct = action == PepperController.AgentAction.DoNothing;
+                rewardValue = correct ? 0.5f : -0.1f;
+                pepperAgent.AddReward(rewardValue);
+                return;
+            }
+
             switch (taskId)
             {
                 case 2: // Handshake
                     correct = action == PepperController.AgentAction.HandShake;
-                    rewardValue = correct ? 2.0f : -0.5f;
+                    rewardValue = correct ? 10.0f : -5f;
                     break;
 
                 case 7: // WaveFromDistance
                     correct = action == PepperController.AgentAction.Wave;
-                    rewardValue = correct ? 1.5f : -0.3f;
+                    rewardValue = correct ? 8f : -3f;
                     break;
 
                 case 6: // TalkInMiddle
-                    correct = action == PepperController.AgentAction.Wait;
-                    rewardValue = correct ? 1.0f : -0.2f;
+                    correct = action == PepperController.AgentAction.Talk;
+                    rewardValue = correct ? 5f : -1f;
                     break;
 
                 default:
-                    if (distance <= 3.0f)
+                    if (distance <= 4.0f)
                         correct = action == PepperController.AgentAction.Look;
                     else
                         correct = action == PepperController.AgentAction.DoNothing;
 
-                    rewardValue = correct ? 0.5f : -0.1f;
+                    rewardValue = correct ? 0.5f : -0.2f;
                     break;
             }
 
@@ -279,10 +287,11 @@ namespace Managers
 
         private void CompleteHandshake()
         {
-            if (pepperAgent != null)
-                pepperAgent.EndEpisodeSuccess("Handshake success");
+            if (!pepperAgent)
+                return;
 
             ResetHandshake();
+            pepperAgent.EndEpisodeWithReason("Handshake success");
         }
 
         public void ResetHandshake()
@@ -314,9 +323,10 @@ namespace Managers
             // 3. Reset NPC task / movement / state
             if (npcController != null)
             {
-                // Force NPC back to a predictable state
-                npcController.CurrentState = NPCController.NPCState.WaitingBetweenTasks;
-
+                
+                // stop NavMeshAgent movement immediately
+                npcController.StopNavMeshAgent();
+                
                 npcController.ClearCurrentTask();
 
                 // reset position (especially useful if NPC wanders far)
@@ -325,8 +335,7 @@ namespace Managers
                     initialNPCRotation
                 );
 
-                // stop NavMeshAgent movement immediately
-                npcController.StopNavMeshAgent();
+                
             }
         }
 

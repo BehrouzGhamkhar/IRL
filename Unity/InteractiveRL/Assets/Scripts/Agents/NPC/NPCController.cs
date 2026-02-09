@@ -206,14 +206,20 @@ namespace Agents.NPC
                 Debug.Log($"Task completed: {currentTask.taskName}");
                 ClearCurrentTask();
             }
+            else if (!currentTask)
+            {
+                Debug.Log($"No task available");
+                ClearCurrentTask();
+            }
         }
 
         public void ClearCurrentTask()
         {
-            CurrentState = NPCState.WaitingBetweenTasks;
             hasStartedTask = false;
             currentTask = null;
             currentTarget = null;
+            taskTimer = 0f;
+            CurrentState = NPCState.WaitingBetweenTasks;
         }
 
         public void StopNavMeshAgent()

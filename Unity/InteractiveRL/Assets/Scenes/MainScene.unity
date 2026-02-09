@@ -2566,6 +2566,10 @@ PrefabInstance:
       value: RobotAgent
       objectReference: {fileID: 0}
     - target: {fileID: 4715299576254980323, guid: e56544b1bab9f0b45bdba5266b723022, type: 3}
+      propertyPath: m_BehaviorType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4715299576254980323, guid: e56544b1bab9f0b45bdba5266b723022, type: 3}
       propertyPath: m_BrainParameters.VectorObservationSize
       value: 11
       objectReference: {fileID: 0}
