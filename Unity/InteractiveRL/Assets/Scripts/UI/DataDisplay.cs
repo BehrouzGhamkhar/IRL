@@ -50,12 +50,13 @@ public class DataDisplay : MonoBehaviour
         {
             PepperController pepper = communicationManager.PepperController;
             string stateText = pepper.CurrentState.ToString();
+            string actionText = pepper.CurrentAction.ToString();
             
             // Color code the state
             string stateColor = GetPepperStateColor(pepper.CurrentState);
 
             // Apply color using rich text tags
-            pepperLogText.text = $"Pepper State: <color={stateColor}>{stateText}</color>";
+            pepperLogText.text = $"Pepper State: <color={stateColor}>{stateText}</color>\n" + $"Action: {actionText}";
         }
     }
     

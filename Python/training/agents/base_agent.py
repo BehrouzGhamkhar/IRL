@@ -51,8 +51,8 @@ class PPOAgent:
         self.ppo_epoch = 4
         self.num_mini_batch = 4
         self.value_loss_coef = 0.5
-        self.entropy_coef = 0.05
-        self.gamma = 0.0  # todo: tune (should be 0 in IRL)
+        self.entropy_coef = 0.05 # todo: tune it
+        self.gamma = 0.2  # todo: tune (should be 0 in IRL)
         self.tau = 0.95  # GAE parameter
         self.max_grad_norm = 0.5
 
@@ -364,9 +364,6 @@ def train():
                     # Also save rewards and plot periodically
                     rewards_file = os.path.join(output_dir, 'rewards.csv')
                     save_rewards_to_file(episode_rewards, rewards_file)
-
-                    plot_file = os.path.join(output_dir, f'training_plot_ep{episode_count}.png')
-                    plot_training_results(episode_rewards, plot_file)
 
                 # Reset environment for next episode
                 env.reset()

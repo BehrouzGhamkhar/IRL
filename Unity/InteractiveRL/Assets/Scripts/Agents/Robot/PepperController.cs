@@ -10,15 +10,22 @@ namespace Agents.Robot
         [SerializeField] private Transform headBone;
         [SerializeField] private float headRotationSpeed = 5f;
         [SerializeField] private float lookAtDuration = 3f;
-        
-        [Header("State Events")]
-        public UnityEvent<PepperState> onStateChanged;
+
+        [Header("State Events")] public UnityEvent<PepperState> onStateChanged;
         public UnityEvent<AgentAction> onActionPerformed;
-        
+
         private Transform currentLookTarget;
         private float lookEndTime;
         private bool isLooking;
         private PepperState currentState = PepperState.Idle;
+        private AgentAction currentAction = AgentAction.DoNothing;
+
+        public AgentAction CurrentAction
+        {
+            get => currentAction;
+            set => currentAction = value;
+        }
+
         private PepperState previousState;
 
         public enum AgentAction
@@ -29,7 +36,7 @@ namespace Agents.Robot
             Wave = 3,
             HandShake = 6
         };
-        
+
         public enum PepperState
         {
             Idle,
@@ -53,6 +60,7 @@ namespace Agents.Robot
             }
         }
 
+
         void Start()
         {
             if (onStateChanged == null)
@@ -66,7 +74,7 @@ namespace Agents.Robot
                 if (animationController == null)
                     Debug.LogError("Robot Animator not found!");
             }
-            
+
             CurrentState = PepperState.Idle;
         }
 
@@ -78,8 +86,8 @@ namespace Agents.Robot
                 Vector3 lookDirection = currentLookTarget.position - headBone.position;
                 Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
                 headBone.rotation = Quaternion.Slerp(
-                    headBone.rotation, 
-                    targetRotation, 
+                    headBone.rotation,
+                    targetRotation,
                     Time.deltaTime * headRotationSpeed
                 );
             }
@@ -92,33 +100,35 @@ namespace Agents.Robot
         public void ExecuteAction(AgentAction rAction)
         {
             CurrentState = PepperState.PerformingAction;
+            currentAction = rAction;
             onActionPerformed?.Invoke(rAction);
-            
+
             switch (rAction)
             {
                 case AgentAction.Talk:
                     ActionTalk();
+                    ActionLook();
                     break;
-                
+
                 case AgentAction.Look:
                     ActionLook();
                     break;
-                
+
                 case AgentAction.Wave:
                     ActionLook();
                     ActionWave();
                     break;
-                
+
                 case AgentAction.HandShake:
                     float tryHandShakeTime = 2.0f;
                     ActionLook();
                     StartCoroutine(ActionHandshake(tryHandShakeTime));
                     break;
-                
+
                 case AgentAction.DoNothing:
                     CurrentState = PepperState.Idle;
                     break;
-                
+
                 default:
                     Debug.LogWarning($"Unhandled action: {rAction}");
                     CurrentState = PepperState.Idle;
@@ -127,7 +137,7 @@ namespace Agents.Robot
         }
 
         #region Action Implementations
-    
+
         private void ActionTalk()
         {
             animationController.PlayIdle();
@@ -172,11 +182,11 @@ namespace Agents.Robot
             animationController.PlayTryHandshake();
             Debug.Log("[Pepper Action] Attempting handshake");
             CurrentState = PepperState.Handshaking;
-            
+
             var closestPerson = FindNearestPerson();
             yield return new WaitForSeconds(delayTime);
-            
-            if (closestPerson != null && 
+
+            if (closestPerson != null &&
                 Vector3.Distance(transform.position, closestPerson.position) < 2.0f)
             {
                 animationController.PlayHandshake();
@@ -188,17 +198,17 @@ namespace Agents.Robot
                 animationController.PlayIdle();
                 CurrentState = PepperState.Idle;
             }
-            
+
             StartCoroutine(ResetStateAfterAnimation(PepperState.Handshaking));
         }
-        
+
         IEnumerator ResetStateAfterAnimation(PepperState stateToReset)
         {
             yield return new WaitForSeconds(1.5f);
             if (CurrentState == stateToReset)
                 CurrentState = PepperState.Idle;
         }
-    
+
         #endregion
 
         private Transform FindNearestPerson()
@@ -216,13 +226,13 @@ namespace Agents.Robot
                     closestPerson = person.transform;
                 }
             }
-            
+
             if (closestPerson == null)
                 Debug.LogWarning("No person found to look at.");
-                
+
             return closestPerson;
         }
-        
+
         public string GetCurrentStateDescription()
         {
             switch (CurrentState)

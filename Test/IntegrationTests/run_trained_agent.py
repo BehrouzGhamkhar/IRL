@@ -64,7 +64,7 @@ def run(model_path):
 
     # Speed up simulation
     channel = EngineConfigurationChannel()
-    channel.set_configuration_parameters(time_scale=1.0)
+    channel.set_configuration_parameters(time_scale=2.0)
 
     # If using editor:
     env = UnityEnvironment(file_name=None, side_channels=[channel])

@@ -220,16 +220,21 @@ namespace Managers
 
                 case 6: // TalkInMiddle
                     correct = action == PepperController.AgentAction.Talk;
-                    rewardValue = correct ? 5f : -1f;
+                    rewardValue = correct ? 8f : -2f;
                     break;
 
                 default:
                     if (distance <= 4.0f)
+                    {
                         correct = action == PepperController.AgentAction.Look;
+                        rewardValue = correct ? 5f : -2f;
+                    }
                     else
+                    {
                         correct = action == PepperController.AgentAction.DoNothing;
+                        rewardValue = correct ? 0.5f : -0.2f;
+                    }
 
-                    rewardValue = correct ? 0.5f : -0.2f;
                     break;
             }
 
@@ -323,10 +328,9 @@ namespace Managers
             // 3. Reset NPC task / movement / state
             if (npcController != null)
             {
-                
                 // stop NavMeshAgent movement immediately
                 npcController.StopNavMeshAgent();
-                
+
                 npcController.ClearCurrentTask();
 
                 // reset position (especially useful if NPC wanders far)
@@ -334,8 +338,6 @@ namespace Managers
                     initialNPCPosition,
                     initialNPCRotation
                 );
-
-                
             }
         }
 
