@@ -115,27 +115,6 @@
 
     Convergence was assessed using two criteria: (1) the rolling 100-episode average reward remaining above 0.80 for 50 consecutive episodes, and (2) the episode accuracy remaining above 80\% for 50 consecutive episodes. The definitive run converged at episode 404 (step $\sim$9k). Post-convergence variance was $\sigma = $ 0.72 in the rolling reward window, reflecting the multimodal nature of the reward function rather than policy instability.
 
-    \subsection{Episode Termination Analysis}
-
-    Episodes can terminate via three routes: HandShake success, maximum step count (2000 steps), or timeout (60 seconds). Table~\ref{tab:termination} shows the termination distribution over training.
-
-    \begin{table}[H]
-        \centering
-        \caption{Episode Termination Breakdown}
-        \label{tab:termination}
-        \begin{tabular}{lccc}
-            \toprule
-            \textbf{Training Phase} & \textbf{HandShake Success} & \textbf{Max Steps} & \textbf{Timeout} \\
-            \midrule
-            Early (0--50k steps)     & Low & High & Low \\
-            Mid (50k--100k steps)    & Rising & Declining & Low \\
-            Late (100k--150k steps)  & Dominant & Low & Low \\
-            \bottomrule
-        \end{tabular}
-    \end{table}
-
-    Early in training, the majority of episodes terminated by MaxSteps, indicating the agent had not yet learned to trigger HandShake completion. By the end of training, HandShake-terminated episodes dominated, consistent with the accuracy improvement. Timeouts remained consistently low throughout training.
-
     \subsection{Per-Task Performance Breakdown}
 
     Table~\ref{tab:per-task} shows the per-task accuracy breakdown for the definitive PPO run, evaluated over 2,000 environment steps.
