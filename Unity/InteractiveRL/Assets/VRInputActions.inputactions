@@ -1,0 +1,95 @@
+{
+    "version": 1,
+    "name": "VRInputActions",
+    "maps": [
+        {
+            "name": "VR",
+            "id": "995e2a58-eaaa-4db6-be1d-916d347c027c",
+            "actions": [
+                {
+                    "name": "CycleTask",
+                    "type": "Button",
+                    "id": "e4d64d7e-8134-4aa7-a453-b8227bab3aff",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PerformTask",
+                    "type": "Button",
+                    "id": "25892f90-ac90-4177-8d00-ec2927a35d3c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RewardPlus",
+                    "type": "Button",
+                    "id": "92627d47-774e-40f1-9fe6-8400ed8aebce",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RewardMinus",
+                    "type": "Button",
+                    "id": "c91f6d9a-9c0a-480b-8cc2-7935abbeafa2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2fe0884d-e3e5-4a5f-8f87-7ac9abf16d76",
+                    "path": "<ViveController>{LeftHand}/trackpadClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CycleTask",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "89a56e72-a17b-48ac-a0ed-513c345357de",
+                    "path": "<ViveController>/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PerformTask",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f88d6830-59f5-481f-a6fd-2bb4d8f86540",
+                    "path": "<ViveController>{RightHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RewardPlus",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d15bd2a9-3a79-48e3-a700-178ab66a18ea",
+                    "path": "<ViveController>{LeftHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RewardMinus",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

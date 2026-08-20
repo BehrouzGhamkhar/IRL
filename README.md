@@ -1,507 +1,407 @@
-# Technical Design Document: VR-Based Interactive Reinforcement Learning System
+# VR-Based Human Feedback for Interactive Reinforcement Learning
 
-## 1. System Architecture Overview
-
-### 1.1 System Architecture
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Unity Client  │◄──►│  Communication   │◄──►│  Python AI      │
-│  (Simulation)   │    │    Middleware    │    │   (Training)    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-```
-
-The system follows a distributed client-server architecture with three main components:
-
-**Unity Client (Simulation Environment)**
-* Handles all 3D visualization, physics simulation, and VR interaction
-* Manages the greeting scenario with human and robot avatars
-* Captures multimodal feedback through VR sensors
-* Renders the virtual environment and provides visual feedback
-
-**Communication Middleware**
-* Acts as a real-time message bus between Unity and Python
-* Handles protocol translation, message serialization, and network communication
-* Manages connection states and provides fault tolerance
-* Ensures synchronized data exchange between simulation and AI components
-
-**Python AI Server (Training System)**
-* Contains all reinforcement learning algorithms and neural networks
-* Processes human feedback and integrates it into reward signals
-* Manages training pipelines and experience replay
-* Handles model evaluation and performance tracking
-
-### 1.2 Hardware & software stack
-* **VR headset**: HTC Vive Pro Eye
-* **Unity**: 6 LTS. Use OpenXR plugin.
-  [Unity Documentation](https://docs.unity3d.com/Manual/index.html)
-* **Unity ML-Agents (4.0.0 for C# and mlagents 1.1.0 for python)** — use Unity-to-Python API for actions & observations; provides helpers for logging and inference. (ML-Agents 4.x requires Unity >= 6000.0)
-  [GitHub](https://github.com/Unity-Technologies/ml-agents/releases)
-* **Python**: 3.10.12 (ML-Agents envs use modern Python; recent ML-Agents upgraded PyTorch 2.1.1)
-* **PyTorch**: 2.1.1 (to match ML-Agents envs updates) — used for policy nets and human model
-* **ROS2**: Alternative communication framework
-* **ZeroMQ/gRPC (or ML-Agents)**: Low-latency streaming and Real-time communication
-* **Experiment tracking**: TensorBoard + Weights & Biases.
+**R&D Project - Master of Autonomous Systems, Hochschule Bonn-Rhein-Sieg**  
+**Author:** Behrouz Ghamkhar  
+**Supervisors:** Prof. Dr. Teena Chakkalayil Hassan and Michal Stolarz  
+**Submitted:** May 2026
 
 ---
 
-## 2. Algorithmic architecture
+## Overview
 
-### 2.1 Overall design
-We are using PPO as the main learner, a Deep-TAMER-style reward model to interpret human VR feedback, and COACH-style corrections to make the agent responsive. They are complementary, not alternatives, and together they form a robust IRL system for multimodal VR teaching.
-1. **Agent core (PPO)** trains on environment observations and a composite reward signal:
-   `r_total = α_env * r_env + α_human * r_human_model(s,a,t)`
-   * `r_env` = engineered environment reward (used for baseline)
-   * `r_human_model` = predicted scalar from the human-feedback model (see below)
-   * α coefficients are tunable and can be scheduled (warmup, annealing).
-2. **Human feedback model (Deep TAMER / reward regressor)**
+This project trains a Humanoid robot to perform contextually appropriate social greeting behaviours using Interactive Reinforcement Learning (IRL). The agent learns to select the correct action - **DoNothing**, **Talk**, **Look**, **Wave**, or **HandShake** — from a 12-dimensional body-signal observation space, without being given explicit task labels.
 
-   * A lightweight neural regressor maps time-aligned multimodal feature vectors to scalar feedback. Trained online with teacher labels (controller + implicit signals mapped to “positive/negative” labels).
-   * Outputs both mean prediction and confidence (e.g., Gaussian output or small Bayesian head) used to weight feedback.
-3. **Immediate corrective module (COACH-inspired, optional)**
+Three training conditions are implemented:
 
-   * When the human provides an explicit instantaneous correction (button press, explicit gesture), generate a high-priority update signal used to nudge policy parameters in the short term (policy gradient shaped by the feedback). This is done in addition to the model-based reward (not instead of).
-4. **Credit assignment & temporal alignment**
+| Condition | Algorithm | Feedback source | Status                    |
+|---|---|---|---------------------------|
+| Autonomous PPO baseline | PPO (~150k steps) | Hand-crafted reward function | Completed                 |
+| COACH + Keyboard | COACH (164 steps) | Human teacher via arrow keys | Completed                 |
+| COACH + VR | COACH | Human teacher via Meta Quest 3 | Implemented, not executed |
 
-   * Use eligibility traces (TD(λ)) or short fixed temporal windows to assign a human label to preceding state-action sequence. Also use a small RNN or temporal buffer on the human model to capture short time dependencies.
+The two COACH conditions independently load the same PPO checkpoint (config3, seed 42) and fine-tune without depending on each other.
+ 
+> **VR note:** The VR COACH interface (controller buttons, head gestures, voice commands) is fully implemented in `VRMultimodalReward.cs` and `CommunicationManager.cs`. A physical body incompatibility between the NPC's body size and the VR person controller's size prevented finetuning a learned model.
 
-### 2.2 Losses and update rules (concrete)
-
-* PPO policy loss + value loss as baseline: `L_PPO = L_policy + c1 * L_value - c2 * S_entropy`
-* Augment policy gradient with *feedback gradient term* when immediate corrective signal f_t is received: add policy gradient update proportional to `w_conf * f_t * ∇_θ log π(a_t|s_t)`.
-* Train human reward model using mean squared error (or negative log likelihood if probabilistic output): `L_hr = (r_human_label - hr_model(f_vec))^2 + β_reg * ||θ||^2`.
-* Composite reward used for the PPO update: `r_total = r_env + λ_h * hr_model(f_vec)` where λ_h scales with model confidence and a tunable schedule.
-
-### 2.3 Credit assignment / eligibility
-
-* Maintain a short fixed-length ring buffer (e.g., 2–5 seconds, sampled at env step rate) containing (s, a, t, model_features).
-* When human signals arrive, retroactively assign the scalar to the buffer entries using a temporal kernel (e.g., exponential decay). This produces soft labels for several recent time steps (better than hard single-step assignment).
-* For more rigorous handling, use *eligibility traces* (TD(λ)) on the critic to propagate feedback over preceding states.
-
-### 2.4 Handling delay & noise (practical)
-
-* **Delay compensation:** timestamp all inputs (controller, gaze, audio) using synchronized clocks; use cross-correlation to estimate average human reaction latency and shift labels accordingly.
-* **Noise model:** the human model outputs a variance/confidence; use that to weight the influence of `hr_model` on `r_total`. Optionally model teacher as a noisy oracle with a Beta/Bernoulli model for discrete approvals.
-* **Smoothing:** apply exponential smoothing to gaze/hand features to reduce jitter before feeding the model.
-* **Teacher calibration phase:** at beginning of each session run a 30–60 s calibration where teacher gives a few known approvals/denials to bootstrap the hr_model and calibrate timings.
-
-### 2.5 How They Work Together
-Here is the **actual flow**, very simple:
-
-```
-VR teacher → Human Reward Model → Reward → PPO → Agent actions
-                         ↓
-             COACH correction (only when explicit)
-```
 ---
 
+## Key Results
 
+| Metric | Autonomous PPO | COACH + Keyboard |
+|---|---|---|
+| Test accuracy (2,000 steps) | 74.14% | 72.37% |
+| Action entropy (bits) | 1.39 | 1.79 |
+| HandShake selections | 20 | 137 |
+| Look selections | 1158 | 820 |
+| Wave selections | 220 | 424 |
+| HandShake accuracy | 85.0% | 81.8% |
+| Talk selections | 0 | 0 |
+| Feedback steps used | — | 164 |
 
-## 3. Detailed Technical Design
+164 COACH steps redistributed probability mass from Look toward HandShake (×6.85) and Wave (×1.9), without degrading per-action correctness.
 
-### 3.1 Unity Simulation Architecture
-
-#### 3.1.1 Scene Hierarchy
-```
-GreetingInteractionScene/
-├── Environment/
-│   ├── SpatialAnchor
-│   ├── Lighting
-│   ├── Objects
-│   └── Boundaries
-├── HumanAvatar/
-│   ├── VRController (Human)
-│   ├── BodyRig
-│   ├── AnimationController
-│   └── FeedbackDetector
-├── RobotAgent/
-│   ├── RobotModel
-│   ├── AnimationController
-│   ├── StateSensor
-│   └── ActionExecutor
-├── UI/
-│   ├── HUDCanvas
-│   ├── FeedbackUI
-│   └── TrainingMetrics
-└── Managers/
-    ├── GameManager
-    ├── CommunicationManager
-    ├── DataLogger
-    └── ConfigManager
-```
-
-#### 3.1.2 Core System Components
-
-**Communication Layer**
-Provides abstracted interfaces for different communication protocols, allowing seamless data exchange with the Python AI system. Handles message serialization, connection management, and error recovery while maintaining real-time performance.
-
-**Simulation Core**
-Manages the fundamental agent-environment interaction loop. Includes state sensing modules that capture environmental information, action execution systems that translate AI decisions into animations, and behavior controllers that manage the robot's responses.
-
-**VR Feedback System**
-Processes multimodal input from VR devices including controller buttons, head tracking, gaze analysis, and voice commands. Converts raw sensor data into structured feedback signals with confidence scoring and modality fusion.
-
-### 3.2 Python AI Training Architecture
-
-#### 3.2.1 Core Training Pipeline
-Implements the complete reinforcement learning workflow with human feedback integration. Manages episode execution, experience collection, and model updates while coordinating with the Unity simulation.
-
-- Training Loop
-- Agent-Environment Interaction
-
-
-#### 3.2.2 Reinforcement Learning Agent
-Implements various RL algorithms with specific adaptations for human feedback integration. Maintains policy networks, value estimators, and exploration strategies while processing multimodal input.
-
-- Policy Architecture
-- Feedback Integration
-
-
-#### 3.2.3 Communication Bridge: Using ML-Agents for Python-Based Training
-For this project, we will use **Unity ML-Agents** as a bridge to connect the Unity environment with a Python-based PyTorch implementation of reinforcement learning. This allows all AI logic, including policy networks, training, and optimization, to be handled entirely in Python, without writing any C# code for intelligence inside Unity.
-
-Advantages of this approach:
-
-* **Full Python control**: All neural networks, PPO/SAC algorithms, and training loops are implemented in PyTorch, leveraging the flexibility of Python.
-* **Seamless Unity integration**: ML-Agents handles communication between Unity and Python, providing observations, rewards, and done flags directly to the Python trainer.
-* **Parallelisation support**: Multiple instances of the Unity environment can run concurrently, letting the agent collect more experience per training step and improving sample efficiency.
-
-The training loop works as follows: the Python agent receives observations from Unity, computes actions with its policy network, sends the actions back to Unity, and receives rewards and episode termination information. This cycle repeats continuously, enabling the agent to learn from interactions entirely through Python while Unity provides the simulation environment.
-#### Step loop (what actually happens)
-Per Unity physics step:
-
-```
-CollectObservations()
-↓
-Python receives observations
-↓
-Python sends action
-↓
-OnActionReceived()
-↓
-AddReward()
-↓
-done? EndEpisode()
-```
 ---
 
-## 4. Project Folder Structure Organization
+## Hardware & Software Stack
 
-### 4.1 Unity Project Structure
-Organizes assets, scripts, and resources following Unity best practices while maintaining clear separation of concerns.
+| Component | Details                      |
+|---|------------------------------|
+| Unity | **6000.0.59f2**              |
+| Unity ML-Agents (C# package) | 4.0.0                        |
+| ML-Agents Python package | 1.1.0                        |
+| Python | 3.10.12                      |
+| PyTorch | 2.0.1 (CUDA 11.8)            |
+| VR Headset | HTC Vive port3               |
+| CPU | Intel Core i7-12700K         |
+| GPU | NVIDIA RTX 3080 (10 GB VRAM) |
+| RAM | 32 GB DDR4-3200              |
+| OS | Windows 11               |
+
+---
+
+## System Architecture
 
 ```
-VR_IRL_Project/
-├── Unity/
-│   ├── Assets/
-│   │   ├── Scripts/
-│   │   │   ├── Communication/
-│   │   │   │   ├── ICommunicationInterface.cs
-│   │   │   │   ├── ROS2Communicator.cs
-│   │   │   │   └── MessageTypes.cs
-│   │   │   ├── Agents/
-│   │   │   │   ├── RobotAgent.cs
-│   │   │   │   ├── HumanAgent.cs
-│   │   │   │   └── AgentManager.cs
-│   │   │   ├── Sensors/
-│   │   │   │   ├── StateSensor.cs
-│   │   │   │   ├── DistanceSensor.cs
-│   │   │   │   ├── GestureSensor.cs
-│   │   │   │   └── StateHistory.cs
-│   │   │   ├── Actions/
-│   │   │   │   ├── ActionExecutor.cs
-│   │   │   │   ├── AnimationController.cs
-│   │   │   │   └── ActionTypes.cs
-│   │   │   ├── VR/
-│   │   │   │   ├── VRFeedbackController.cs
-│   │   │   │   ├── HeadPoseTracker.cs
-│   │   │   │   ├── GazeTracker.cs
-│   │   │   │   ├── VoiceRecognizer.cs
-│   │   │   │   └── FeedbackConfig.cs
-│   │   │   ├── Environment/
-│   │   │   │   ├── GameManager.cs
-│   │   │   │   └── TrainingController.cs
-│   │   │   ├── UI/
-│   │   │   │   ├── HUDManager.cs
-│   │   │   │   ├── FeedbackUI.cs
-│   │   │   │   └── MetricsDisplay.cs
-│   │   │   └── Utilities/
-│   │   │       ├── DataLogger.cs
-│   │   │       ├── ConfigManager.cs
-│   │   │       └── ExtensionMethods.cs
-│   │   ├── Scenes/
-│   │   │   ├── GreetingInteraction.unity
-│   │   │   ├── TrainingEnvironment.unity
-│   │   │   └── VRSetup.unity
-│   │   ├── Prefabs/
-│   │   │   ├── Robot/
-│   │   │   ├── HumanAvatar/
-│   │   │   └── Environment/
-│   │   ├── Animations/
-│   │   │   ├── Robot/
-│   │   │   │   ├── Wave.anim
-│   │   │   │   ├── Handshake.anim
-│   │   │   │   └── Bow.anim
-│   │   │   └── Human/
-│   │   ├── Materials/
-│   │   ├── Models/
-│   │   └── Resources/
-│   ├── Packages/
-│   ├── ProjectSettings/
-│   └── README.md
-├── Python/
-│   ├── training/
-│   │   ├── agents/
-│   │   │   ├── base_agent.py
-│   │   │   ├── vr_irl_agent.py
-│   │   │   └── feedback_processor.py
-│   │   ├── algorithms/
-│   │   │   ├── policy_gradient.py
-│   │   │   └── multimodal_fusion.py
-│   │   ├── core/
-│   │   │   ├── training_pipeline.py
-│   │   │   └── training_logger.py
-│   │   └── models/
-│   │       ├── neural_networks.py
-│   │       └── policy_networks.py
-│   ├── communication/
-│   │   ├── unity_bridge.py
-│   │   ├── message_protocols.py
-│   │   └── ros2_interface.py
-│   ├── environments/
-│   │   └── greeting_environment.py
-│   ├── evaluation/
-│   │   ├── metrics.py
-│   │   ├── comparative_analysis.py
-│   │   └── visualization.py
-│   ├── utils/
-│   │   ├── config_loader.py
-│   │   ├── data_management.py
-│   │   └── helper_functions.py
-│   ├── configs/
-│   │   ├── training_config.yaml
-│   │   ├── agent_config.yaml
-│   │   ├── environment_config.yaml
-│   │   └── communication_config.yaml
-│   └── requirements.txt
-├── Data/
-│   ├── training_logs/
-│   │   ├── autonomous_rl/
-│   │   ├── keyboard_irl/
-│   │   └── vr_irl/
-│   ├── models/
-│   │   ├── checkpoints/
-│   │   └── final_models/
-│   ├── user_studies/
-│   │   ├── qualitative_feedback/
-│   │   └── performance_metrics/
-│   └── processed/
-│       ├── feedback_data/
-│       └── state_action_pairs/
-├── Documentation/
-│   ├── technical_specification.md
-│   ├── api_reference.md
-│   ├── setup_guide.md
-│   ├── user_manual.md
-│   └── experiment_protocol.md
-├── ThirdParty/
-│   ├── PythonROS2Bridge/
-│   ├── PyTorch/
-│   └── UnityPackages/
-├── Tests/
-│   ├── unity_tests/
-│   ├── python_tests/
-│   └── integration_tests/
-└── README.md
+┌───────────────────────────────────────┐                ┌──────────────────────────────────┐
+│          Unity Environment            │  ──────────>  │         Python Trainer           │
+│                                       │ observations  │                                  │
+│  HumanAgent                           │ (12-dim vec)  │  config.yaml                     │
+│  (NPCController / VRPersonController) │               │  train.py                        │
+│            │                          │  <──────────  │    ALGORITHMS registry           │
+│            v                          │  action (0–4) │    { 'ppo': PPOAgent,            │
+│  CommunicationManager                 │               │      'coach': COACHAgent }       │
+│  (episode coord, obs, routing)        │  ──────────>  │    SimplePPO network             │
+│            │                          │  reward       │    (fc1->fc2->actor+critic)      │
+│            v                          │               │    AccuracyTracker               │
+│  IRewardProvider                      │  · · · · >    │    checkpoint .pt                │
+│  ┌─────────────────────────────────┐  │  npc_seed     │    (EnvironmentParameters)       │
+│  │ AutonomousRewardProvider        │  │  side-channel │                                  │
+│  │   task–action match             │  │               └──────────────────────────────────┘
+│  │   +1.0 / -0.2 / -0.0001         │  │
+│  ├─────────────────────────────────┤  │
+│  │ KeyboardRewardProvider          │ <── ↑ +1  ↓ -1
+│  │   arrow keys                    │  │
+│  ├─────────────────────────────────┤  │
+│  │ VRMultimodalReward              │ <── button ±1.0
+│  │   priority-based fusion         │  │  voice  ±0.75
+│  │   cooldown gating               │  │  nod/shake ±0.5
+│  └─────────────────────────────────┘  │
+│            │                          │
+│            v                          │
+│  PepperAgent                          │
+│  (CollectObservations, AddReward)     │
+│  |r| > 0.05 -> COACH update           │
+│            │                          │
+│            v                          │
+│  PepperController                     │
+│  (ExecuteAction, animations)          │
+│                                       │
+│  SeedReceiver                         │
+│  (npc_seed side-channel)              │
+└───────────────────────────────────────┘
+```
+
+**Training mode is controlled by a single flag in `train.py`:**
+- `VR_MODE = False` -> PPO sweep: discovers all YAMLs in `configs/`, runs in parallel via `multiprocessing.Pool`
+- `VR_MODE = True` -> COACH/VR: reads from `configs/Finetune/`, runs sequentially, waits for Unity Editor
+
+---
+
+## Repository Structure
+
+```
+project/
+│
+├── Python/training/agents/
+│   ├── train.py                    # Main loop; VR_MODE flag; RESUME_FROM path
+│   ├── utils.py                    # load_config, find_config_files, AccuracyTracker,
+│   │                               #   save/load rewards and accuracy CSVs
+│   ├── analyse_runs.py             # Sweep analysis, convergence detection, plots, CSV export
+│   │
+│   └── algorithms/
+│       ├── ppo.py                      # PPOAgent: act, store_transition, update, save, load
+│       └── coach.py                    # COACHAgent: immediate per-event policy gradient update
+│    
+├── Python/configs/
+│   ├── config1.yaml                # PPO baseline (lr=0.0003, hidden=128, rollout=256)
+│   ├── config2.yaml                # lr = 0.0001
+│   ├── config3.yaml                # lr = 0.001  ← best; used as COACH checkpoint source
+│   ├── config4.yaml                # hidden = 256
+│   ├── config5.yaml                # hidden = 64
+│   ├── config6.yaml                # entropy high (start=0.3, end=0.05)
+│   ├── config7.yaml                # entropy low  (start=0.05, end=0.005)
+│   ├── config8.yaml                # rollout = 512
+│   ├── config9.yaml                # rollout = 128
+│   ├── config10.yaml               # epsilon = 0.1
+│   └── Finetune/
+│       └── coach_config.yaml       # COACH fine-tuning (keyboard + VR)
+│
+├── Test/IntegrationTests/
+│   ├── test_compare_models.py      # Cross-condition evaluation (PPO vs COACH, 2000 steps)
+│   └── test_pet_task_accuracy.py   # Per-action accuracy evaluation
+│
+├── Unity/Assets/Scripts (Some of the C# scripts)
+│   ├── PepperAgent.cs              # ML-Agents Agent subclass: observations, actions, rewards
+│   ├── PepperController.cs         # Action execution, animations, AgentAction enum
+│   ├── CommunicationManager.cs     # Central coordinator: episode logic, obs, reward routing
+│   ├── NPCController.cs            # NPC task selection (uniform random), NavMesh navigation
+│   ├── VRPersonController.cs       # VR participant controller (replaces NPC in VR mode)
+│   ├── IHumanAgent.cs              # Interface implemented by NPC and VR participant
+│   ├── IRewardProvider.cs          # Interface: OnReward event -> scalar float
+│   ├── AutonomousRewardProvider.cs # Task–action reward matching
+│   ├── KeyboardRewardProvider.cs   # Arrow key feedback: up=+1, down=-1
+│   ├── VRMultimodalReward.cs       # Priority-based fusion: button/voice/head gestures
+│   ├── SeedReceiver.cs             # Reads npc_seed from EnvironmentParameters side-channel
+│   ├── DataDisplay.cs              # In-scene training metrics HUD
+│   └── Feedbacklogger.cs           # Logs feedback events to file
+│
+├── Python/training/agents/training_logs/
+│    └── analysis/
+│        ├── sweep_results.csv
+│        ├── definitive_summary.csv
+│        ├── seed_variance.csv
+│        ├── irl_comparison.csv
+│        ├── per_task_accuracy.csv       # COACH run action-level accuracy
+│        ├── per_task_accuracy_baseline.csv
+│        └── plots/
+│            ├── reward_curve_config4.png
+│            ├── accuracy_curve_config4.png
+│            └── all_configs_comparison.png
+│            
+└── Data/Builds/
+    ├── BaselineHeadless/  
+    ├── Baseline/
+    ├── KeyboardCOACH/ 
+    └── VRCOACH/       
 ```
 
 ---
 
-## 5. Unity / VR integration & data pipeline
+## Observation Space (12 dimensions)
 
-### 5.1 Unity environment
+| Idx | Feature | Range | Description |
+|---|---|---|---|
+| 0–4 | PepperState | one-hot (5) | Idle / Looking / Waving / Handshaking / PerformingAction |
+| 5 | DistanceToHuman | [0, 1] | Normalised by 10 m; 0 = at Pepper, 1 = far away |
+| 6 | HandshakeInProgress | {0, 1} | 1 when handshake sequence is active |
+| 7 | CanHandshake | {0, 1} | 1 when 3 s cooldown has elapsed |
+| 8 | WristHeight | [0, 1] | (y_wrist − y_floor) / h_person + noise |
+| 9 | WristToCoreDistance | [0, 1] | ‖p_wrist − p_hip‖ / h_person + noise |
+| 10 | BodyOrientation | [−1, 1] | Facing Pepper (+1) vs away (−1) |
+| 11 | GazeDirection | [−1, 1] | Gaze toward Pepper (+1) vs away (−1) |
 
-* Use **Unity engine** for the greeting scene (proposal choice). Use **Unity ML-Agents** for instrumentation and communication between Unity and Python training process. ML-Agents is maintained and supports sending observations and receiving actions via a Python API.
-* Use **OpenXR** + vendor SDKs to access eye-tracking and hand tracking. The Vive docs and OpenXR eye examples show data access patterns for gaze data in Unity. [Docs](https://developer.vive.com/resources/openxr/unity/)
-
-### 5.2 Communication pattern
-
-Two valid patterns; both are supported by ML-Agents:
-
-A. **ML-Agents default socket/gRPC pipeline**
-
-* Unity runs the environment, streams observations and extra telemetry (multimodal features) to the Python trainer via ML-Agents gRPC socket. Python computes actions and returns them. Use this for synchronous training loop.
-
-B. **Custom sidechannel / websocket** (recommended for richer, lower-latency human channels)
-
-* Use Unity→Python **side-channel** or a dedicated **ZeroMQ / gRPC** link for streaming high-rate sensor data (eye gaze 120Hz, hand poses). Use JSON for messages. The training loop still uses ML-Agents actions; sidechannel provides continuous human signal stream for the human modelling service.
-
-
-### 5.3 Time sync & timestamps
-
-* Unity timestamps every sensor sample with a monotonic Unity clock. Python side uses the timestamp to align human events with agent timesteps. Record both device timestamps and system timestamps to correct drift.
-
-### 5.4 Data formats
-
-* **Sensor frame:** `{timestamp, head_pose, left_hand_pose, right_hand_pose, gaze_origin, gaze_dir, audio_chunk_id, controller_buttons}`
-* **Teacher label message:** `{timestamp, label_type: explicit/implicit, value: +1/-1/0, confidence_source: controller/gaze/nod/ASR, raw_modalities_snapshot_id}`
+Features 8 and 9 are **body-relative**: both are divided by `h_person = max(0.1, head_y − floor_y)`, making them scale-invariant across the NPC rig and VR participants of differing heights. Hip position is approximated as 55% of standing height from the head transform (no separate hip bone needed). Additive noise η ~ U(−0.05, +0.05) is applied each step; observations are sampled after a per-task delay (default 1.0 s ± 0.2 s jitter) to capture mid-gesture state.
 
 ---
 
+## Action Space (5 discrete actions)
 
-
-## 6. Data Structures and Message Protocols
-
-### 6.1 Unity to Python Communication
-
-**Agent State Representation**
-Encapsulates the complete observable state of the environment including gesture information, action history, etc. 
-
-**Human Feedback Structure**
-Standardizes multimodal input from VR devices into a unified format with confidence scoring and modality tracking. Supports both explicit intentional feedback and implicit behavioral cues.
-
-**Feedback Types**
-- Explicit ratings through controller input
-- Implicit signals from body language and gaze
-
-### 6.2 Python to Unity Communication
-
-**Action Response Format**
-Communicates AI decisions back to the simulation with supporting information for analysis and debugging.
-
-**Response Components**
-- Action selection and behavioral commands
+| ID | Name | Correct context |
+|---|---|---|
+| 0 | DoNothing | NPC > 5 m away |
+| 1 | Talk | Task ID 6 (talk request) |
+| 2 | Look | NPC ≤ 5 m nearby |
+| 3 | Wave | Task ID 7 (wave request) |
+| 4 | HandShake | Task ID 2 (handshake request) |
 
 ---
 
-## 7. Configuration Management System
+## Reward Function (Autonomous baseline)
 
-### 7.1 Unity Configuration
-Centralized management of simulation parameters, communication settings, and VR configuration with the capability of adjustment in runtime.
+| Condition | Reward |
+|---|---|
+| Correct action (most tasks) | +1.0 |
+| Wrong action | −0.2 |
+| Correct DoNothing when far | +0.001 |
+| Per step (always) | −0.0001 |
 
-```csharp
-// Scripts/Utilities/ConfigManager.cs
-public class ConfigManager : MonoBehaviour
-{
-    [Header("Communication Settings")]
-    public string pythonHost = "localhost";
-    public int feedbackPort = 5558;
-    
-    [Header("Training Settings")]
-    public float timeScale = 1.0f;
-    public int maxStepsPerEpisode = 100;
-    
-    [Header("VR Feedback Settings")]
-    public float headNodThreshold = 0.8f;
-    public float headShakeThreshold = 0.8f;
-    public float gazeAttentionThreshold = 0.6f;
-    public float feedbackConfidenceThreshold = 0.7f;
-    
-    [Header("Robot Settings")]
-    public float animationTransitionTime = 0.3f;
-    public float actionExecutionTime = 2.0f;
-}
+A **reward gate** in `CommunicationManager` ensures only the first action per task event receives a reward, preventing spamming. In IRL modes the autonomous reward function is bypassed entirely — `EvaluateReward()` returns immediately and all reward comes from the active `IRewardProvider`.
+
+**Accuracy is derived purely from reward in `AccuracyTracker`:**
+- `reward > 0.0` -> correct
+- `reward < -0.05` -> wrong
+- anything between (living penalty) -> ignored
+
+---
+
+## Hyperparameter Sweep
+
+10 configurations × 3 seeds = 30 runs, each varying one group relative to the baseline. Configs run in parallel via `multiprocessing.Pool` with up to `MAX_PARALLEL = 10` simultaneous Unity instances.
+
+| Config | Change | Final Acc. | Steps to 80% | Max Avg Reward |
+|---|---|---|---|---|
+| config1 | Baseline | 63.0% | 12k | 4.30 |
+| config2 | lr = 0.0001 | 50.9% | 33k | 3.28 |
+| **config3** | **lr = 0.001** | **65.2%** | **7k** | **4.69** |
+| config4 | hidden = 256 | 64.9% | 8k | 4.52 |
+| config5 | hidden = 64 | 57.1% | 23k | 3.97 |
+| config6 | entropy high | 54.1% | 35k | 3.54 |
+| config7 | entropy low | 63.5% | 12k | 4.40 |
+| config8 | rollout = 512 | 57.7% | 19k | 4.08 |
+| config9 | rollout = 128 | 64.4% | 10k | 4.44 |
+| config10 | epsilon = 0.1 | 60.2% | 14k | 4.34 |
+
+**config3** (lr=0.001, hidden=128) selected for COACH - best accuracy, fastest convergence, compact network reducing overfitting risk during the short fine-tuning phase.
+
+---
+
+## Running the Project
+
+### Prerequisites
+
+```bash
+pip install torch==2.0.1 mlagents==1.1.0 numpy pyyaml matplotlib pandas
 ```
 
-### 7.2 Python Configuration
-Hierarchical configuration system using YAML files for experiment management, algorithm tuning, and system parameters.
+Unity project requires:
+- Unity **6000.0.59f2**
+- ML-Agents C# package **4.0.0** (`com.unity.ml-agents`)
+- OpenXR plugin (VR condition)
 
-```yaml
-# configs/training_config.yaml
-training:
-  max_episodes: 1000
-  max_steps_per_episode: 100
-  learning_rate: 0.001
-  batch_size: 32
+---
 
-agent:
-  type: "DQN"  #placeholder
-  state_dim: 10
-  action_dim: 4
-  hidden_layers: [128, 128]
+### Stage 1 — PPO Hyperparameter Sweep
 
-feedback:
-  explicit_weight: 1.0
-  implicit_weight: 0.7
-  confidence_threshold: 0.6
-  modality_weights:
-    controller: 1.0
-    head_pose: 0.8
-    gaze: 0.6
-    voice: 0.9
-  fusion_method: "weighted_average"
-
-environment:
-  reward_correct: 10.0
-  reward_incorrect: -5.0
-  reward_delay: -1.0
-  human_feedback_reward_scale: 2.0
-
-communication:
-  protocol: "ros2"
-  feedback_port: 5558
-  timeout_ms: 1000
-  retry_attempts: 3
+In `train.py`, set:
+```python
+VR_MODE = False
+RESUME_FROM = None
 ```
----
 
-## 8. Implementation Specifications
+Then run:
+```bash
+cd Python/training/agents
+python train.py
+# Discovers all YAMLs in configs/, runs up to MAX_PARALLEL=10 in parallel
+# Each run saves to: training_logs/run_seed{N}_{config}_{fresh|resumed}_{timestamp}/
+#   model_final.pt
+#   rewards_final.csv
+#   accuracy_final.csv
+```
 
-This section describes how the previously defined system design is realized in practice. It focuses on implementation responsibilities and execution flow, without repeating architectural, algorithmic, or data structure details already presented in earlier sections.
-
-### 8.1 Implementation Scope
-
-The implementation follows the system design exactly as specified in this document. Unity is used only for simulation, VR interaction, and data collection, while all learning, optimization, and feedback interpretation logic is implemented in Python. No learning logic is embedded inside the Unity project.
-
-The implemented system supports three training modes:
-
-* Autonomous reinforcement learning
-* Interactive reinforcement learning with keyboard input
-* Interactive reinforcement learning with VR-based multimodal feedback
-
-These modes share the same environment and learning pipeline and differ only in how feedback is generated and weighted.
-
----
-
-### 8.2 Unity Implementation Responsibilities
-
-On the Unity side, the implementation includes:
-
-* The greeting interaction environment and episode logic
-* The robot avatar and its executable greeting actions
-* VR device integration and sensor data capture
-* Packaging of observations and human feedback into structured messages
-
-Unity acts as a real-time simulator and input collector. It does not evaluate behavior quality, assign meaning to feedback, or update learning models. All collected data is forwarded unchanged to the Python side for processing and learning.
+Analyse results:
+```bash
+python analyse_runs.py
+# Outputs: training_logs/analysis/sweep_results.csv
+#          training_logs/analysis/definitive_summary.csv
+#          training_logs/analysis/plots/
+```
 
 ---
 
-### 8.3 Communication Implementation
+### Stage 2a — COACH Keyboard Fine-Tuning
 
-The communication layer is implemented using **Unity ML-Agents**, which handles the exchange of observations, actions, rewards, and episode signals between Unity and the Python training process. Human feedback that does not follow the agent step loop is transmitted through **ML-Agents side channels**, allowing asynchronous feedback with preserved timestamps. This enables the learning system to correctly align delayed or high-frequency human feedback with agent behavior.
+In `train.py`, set:
+```python
+VR_MODE = True   # reads from configs/Finetune/coach_config.yaml
+RESUME_FROM = "training_logs/run_seed42_config3 (2)_fresh_.../model_final.pt"
+```
 
----
-
-### 8.4 Learning System Implementation
-
-The Python implementation integrates the reinforcement learning agent, the human feedback model, and the training loop into a single pipeline. The agent is trained only in Python, using observations and feedback received from Unity.
-
-Human feedback is processed through a learned model before influencing the agent’s updates. This design choice allows the system to handle noisy, delayed, or partial feedback and avoids relying on raw human input as a direct reward signal.
-
-All training runs, intermediate models, and evaluation data are logged automatically to support later comparison and analysis.
-
----
-
-### 8.5 Temporal Handling and Feedback Assignment
-
-The implementation includes a lightweight mechanism for associating human feedback with recent agent behavior. Instead of assuming perfect timing, feedback is linked to short windows of past interaction.
-
-This allows the system to remain robust to natural human reaction delays and variation in feedback timing, without requiring strict synchronization.
+Then:
+1. Open Unity project, load the **Keyboard scene**  OR use the KeyboardCOACH Build in the Data/Builds folder
+2. Press Play in the Unity Editor (if in Unity)
+3. Run:
+```bash
+python train.py
+# Script prints: "Waiting for Unity Editor - Press play now ..."
+# Teacher uses ↑ (correct) and ↓ (wrong) arrow keys during live session
+# Updates fire immediately when |reward| > 0.05
+```
 
 ---
 
-### 8.6 Configuration and Reproducibility
+### Stage 2b — COACH VR Fine-Tuning
 
-All implementation parameters are controlled through configuration files. This includes training settings, feedback weighting, and runtime options.
+Same as Stage 2a but:
+1. Open Unity project, load the **VR scene** (replaces NPC with VRPersonController) OR use the VRCOACH Build in the Data/Builds folder
+2. Connect VR Headset
+3. Same `train.py` command — teacher uses controller buttons, head nods/shakes, voice commands
 
-As a result, different experimental conditions can be reproduced and compared without modifying the implementation code, supporting systematic evaluation.
+---
 
+### Evaluation
+
+```bash
+# Compare PPO baseline vs COACH checkpoint (2000 steps each)
+python test_compare_models.py
+
+# Per-action accuracy breakdown
+python test_pet_task_accuracy.py
+```
+
+---
+
+## COACH Algorithm
+
+COACH performs an **immediate policy gradient update** after every non-trivial feedback event (`|r| > 0.05`), as implemented in `algorithms/coach.py`:
+
+```
+θ ← θ − α · ∇_θ [ −f_t · log π_θ(a_t | s_t) − c2 · H[π_θ(· | s_t)] ]
+```
+
+- `f_t` — scalar human feedback (+1 or −1)
+- Positive reinforces the chosen action; negative suppresses it and redistributes mass
+- Entropy term `c2 · H[π]` keeps the policy explorative during fine-tuning
+- No rollout buffer, value function, or advantage estimation needed - one `(s, a, f)` triple per update
+- Updates only fire when `|r| > 0.05` (threshold from `utils.REWARD_NEGATIVE_THRESHOLD`) so the −0.0001 per-step penalty is silently ignored
+
+`COACHAgent` is fully interface-compatible with `train.py`'s PPO loop:
+
+| `train.py` call | `COACHAgent` behaviour                                |
+|---|-------------------------------------------------------|
+| `act(obs)` | Returns `(action, 0.0, log_prob)` - fake critic value |
+| `get_value(obs)` | Returns `0.0` - no critic needed                      |
+| `store_transition(...)` | Fires `_coach_update()` immediately if `              |r| > 0.05` |
+| `update(next_value)` | No-op - PPO rollout call, harmless                    |
+| `save(path)` | Same `.pt` format as PPO, adds `coach_updates` key    |
+| `load(path)` | Loads PPO weights, resets optimiser to COACH lr       |
+
+Switching from PPO to COACH requires exactly **two changes**: set `algorithm: coach` in the config and point `RESUME_FROM` to the PPO checkpoint.
+
+---
+
+## VR Multimodal Feedback Fusion
+
+`VRMultimodalReward.cs` implements priority-based fusion of three simultaneous modalities:
+
+| Modality | Reward magnitude | Priority |
+|---|---|---|
+| Controller button | ±1.0 | Highest |
+| Voice command ("good"/"bad") | ±0.75 | Medium |
+| Head gesture (nod / shake) | +0.5 / −0.5 | Lowest |
+
+When multiple signals arrive simultaneously the highest-priority modality wins. A cooldown window prevents the same gesture from firing multiple times. Only one signal is emitted per decision step.
+
+---
+
+## Key Design Decisions
+
+**Why COACH instead of continued PPO for fine-tuning?**
+PPO requires 256–2048 steps per gradient update. With ~164 feedback steps total, at most one PPO update is possible — far too noisy to shift a converged policy. COACH's per-event mechanism works with a single `(s, a, f)` triple and produces a useful gradient immediately.
+
+**Why body-signal observations instead of task IDs?**
+Explicit task labels would make the system trivial and non-generalisable to a real Pepper deployment. Body-signal features allow the agent to infer intent from posture - the same information a physical robot would have access to.
+
+**Why body-relative normalisation?**
+Fixed constants (e.g., divide wrist height by 2.5 m globally) break when a live human replaces the NPC in VR, because absolute wrist heights vary with each person's height. Dividing by `h_person = head_y − floor_y` makes features scale-invariant across participants without needing a separate hip bone in the VR rig.
+
+**Why is the VR condition not executed?**
+The NPC's capsule collider and the VR person controller's rigid-body configuration are physically incompatible — this causes collision artefacts that prevent stable NPC–participant interaction during live sessions. Fix: switch the NPC to a trigger collider or adjust the VR controller physics layer mask.
+
+---
+
+## Known Issues & Limitations
+
+- **VR physical incompatibility:** Resolve collider conflict to enable live VR COACH sessions
+- **Talk action still suppressed:** 164 steps shifted Look->HandShake/Wave but did not surface Talk; a longer session with ~50% Talk-biased task distribution is expected to complete the correction
+- **Single teacher:** Inter-teacher variability in timing and consistency not assessed
+- **Simulation only:** Transfer to a physical Pepper with RGB-D pose estimation not evaluated
+- **Stale placeholder in methodology:** Section IV-H mentions "76.0% accuracy / 7.2% Talk decisions" — these are draft numbers that should read 74.14% / 0% per the actual results
+
+---
+
+## AI Assistance Disclosure
+
+**DeepSeek** — initial code scaffolding, YAML templates, LaTeX table formatting, equation formatting.  
+**Claude (Anthropic)** — COACH algorithm design, body-relative normalisation derivation, training pipeline architecture, code review.  
+All AI-generated content was reviewed, tested, and modified by the author. All training runs and experimental results are entirely the author's own work.

@@ -1,0 +1,4 @@
+Config,Final Accuracy (%),Steps to 80%,Max Avg100 Reward
+coach_config,66.2 +- 0.0,8k +- 0k,4.72 +- 0.00
+config3 (2),66.4 +- 0.0,8k +- 0k,4.72 +- 0.00
+config4,66.4 +- 0.0,9k +- 0k,4.50 +- 0.00

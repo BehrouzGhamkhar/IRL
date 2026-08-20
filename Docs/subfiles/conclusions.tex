@@ -1,0 +1,95 @@
+%!TEX root = ../report.tex
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+    \section{Conclusions}
+    \label{sec:conclusions}
+
+    \subsection{Summary}
+    \label{sec:conclusions:summary}
+
+    This report presented a complete Interactive Reinforcement Learning system for training a Pepper robot to perform contextually appropriate social greeting behaviours. An autonomous PPO baseline was trained first to establish performance benchmarks and identify failure modes. Two independent COACH fine-tuning conditions---keyboard and VR---were implemented from the same PPO checkpoint; the keyboard condition was successfully evaluated, while the VR condition was architecturally complete but could not be executed due to a physical body incompatibility between the NPC rig and the VR person controller.
+
+    Key findings include:
+
+    \begin{itemize}
+        \item A PPO agent with a 12-dimensional observation space incorporating body-signal features (wrist height, wrist-to-core distance, body orientation, gaze direction) achieved 66.4\% final training accuracy and 74.14\% test accuracy in 9,256 episodes ($\sim$150k steps), demonstrating the viability of implicit posture-based cues over explicit task labels.
+
+        \item A hyperparameter sweep across 10 configurations (3 seeds each, 30 total runs) confirmed learning rate as the most influential factor: lr=0.001 (config3) achieved the highest mean accuracy (65.2\%) and fastest convergence (7k steps to 80\%).
+
+        \item The body-signal observation space revealed a persistent Talk action suppression (0 Talk occurrences in 2,000 evaluation steps), attributable to feature overlap between the Talk and Look conditions. This failure mode is inaccessible to the hand-crafted reward function and motivated the COACH fine-tuning conditions.
+
+        \item COACH keyboard fine-tuning with only 164 interaction steps increased action distribution entropy from 1.39 to 1.79 bits and raised HandShake occurrences 6.85$\times$ (20 to 137), without degrading HandShake accuracy (81.75\%) or overall task accuracy (72.37\% vs 74.14\% baseline).
+
+        \item COACH VR fine-tuning was fully implemented with a priority-based multimodal feedback interface (controller buttons, head gestures, voice commands) but could not be completed due to NPC--VR person physical body incompatibility during live interaction sessions.
+
+        \item Body-signal observations were redesigned to use body-relative normalisation, dividing wrist height and wrist-to-core distance by the person's own standing height, rendering features scale-invariant across the NPC rig and VR participants of differing heights.
+
+        \item Post-convergence policy stability for the autonomous condition was measured at $\sigma = $ 0.72 in the rolling reward window.
+    \end{itemize}
+
+    \subsection{Contributions}
+    \label{sec:conclusions:contributions}
+
+    This study makes the following specific contributions:
+
+    \begin{enumerate}
+        \item \textbf{System Architecture:} A complete integration of Unity ML-Agents with PyTorch PPO and COACH, including a \texttt{CommunicationManager} that implements multimodal VR signal fusion, body-signal feature extraction, and seamless switching between autonomous and IRL reward modes.
+
+        \item \textbf{Hyperparameter Characterisation:} Systematic evaluation of 10 configurations (3 seeds each, 30 total runs) providing empirical guidance for future researchers working on similar social greeting tasks.
+
+        \item \textbf{Performance Benchmarking:} Quantitative reference values for the autonomous condition (66.4\% training accuracy, 74.14\% test accuracy, $\sim$9k steps to 80\%, $\sigma = $ 0.72) against which IRL methods are compared.
+
+        \item \textbf{COACH Fine-Tuning Pipeline:} Implementation of COACH as a targeted correction mechanism that loads pre-trained PPO weights and corrects a specific action bias using as few as 164 human feedback events, with full interface compatibility with the existing PPO training loop requiring only one line change in the algorithm registry.
+
+        \item \textbf{Body-Relative Observation Normalisation:} A scale-invariant normalisation scheme ensuring consistent feature representations across NPC training and live VR participants, with the approximate hip position derived dynamically as 55\% of standing height from the head transform alone.
+
+        \item \textbf{Multimodal VR Feedback Interface:} A priority-based fusion of controller buttons, head gestures, and voice commands into scalar reward signals, with the COACH feedback threshold filtering per-step penalties from genuine corrective signals.
+
+        \item \textbf{Reproducible Artifacts:} Complete YAML configuration files (config1.yaml--config10.yaml and coach\_config.yaml) and training code available for replication and extension.
+    \end{enumerate}
+
+    \subsection{Limitations}
+
+    Several limitations of this work should be noted:
+
+    \begin{enumerate}
+        \item \textbf{VR COACH not executed:} The VR fine-tuning condition could not be completed due to a physical body incompatibility between the NPC capsule collider and the VR person controller's rigid-body configuration, which caused collision artefacts preventing stable NPC--participant interaction during live sessions. The VR interface itself was fully implemented and validated in isolation.
+
+        \item \textbf{Short COACH fine-tuning budget:} The keyboard COACH session comprised only 164 interaction steps. While this was sufficient to observe a meaningful shift in action distribution entropy and HandShake frequency, it was not sufficient to fully surface Talk action selections. A longer session with continued Talk-biased task distribution is expected to complete the Talk correction.
+
+        \item \textbf{Single human teacher:} The keyboard COACH fine-tuning used a single teacher, limiting generalisability of the feedback quality analysis. Inter-teacher variability in signal consistency and timing was not assessed.
+
+        \item \textbf{Simulated environment:} All training and evaluation occurred in simulation. Transfer to a physical Pepper robot with real human pose estimation was not evaluated.
+
+        \item \textbf{Fixed NPC task distribution:} The NPC selects tasks uniformly at random, which may not reflect naturalistic greeting frequency distributions in real deployments.
+
+        \item \textbf{No formal user study:} A structured user study comparing perceived workload (NASA-TLX) between keyboard and VR interfaces was outside the scope of this work.
+    \end{enumerate}
+
+    \subsection{Future Work}
+    \label{sec:conclusions:future_work}
+
+    \begin{enumerate}
+        \item \textbf{VR COACH Execution:} Resolve the NPC--VR person physical body incompatibility (e.g., switching the NPC to a trigger collider or adjusting the VR controller layer mask) and conduct a full VR fine-tuning session to enable direct comparison with the keyboard condition.
+
+        \item \textbf{Extended COACH Fine-Tuning:} Continue the keyboard COACH session beyond 164 steps with a Talk-biased task distribution to determine the minimum number of feedback events required to surface Talk action selections and achieve measurable Talk task accuracy.
+
+        \item \textbf{Predictive Feedback Model:} Train a reward model on the 164 keyboard feedback events collected in this work to predict human reward signals for unseen state--action pairs, then use this model to generate synthetic feedback at scale across many parallel simulations. This directly addresses the fundamental scalability bottleneck of human-in-the-loop systems.
+
+        \item \textbf{Multi-Teacher Evaluation:} Conduct a within-subjects study (N $\geq$ 10) where multiple participants teach the agent using both keyboard and VR interfaces, enabling formal measurement of inter-teacher variability, workload (NASA-TLX), and interface preference.
+
+        \item \textbf{Adaptive Entropy Scheduling:} Develop a COACH entropy schedule that adjusts dynamically based on the observed diversity of human feedback, increasing exploration when feedback is conflicting or the target action is not being naturally explored.
+
+        \item \textbf{Real Robot Deployment:} Transfer the learned policy to a physical Pepper robot, evaluating whether the body-relative normalisation scheme generalises to real-world human pose estimation from RGB-D cameras or skeletal tracking.
+
+        \item \textbf{Broader Task Generalisation:} Extend the greeting task to a larger action space and more socially diverse scenarios, evaluating whether the PPO-plus-COACH pipeline scales to tasks with more severe action imbalances or higher human feedback variance.
+    \end{enumerate}
+
+    \subsection{Final Remarks}
+
+    The autonomous baseline demonstrates that a PPO agent can learn functionally appropriate greeting behaviours from a hand-crafted reward function using body-signal observations. However, the hand-crafted reward function cannot accommodate the nuance and individual variation of real human social interactions, nor correct the action biases that emerge from feature overlap in the observation space.
+
+    The interactive RL extension partially addresses both limitations. Keyboard COACH fine-tuning with only 164 feedback events produced a measurable increase in policy diversity (entropy: 1.39 $\to$ 1.79 bits) and a 6.85$\times$ increase in HandShake engagement, confirming that even a minimal human feedback budget is sufficient to begin correcting deep-rooted action biases. The VR multimodal feedback infrastructure was fully built and is ready to execute once the NPC--VR body compatibility issue is resolved. Together, the implemented conditions demonstrate a practical and reproducible path from autonomous RL training to human-corrected deployment, requiring only a single shared PPO checkpoint and a short human feedback session to achieve meaningful improvement on the most challenging behaviours in the task.
+
+\end{document}

@@ -1,0 +1,69 @@
+C:\Users\User\anaconda3\envs\mlagents310\python.exe D:\jozavat\MAS\Semester4\R&D\docs\gitlab\Python\training\agents\analyse_runs.py
+
+============================================================
+ANALYSING RUNS IN: training_logs
+Convergence: rolling avg >= 0.8 for 50 consecutive episodes
+============================================================
+
+  Skipping (unrecognised folder name): analysis
+  Skipping (unrecognised folder name): old
+  Skipping (unrecognised folder name): plots
+  Loaded: run_seed41_config10_fresh_20260513_200900 (seed=41, episodes=5231)
+  Loaded: run_seed41_config1_fresh_20260513_200855 (seed=41, episodes=5691)
+  Loaded: run_seed41_config2_fresh_20260513_200905 (seed=41, episodes=4395)
+  Loaded: run_seed41_config3_fresh_20260513_200911 (seed=41, episodes=6232)
+  Loaded: run_seed41_config4_fresh_20260513_200916 (seed=41, episodes=5995)
+  Loaded: run_seed41_config5_fresh_20260513_200921 (seed=41, episodes=5238)
+  Loaded: run_seed41_config6_fresh_20260513_200926 (seed=41, episodes=4630)
+  Loaded: run_seed41_config7_fresh_20260513_200932 (seed=41, episodes=5314)
+  Loaded: run_seed41_config8_fresh_20260513_200937 (seed=41, episodes=4916)
+  Loaded: run_seed41_config9_fresh_20260513_200943 (seed=41, episodes=5491)
+
+Found 10 runs across 10 configs.
+
+
+Sweep results saved -> training_logs\analysis\sweep_results.csv
+
+Config           Accuracy  Steps-to-80    MaxAvg100     Post-σ  Seeds
+--------------------------------------------------------------------
+config1             71.8%           5k         6.01       1.13      1
+config2             54.9%          10k         4.94       1.18      1
+config3             77.4%           2k         6.55       0.96      1
+config4             75.7%           3k         6.24       1.13      1
+config5             69.3%           5k         5.75       1.15      1
+config6             61.6%          10k         5.18       1.00      1
+config7             61.7%           6k         5.63       0.90      1
+config8             55.2%           6k         5.48       1.06      1
+config9             72.5%           8k         6.00       0.91      1
+config10            65.6%           4k         5.91       1.06      1
+
+Best config (highest mean final accuracy): config3
+Seed variance table configs: ['config3', 'config4', 'config9']
+Seed variance saved -> training_logs\analysis\seed_variance.csv
+Definitive summary saved -> training_logs\analysis\definitive_summary.csv
+
+=======================================================
+DEFINITIVE RUN SUMMARY  (run_seed41_config3_fresh_20260513_200911)
+=======================================================
+  Final task accuracy (last 5.0% of episodes)   77.4%
+  Final rolling avg reward (last 100)           6.13
+  Steps to 80% accuracy                         2k
+  Episode of first 80% accuracy                 90
+  Max episode reward                            10.80
+  Min episode reward                            -6.00
+  Post-convergence reward std dev               0.96
+  Total episodes                                6232
+  Total steps                                   99k
+  Seed                                          41
+  Folder                                        run_seed41_config3_fresh_20260513_200911
+=======================================================
+
+Reward curve saved -> training_logs\analysis\training_logs/plots\reward_curve_config3.png
+Accuracy curve saved -> training_logs\analysis\training_logs/plots\accuracy_curve_config3.png
+Comparison plot saved -> training_logs\analysis\training_logs/plots\all_configs_comparison.png
+
+All outputs saved to: training_logs\analysis/
+Done.
+
+
+Process finished with exit code 0

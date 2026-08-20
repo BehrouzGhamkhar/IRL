@@ -1,0 +1,99 @@
+%!TEX root = ../report.tex
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+    \section{Background}
+    \label{sec:background}
+
+    \subsection{Reinforcement Learning}
+
+    Reinforcement Learning (RL) is a machine learning paradigm in which an autonomous agent learns to make sequential decisions by interacting with an environment. The core objective is to discover a policy—a mapping from environment states to actions—that maximises a cumulative numerical reward signal \cite{Lin2020}. This interaction is formally modelled as a Markov Decision Process (MDP), defined by the tuple $(S, A, P, R, \gamma)$, where $S$ is the set of states, $A$ is the set of actions, $P(s_{t+1} \mid s_t, a_t)$ is the state-transition probability, $R(s_t, a_t, s_{t+1})$ is the reward function, and $\gamma \in [0,1]$ is a discount factor weighting immediate versus future rewards.
+
+    The agent's goal is to learn an optimal policy $\pi^*(a \mid s)$ that maximises the expected cumulative discounted return $G_t = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}$. The state-value function $V^{\pi}(s)$ and the action-value function $Q^{\pi}(s, a)$ estimate the expected return from state $s$ under policy $\pi$, and after taking action $a$ in state $s$ and thereafter following $\pi$, respectively.
+
+    \subsection{Proximal Policy Optimisation}
+
+    Proximal Policy Optimisation (PPO) \cite{Schulman2017} is a policy gradient algorithm that achieves stable updates by clipping the probability ratio between old and new policies. The PPO objective function is:
+
+    \begin{equation}
+        L^{CLIP}(\theta) = \hat{\mathbb{E}}_t \left[ \min\left( r_t(\theta) \hat{A}_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_t \right) \right]
+        \label{eq:ppo}
+    \end{equation}
+
+    where $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}$ is the probability ratio, $\hat{A}_t$ is the advantage estimate, and $\epsilon$ is the clip parameter (set to $\epsilon = 0.2$ in our experiments). The clipping mechanism prevents destructively large policy updates, improving stability compared to vanilla policy gradient methods.
+
+    The advantage is estimated using Generalised Advantage Estimation (GAE) \cite{Schulman2015}:
+
+    \begin{equation}
+        \hat{A}_t^{\text{GAE}(\gamma,\lambda)} = \sum_{l=0}^{\infty} (\gamma\lambda)^l \delta_{t+l}
+        \label{eq:gae}
+    \end{equation}
+
+    where $\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$ is the TD error and $\lambda$ is the GAE parameter (set to $\lambda = 0.95$ in our experiments), controlling the bias-variance trade-off in advantage estimation.
+
+    The total loss combines policy, value function, and entropy terms:
+
+    \begin{equation}
+        L_t^{\text{total}} = L_t^{\text{CLIP}} - c_1 L_t^{\text{VF}} + c_2 S[\pi_\theta](s_t)
+        \label{eq:loss}
+    \end{equation}
+
+    where $c_1 = 0.5$ (value loss coefficient), $c_2$ is the entropy coefficient (annealed from $0.1$ to $0.02$ over training), and $S$ is the entropy bonus that encourages exploration by penalising deterministic policies \cite{Williams1991}.
+
+    \subsection{Interactive Reinforcement Learning}
+
+    IRL extends the standard RL framework by replacing or augmenting the engineered reward signal $R$ with feedback from a human teacher. Formally, at each timestep $t$ the agent receives a human-provided signal $H_t \in \mathbb{R}$ (e.g., $+1$ for approval, $-1$ for disapproval) that is added to or substitutes for the environmental reward:
+
+    \begin{equation}
+        r_t^{\text{IRL}} = \lambda_e R(s_t, a_t) + \lambda_h H_t,
+        \label{eq:irl_reward}
+    \end{equation}
+
+    where $\lambda_e$ and $\lambda_h$ are weighting coefficients. This formulation, sometimes called \emph{reward shaping with human feedback}, allows the teacher to steer the agent's learning without needing to specify a complete reward function \cite{Faulkner2020}. In our implementation the two conditions are architecturally exclusive rather than blended at runtime: in the autonomous baseline $\lambda_h = 0$ (no human signal), and in the pure IRL conditions (keyboard and VR) $\lambda_e = 0$ (the autonomous reward function is bypassed entirely and all reward delivery is handled by the active \texttt{IRewardProvider}). Equation~\ref{eq:irl_reward} therefore serves as a conceptual framing of the design space rather than a runtime weighted sum.
+
+    \subsection{COACH: Corrective Advice Communicated by Humans}
+    \label{sec:background:coach}
+
+    COACH \citep{Lin2020} is an IRL algorithm designed specifically for the low-sample regime in which on-policy batch methods such as PPO are infeasible. Rather than accumulating rollout buffers for batch updates, COACH performs a single policy gradient step immediately after every non-trivial human feedback signal:
+
+    \begin{equation}
+        \mathcal{L}_{\text{COACH}}(\theta) = -f_t \log \pi_\theta(a_t \mid s_t) - c_2 \mathcal{H}[\pi_\theta(\cdot \mid s_t)]
+        \label{eq:coach}
+    \end{equation}
+
+    where $f_t \in \mathbb{R}$ is the scalar feedback at step $t$, $\pi_\theta(a_t \mid s_t)$ is the policy probability of the taken action, and $c_2 \mathcal{H}[\pi_\theta]$ is an entropy bonus that maintains exploration during fine-tuning. Positive feedback ($f_t > 0$) reinforces the chosen action by increasing its log-probability; negative feedback ($f_t < 0$) suppresses it and implicitly redistributes probability mass to alternative actions.
+
+    This formulation has three properties that make it well-suited to VR fine-tuning. First, it requires no rollout buffer, value function, or advantage estimation—a single $(s_t, a_t, f_t)$ triple is sufficient for a gradient update. Second, updates are triggered only when $|f_t| > \epsilon_{\text{threshold}}$ (set to 0.05 in our implementation), so the small per-step penalty ($-0.0001$) is silently ignored. Third, the policy gradient is the same mathematical object as the actor update in a standard actor-critic, so a network pre-trained by PPO can be loaded directly into the COACH agent without architectural changes.
+
+    \subsubsection{Why PPO Cannot Learn from Sparse Human Feedback}
+
+    PPO requires batch sizes of 256--2048 steps per gradient update for stable training; with $\approx$200 VR interaction steps available in total, at most one or two PPO updates are possible, producing gradient estimates far too noisy to shift a converged policy. The situation is compounded by action sparsity: the target action (Talk) appears in only $\sim$7\% of natural encounters, yielding fewer than 15 Talk-state feedback events in a 200-step VR session—insufficient for PPO's batch normalisation and clipping mechanisms to function correctly. COACH's immediate, per-event update mechanism circumvents both limitations, making it the appropriate algorithm for this fine-tuning stage.
+
+    \subsection{Multimodal Signal Fusion for Reward}
+
+    When the feedback channel is a VR headset, the teacher's intent may be expressed through multiple simultaneous modalities: explicit controller button presses (low latency, high reliability), implicit head gestures (nod for positive, shake for negative, medium latency), and spoken voice commands (higher latency, variable reliability). Each modality carries different characteristics.
+
+    A fusion function $\Phi(\cdot)$ maps the vector of active modality readings $\mathbf{m}_t = (m^{\text{btn}}_t, m^{\text{head}}_t, m^{\text{voice}}_t)$ to a scalar reward:
+
+    \begin{equation}
+        H_t = \Phi(\mathbf{m}_t) \in [-1, +1].
+        \label{eq:fusion}
+    \end{equation}
+
+    In practice each modality produces a fixed scalar magnitude rather than a binary value: controller buttons emit $\pm1.0$, voice commands emit $\pm0.75$, and head gestures (nod/shake) emit $+0.5$/$-0.5$. Designing $\Phi$ to be robust to noise and modality conflicts---e.g., a head nod occurring simultaneously with a negative button press---is one of the central engineering challenges addressed in Sec.~\ref{sec:methodology}. In our implementation, we adopt a simple priority-based fusion: explicit button inputs override other modalities when present, followed by voice, followed by head gestures, with a cooldown window to prevent repeated signals from a single gesture.
+
+    \subsection{The Greeting Task as an MDP}
+
+    Our greeting interaction scenario is formally defined as an MDP with the following components:
+
+    \textbf{State Space $S$:} 12-dimensional continuous vector as detailed in Table~\ref{tab:obs}. This includes Pepper's internal state (5-dim one-hot), normalised distance to the human (1-dim), handshake flags (2-dim binary), and body-signal features (4-dim continuous).
+
+    \textbf{Action Space $A$:} Five discrete actions: \texttt{DoNothing} (0), \texttt{Talk} (1), \texttt{Look} (2), \texttt{Wave} (3), \texttt{HandShake} (4).
+
+    \textbf{Transition Function $P$:} Deterministic transitions based on the selected action and the NPC's current task. The NPC task selection follows a uniform random distribution over the task pool.
+
+    \textbf{Reward Function $R$:} Defined in Table~\ref{tab:reward}. For the autonomous baseline, rewards are computed by \texttt{CommunicationManager} based on task-action matching. For IRL conditions, the human teacher provides the reward signal.
+
+    \textbf{Discount Factor $\gamma$:} Set to $\gamma = 0.99$, encouraging the agent to consider future rewards while maintaining sensitivity to immediate feedback.
+
+\end{document}

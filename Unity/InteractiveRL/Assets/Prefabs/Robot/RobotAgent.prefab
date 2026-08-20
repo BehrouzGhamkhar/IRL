@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 5984435420237209653}
   - component: {fileID: 4715299576254980323}
   - component: {fileID: 7277785155819243971}
-  - component: {fileID: 8456039903437502541}
   m_Layer: 0
   m_Name: RobotAgent
   m_TagString: Untagged
@@ -68,6 +67,8 @@ MonoBehaviour:
   headBone: {fileID: 881440186745511034}
   headRotationSpeed: 5
   lookAtDuration: 3
+  handshakeAttemptDelay: 2
+  handshakeReachDistance: 2
   onStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -109,7 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 16
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -145,23 +146,8 @@ MonoBehaviour:
   MaxStep: 0
   pepperController: {fileID: 4516865689799223475}
   communicationManager: {fileID: 0}
-  maxDecisionSteps: 2000
-  maxEpisodeDurationSeconds: 60
---- !u!114 &8456039903437502541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4345779840986717370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DecisionPeriod: 20
-  DecisionStep: 0
-  TakeActionsBetweenDecisions: 1
+  maxDecisionSteps: 400
+  maxEpisodeDurationSeconds: 120
 --- !u!1 &6363209247641912999
 GameObject:
   m_ObjectHideFlags: 0

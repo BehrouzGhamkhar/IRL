@@ -1,0 +1,34 @@
+behaviors:
+  PepperGreeting:
+    hyperparameters:
+      learning_rate: 0.0001          # Changed: lower learning rate
+      epsilon: 0.2
+      num_epoch: 4
+      num_mini_batch: 4
+      value_loss_coef: 0.5
+      entropy_start: 0.1
+      entropy_end: 0.02
+      lambd: 0.95
+    network_settings:
+      hidden_units: 128
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+    max_steps: 150000
+    rollout_steps: 256
+    max_grad_norm: 0.5
+
+env_settings:
+  obs_size: 12
+  act_size: 5
+
+engine_settings:
+  time_scale: 100.0
+
+checkpoint_settings:
+  run_id: PepperTrain_lr0.0001
+
+algorithm: ppo
+
+reproducibility:
+  seed: 41

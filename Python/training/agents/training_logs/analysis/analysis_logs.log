@@ -1,0 +1,112 @@
+﻿C:\Users\User\anaconda3\envs\mlagents310\python.exe D:\jozavat\MAS\Semester4\R&D\docs\gitlab\Python\training\agents\analyse_runs.py 
+
+============================================================
+ANALYSING RUNS IN: training_logs
+Convergence: rolling avg >= 0.8 for 50 consecutive episodes
+============================================================
+
+  Skipping (unrecognised folder name): Finetunes_runs
+  Skipping (unrecognised folder name): analysis
+  Skipping (unrecognised folder name): old
+  Skipping (unrecognised folder name): plots
+  Loaded: run_seed41_coach_config_resumed_20260530_170944 (seed=41, episodes=9586)
+  Loaded: run_seed41_config10_fresh_20260529_202900 (seed=41, episodes=8831)
+  Loaded: run_seed41_config1_fresh_20260529_202845 (seed=41, episodes=8811)
+  Loaded: run_seed41_config2_fresh_20260529_202915 (seed=41, episodes=7894)
+  Loaded: run_seed41_config3_fresh_20260529_231342 (seed=41, episodes=9825)
+  Loaded: run_seed41_config4_fresh_20260529_233648 (seed=41, episodes=9256)
+  Loaded: run_seed41_config5_fresh_20260529_233838 (seed=41, episodes=8366)
+  Loaded: run_seed41_config6_fresh_20260530_022300 (seed=41, episodes=7813)
+  Loaded: run_seed41_config7_fresh_20260530_023758 (seed=41, episodes=9367)
+  Loaded: run_seed41_config8_fresh_20260530_024121 (seed=41, episodes=8524)
+  Loaded: run_seed41_config9_fresh_20260530_025546 (seed=41, episodes=9035)
+  Loaded: run_seed42_config1 (2)_fresh_20260529_202838 (seed=42, episodes=8835)
+  Loaded: run_seed42_config10 (2)_fresh_20260529_202850 (seed=42, episodes=8796)
+  Loaded: run_seed42_config2 (2)_fresh_20260529_202905 (seed=42, episodes=7801)
+  Loaded: run_seed42_config3 (2)_fresh_20260529_202921 (seed=42, episodes=9574)
+  Loaded: run_seed42_config4 (2)_fresh_20260529_231709 (seed=42, episodes=9477)
+  Loaded: run_seed42_config5 (2)_fresh_20260529_233709 (seed=42, episodes=8109)
+  Loaded: run_seed42_config6 (2)_fresh_20260529_234131 (seed=42, episodes=7757)
+  Loaded: run_seed42_config7 (2)_fresh_20260530_023020 (seed=42, episodes=9323)
+  Loaded: run_seed42_config8 (2)_fresh_20260530_023837 (seed=42, episodes=8519)
+  Loaded: run_seed42_config9 (2)_fresh_20260530_024515 (seed=42, episodes=9151)
+  Loaded: run_seed43_config1 (3)_fresh_20260529_202840 (seed=43, episodes=9033)
+  Loaded: run_seed43_config10 (3)_fresh_20260529_202855 (seed=43, episodes=8899)
+  Loaded: run_seed43_config2 (3)_fresh_20260529_202910 (seed=43, episodes=7793)
+  Loaded: run_seed43_config3 (3)_fresh_20260529_231301 (seed=43, episodes=9568)
+  Loaded: run_seed43_config4 (3)_fresh_20260529_233600 (seed=43, episodes=9165)
+  Loaded: run_seed43_config5 (3)_fresh_20260529_233731 (seed=43, episodes=8595)
+  Loaded: run_seed43_config6 (3)_fresh_20260529_235400 (seed=43, episodes=7769)
+  Loaded: run_seed43_config7 (3)_fresh_20260530_023621 (seed=43, episodes=9317)
+  Loaded: run_seed43_config8 (3)_fresh_20260530_024112 (seed=43, episodes=8708)
+  Loaded: run_seed43_config9 (3)_fresh_20260530_025333 (seed=43, episodes=9016)
+
+Found 31 runs across 31 configs.
+
+
+Sweep results saved -> training_logs\analysis\sweep_results.csv
+
+Config           Accuracy  Steps-to-80    MaxAvg100     Post-σ  Seeds
+--------------------------------------------------------------------
+coach_config        66.2%           8k         4.72       0.72      1
+config1             61.3%          11k         4.27       0.78      1
+config1 (2)         61.8%          16k         4.28       0.74      1
+config1 (3)         65.9%          10k         4.34       0.76      1
+config2             52.6%          27k         3.42       0.61      1
+config2 (2)         48.5%          36k         3.15       0.56      1
+config2 (3)         51.5%          35k         3.27       0.55      1
+config3             65.0%           7k         4.64       0.65      1
+config3 (2)         66.4%           8k         4.72       0.72      1
+config3 (3)         64.2%           6k         4.72       0.76      1
+config4             66.4%           9k         4.50       0.72      1
+config4 (2)         65.8%           6k         4.61       0.80      1
+config4 (3)         62.5%          10k         4.44       0.70      1
+config5             57.5%          21k         3.98       0.62      1
+config5 (2)         55.9%          28k         3.91       0.62      1
+config5 (3)         58.0%          20k         4.02       0.72      1
+config6             56.1%          32k         3.70       0.77      1
+config6 (2)         51.8%          26k         3.45       0.81      1
+config6 (3)         54.5%          48k         3.47       0.65      1
+config7             64.2%           8k         4.43       0.74      1
+config7 (2)         63.8%          15k         4.44       0.62      1
+config7 (3)         62.6%          12k         4.34       0.61      1
+config8             59.3%          19k         4.33       0.70      1
+config8 (2)         54.8%          19k         3.83       0.65      1
+config8 (3)         58.9%          18k         4.09       0.74      1
+config9             65.2%           9k         4.50       0.81      1
+config9 (2)         62.6%          11k         4.51       0.70      1
+config9 (3)         65.5%           9k         4.32       0.82      1
+config10            60.9%          13k         4.42       0.75      1
+config10 (2)        58.2%          16k         4.37       0.74      1
+config10 (3)        61.5%          14k         4.22       0.75      1
+
+Best config (highest mean final accuracy): config4
+Seed variance table configs: ['config4', 'config3 (2)', 'coach_config']
+Seed variance saved -> training_logs\analysis\seed_variance.csv
+Definitive summary saved -> training_logs\analysis\definitive_summary.csv
+
+=======================================================
+DEFINITIVE RUN SUMMARY  (run_seed41_config4_fresh_20260529_233648)
+=======================================================
+  Final task accuracy (last 5.0% of episodes)   66.4%
+  Final rolling avg reward (last 100)           4.25
+  Steps to 80% accuracy                         9k
+  Episode of first 80% accuracy                 404
+  Max episode reward                            9.20
+  Min episode reward                            -12.11
+  Post-convergence reward std dev               0.72
+  Total episodes                                9256
+  Total steps                                   149k
+  Seed                                          41
+  Folder                                        run_seed41_config4_fresh_20260529_233648
+=======================================================
+
+Reward curve saved -> training_logs\analysis\training_logs/plots\reward_curve_config4.png
+Accuracy curve saved -> training_logs\analysis\training_logs/plots\accuracy_curve_config4.png
+Comparison plot saved -> training_logs\analysis\training_logs/plots\all_configs_comparison.png
+
+All outputs saved to: training_logs\analysis/
+Done.
+
+
+Process finished with exit code 0

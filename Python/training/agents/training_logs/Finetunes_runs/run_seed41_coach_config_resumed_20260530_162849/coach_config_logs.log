@@ -1,0 +1,40 @@
+
+Training on cuda | logs -> training_logs/run_seed41_coach_config_resumed_20260530_162849
+Config: ..\..\configs\Finetune\coach_config.yaml
+Episodes: 9256 -> ...
+Steps: 150000 -> 150100
+
+Loaded 9256 accuracy episodes from training_logs/run_seed41_config4_fresh_20260529_233648/accuracy_final.csv
+  [Step 150010] Action dist: A0:30% | A1:0% | A2:40% | A3:30% | A4:0%
+Episode  9256 | Steps:  150013 | Reward:  -4.001 | Avg(100):   4.161 | Entropy: 0.0100 | Acc: 33.3% (4+ 8-) | Lifetime: 33.3%
+  [Step 150020] Action dist: A0:60% | A1:10% | A2:0% | A3:30% | A4:0%
+Episode  9257 | Steps:  150026 | Reward:   9.999 | Avg(100):   4.234 | Entropy: 0.0100 | Acc: 91.7% (11+ 1-) | Lifetime: 62.5%
+  [Step 150030] Action dist: A0:20% | A1:0% | A2:10% | A3:70% | A4:0%
+  [Step 150040] Action dist: A0:30% | A1:0% | A2:40% | A3:30% | A4:0%
+Episode  9258 | Steps:  150040 | Reward:   0.999 | Avg(100):   4.193 | Entropy: 0.0100 | Acc: 53.8% (7+ 6-) | Lifetime: 59.5%
+  [Step 150050] Action dist: A0:30% | A1:0% | A2:40% | A3:20% | A4:10%
+Episode  9259 | Steps:  150054 | Reward:  -3.001 | Avg(100):   4.101 | Entropy: 0.0100 | Acc: 38.5% (5+ 8-) | Lifetime: 54.0%
+  [Step 150060] Action dist: A0:20% | A1:0% | A2:40% | A3:40% | A4:0%
+
+Training error: Communicator has exited.
+  [COACH] Gradient updates performed: 61
+Final model -> training_logs/run_seed41_coach_config_resumed_20260530_162849\model_final.pt
+Rewards saved -> training_logs/run_seed41_coach_config_resumed_20260530_162849\rewards_final.csv (episodes=9260, steps=150067)
+Accuracy saved -> training_logs/run_seed41_coach_config_resumed_20260530_162849\accuracy_final.csv (episodes=9260)
+
+ --- Lifetime Accuracy --------------------------
+  ################..............  55.7%
+  Correct: 34  |  Wrong: 27  |  Total scored: 61
+------------------------------------------
+
+=======================================================
+TRAINING SUMMARY
+=======================================================
+Config file      : ..\..\configs\Finetune\coach_config.yaml
+Steps total      : 150067
+Episodes total   : 9260
+Best reward      : 9.999
+Avg reward       : 3.050
+Last 100 avg     : 4.101
+Output dir       : training_logs/run_seed41_coach_config_resumed_20260530_162849
+=======================================================

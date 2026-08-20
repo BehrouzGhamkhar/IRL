@@ -1,0 +1,8 @@
+Run started      : 20260523_041825
+Device           : cuda
+Config file      : ..\..\configs\config8 (3).yaml
+Resumed model    : training_logs/run_seed41_config3_fresh_20260522_170933/model_final.pt
+Step offset      : 0
+Episode offset   : 0
+Max steps (run)  : 150000
+Entropy start    : 0.1000

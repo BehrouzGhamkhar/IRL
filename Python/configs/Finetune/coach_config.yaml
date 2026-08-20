@@ -1,0 +1,42 @@
+behaviors:
+  PepperGreeting:
+    hyperparameters:
+      learning_rate: 0.0002     # higher than PPO baseline (0.0003) - COACH updates are sparse
+      entropy_start: 0.5       # reset from PPO's decayed value; keeps policy explorative
+      entropy_end: 0.2        # gentle decay over the short session
+
+      # PPO-only keys below
+      # Unused by COACHAgent but kept so train.py can parse the file
+      # without KeyError (hp dict is read before the agent is created).
+      epsilon: 0.2
+      num_epoch: 4
+      num_mini_batch: 4
+      value_loss_coef: 0.5
+      lambd: 0.95
+
+    network_settings:
+      hidden_units: 128         # MUST match the PPO checkpoint being fine-tuned
+
+    reward_signals:
+      extrinsic:
+        gamma: 0.99             # unused by COACH; kept for train.py parse compatibility
+
+    max_steps: 136              # VR event-driven interaction steps
+    rollout_steps: 128          # harmless for COACH (update() is a no-op); keep default
+    max_grad_norm: 0.5
+
+env_settings:
+  obs_size: 12
+  act_size: 5
+
+engine_settings:
+  time_scale: 2              # real-time — required for live VR human feedback
+                                # (PPO used 100.0 for fast headless training)
+
+checkpoint_settings:
+  run_id: COACH_finetune
+
+algorithm: coach                # selects COACHAgent via ALGORITHMS dict in train.py
+
+reproducibility:
+  seed: 41

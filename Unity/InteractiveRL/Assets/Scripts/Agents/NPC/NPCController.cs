@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Agents;
 using Tasks;
 using UnityEngine;
 using UnityEngine.AI;
@@ -7,210 +8,364 @@ using UnityEngine.Events;
 
 namespace Agents.NPC
 {
-    public class NPCController : MonoBehaviour
+    public class NPCController : MonoBehaviour, IHumanAgent
     {
-        [Header("Tasks")] public List<NPCTask> allTasks = new List<NPCTask>();
+        [Header("Tasks")] public List<NPCTask> allTasks = new();
 
-        [Header("Settings")] public float timeBetweenTasks = 3f;
+        [Header("Settings")] [Tooltip("Seconds to wait before picking the next task.")]
+        public float timeBetweenTasks = 1f;
 
-        [Header("State Events")] public UnityEvent<NPCState> onStateChanged;
-        public UnityEvent<NPCTask> onTaskChanged;
+        [Header("Reproducibility")]
+        [Tooltip("Master seed for this run. Same seed = identical task sequence across runs.")]
+        public int masterSeed = -1;
 
-        // Components
-        private NavMeshAgent agent;
-        [SerializeField] private NPCAnimationController animationController;
+        // This is the actual random generator for this run - never reinitialized
+        private System.Random runRandom;
+
+        // Episode counter - tracks how many episodes have occurred
+        private int episodeCount;
+
+        // Track tasks selected in current episode
+        private int tasksSelectedThisEpisode;
+
+        [Header("References")] [SerializeField]
+        private NPCAnimationController animationController;
+
+        [Tooltip("The robot transform — used as the look-at point for random position tasks.")] [SerializeField]
+        private Transform robotTransform;
+
+        private GameObject _dummy; // hidden GO used as currentTarget for random/noisy positions
+
+        [Header("State Events")] [SerializeField]
+        private UnityEvent<NPCState> onStateChanged = new();
+
+        [SerializeField] private UnityEvent<NPCTask> onTaskChanged = new();
+
+        public UnityEvent<NPCState> OnStateChanged => onStateChanged;
+        public UnityEvent<NPCTask> OnTaskChanged => onTaskChanged;
+
+        public NPCTask CurrentTask => currentTask;
+        public Transform Transform => transform;
+
+        private NavMeshAgent navAgent;
         private NPCTask currentTask;
         private Transform currentTarget;
 
-        // Timing variables
         private float waitTimer;
         private float taskTimer;
-        private bool hasStartedTask = false;
-        private bool hasReachedTarget = false;
+        private float searchTimer;
+
+        private bool hasStartedTask;
+        private bool hasReachedTarget;
 
         public enum NPCState
         {
             Idle,
             WaitingBetweenTasks,
-            MovingToTask,
-            PerformingTask,
+            Transitioning,
             SearchingForTarget,
-            Transitioning
+            MovingToTask,
+            PerformingTask
         }
 
-        private NPCState currentState = NPCState.Idle;
+        private NPCState _currentState = NPCState.Idle;
 
         public NPCState CurrentState
         {
-            get { return currentState; }
-            set
+            get => _currentState;
+            private set
             {
-                if (currentState != value)
+                if (_currentState == value) return;
+                _currentState = value;
+
+                switch (_currentState)
                 {
-                    currentState = value;
-
-                    // Reset timing flags when state changes
-                    if (currentState == NPCState.MovingToTask)
-                    {
-                        hasReachedTarget = false;
-                    }
-                    else if (currentState == NPCState.PerformingTask)
-                    {
-                        taskTimer = 0f;
-                    }
-                    else if (currentState == NPCState.WaitingBetweenTasks)
-                    {
+                    case NPCState.WaitingBetweenTasks:
                         waitTimer = 0f;
-                    }
-                    else if (currentState == NPCState.Transitioning)
-                    {
-                        // Reset task flag when transitioning to a new task
+                        break;
+                    case NPCState.MovingToTask:
+                        hasReachedTarget = false;
+                        break;
+                    case NPCState.PerformingTask:
+                        taskTimer = 0f;
                         hasStartedTask = false;
-                    }
-
-                    if (onStateChanged != null)
-                    {
-                        onStateChanged.Invoke(currentState);
-                    }
+                        break;
+                    case NPCState.SearchingForTarget:
+                        searchTimer = 0f;
+                        break;
                 }
+
+                onStateChanged?.Invoke(_currentState);
             }
         }
 
-        public NPCTask CurrentTask => currentTask;
+        NPCState IHumanAgent.CurrentState => CurrentState;
 
-        void Start()
+        private void Start()
         {
-            agent = GetComponent<NavMeshAgent>();
-            if (!animationController)
+            navAgent = GetComponent<NavMeshAgent>();
+            if (animationController == null)
                 animationController = GetComponent<NPCAnimationController>();
 
-            // Initialize events if they're null
-            if (onStateChanged == null)
-                onStateChanged = new UnityEvent<NPCState>();
-            if (onTaskChanged == null)
-                onTaskChanged = new UnityEvent<NPCTask>();
+            // Initialize with master seed - this stays constant for the entire run
+            // InitializeRandom(masterSeed);
 
-            // Start with waiting between tasks
             CurrentState = NPCState.WaitingBetweenTasks;
-            waitTimer = 0f;
+            episodeCount = 0;
+            tasksSelectedThisEpisode = 0;
         }
 
-        void Update()
+        // Set the master seed from external code (CommunicationManager).
+        // Called when the config's seed is passed from Python.
+        public void SetMasterSeed(int seed)
+        {
+            masterSeed = seed;
+            runRandom = seed == -1 ? new System.Random() : new System.Random(seed);
+            Debug.Log($"[NPC] Random initialized with seed: {seed}");
+        }
+
+
+        // Called at the beginning of each episode to reset episode-specific counters.
+        public void OnEpisodeBegin(int episodeNumber)
+        {
+            episodeCount = episodeNumber;
+            tasksSelectedThisEpisode = 0;
+        }
+
+        private void FixedUpdate()
         {
             switch (CurrentState)
             {
                 case NPCState.WaitingBetweenTasks:
-                    UpdateWaitingState();
+                    UpdateWaiting();
                     break;
-
-                case NPCState.MovingToTask:
-                    UpdateMovingState();
-                    break;
-
-                case NPCState.PerformingTask:
-                    UpdatePerformingState();
-                    break;
-
-                case NPCState.SearchingForTarget:
-                    UpdateSearchingState();
-                    break;
-
-                case NPCState.Idle:
-                    UpdateIdleState();
-                    break;
-
                 case NPCState.Transitioning:
-                    UpdateTransitioningState();
+                    UpdateTransition();
+                    break;
+                case NPCState.SearchingForTarget:
+                    UpdateSearching();
+                    break;
+                case NPCState.MovingToTask:
+                    UpdateMoving();
+                    break;
+                case NPCState.PerformingTask:
+                    UpdatePerforming();
+                    break;
+                case NPCState.Idle:
+                    UpdateIdle();
                     break;
             }
         }
 
-        void UpdateWaitingState()
+        private void UpdateIdle()
+        {
+            if (allTasks.Count > 0)
+                CurrentState = NPCState.WaitingBetweenTasks;
+        }
+
+        private void UpdateWaiting()
         {
             waitTimer += Time.deltaTime;
-
             if (waitTimer >= timeBetweenTasks)
-            {
-                // Wait time complete, pick a new task
                 PickRandomTask();
+        }
+
+        private void UpdateTransition()
+        {
+            CurrentState = currentTask != null
+                ? NPCState.SearchingForTarget
+                : NPCState.WaitingBetweenTasks;
+        }
+
+        private void UpdateSearching()
+        {
+            if (currentTask == null)
+            {
+                CurrentState = NPCState.WaitingBetweenTasks;
+                return;
+            }
+
+            if (currentTask.randomPosition)
+            {
+                // Find a random NavMesh point within [minRange, maxRange] of the robot
+                Vector3 centre = robotTransform != null ? robotTransform.position : transform.position;
+                if (TryGetRandomNavMeshPoint(centre, currentTask.minRange, currentTask.maxRange, out Vector3 point))
+                {
+                    currentTarget = PlaceDummyFacingRobot(point);
+                    CurrentState = NPCState.MovingToTask;
+                }
+                else
+                {
+                    searchTimer += Time.deltaTime;
+                    if (searchTimer > 5f)
+                    {
+                        Debug.LogWarning($"[NPC] No NavMesh point found for '{currentTask.taskName}' - skipping.");
+                        ClearCurrentTask();
+                    }
+                }
+
+                return;
+            }
+
+            // Fixed target with small position noise
+            if (string.IsNullOrEmpty(currentTask.targetObjectName))
+            {
+                CurrentState = NPCState.PerformingTask;
+                return;
+            }
+
+            var targetObj = GameObject.Find(currentTask.targetObjectName);
+            if (targetObj != null)
+            {
+                float angle = (float)(runRandom.NextDouble() * System.Math.PI * 2.0);
+                float radius = (float)(runRandom.NextDouble() * currentTask.positionNoise);
+                Vector3 noise = new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
+                currentTarget = PlaceDummyFacingRobot(targetObj.transform.position + noise);
+                CurrentState = NPCState.MovingToTask;
+                return;
+            }
+
+            searchTimer += Time.deltaTime;
+            if (searchTimer > 5f)
+            {
+                Debug.LogWarning($"[NPC] Target '{currentTask.targetObjectName}' not found - skipping.");
+                ClearCurrentTask();
             }
         }
 
-        void UpdateMovingState()
+        // Moves (or creates) the dummy GO to position, rotated to face the robot.
+        // This gives RotateToTargetCoroutine the correct direction to align the NPC.
+        private Transform PlaceDummyFacingRobot(Vector3 position)
+        {
+            if (_dummy == null)
+                _dummy = new GameObject("_NPC_Dummy") { hideFlags = HideFlags.HideInHierarchy };
+
+            _dummy.transform.position = position;
+
+            if (robotTransform != null)
+            {
+                Vector3 dir = (robotTransform.position - position).normalized;
+                if (dir != Vector3.zero)
+                    _dummy.transform.rotation = Quaternion.LookRotation(dir);
+            }
+
+            return _dummy.transform;
+        }
+
+        private bool TryGetRandomNavMeshPoint(Vector3 centre, float minRange, float maxRange, out Vector3 result)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                float angle = (float)(runRandom.NextDouble() * System.Math.PI * 2.0);
+                float radius = Mathf.Lerp(minRange, maxRange, (float)runRandom.NextDouble());
+                Vector3 candidate = centre + new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
+                if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+                {
+                    result = hit.position;
+                    return true;
+                }
+            }
+
+            result = Vector3.zero;
+            return false;
+        }
+
+        private void UpdateMoving()
         {
             if (currentTarget == null)
             {
                 CurrentState = NPCState.SearchingForTarget;
                 return;
             }
-            
-            agent.SetDestination(currentTarget.position);
-            
-            if (animationController != null)
-            {
-                animationController.PlayWalk();
-            }
 
-            // Check if we've reached the target
-            float distance = Vector3.Distance(transform.position, currentTarget.position);
-            if (distance <= currentTask.acceptanceRadius && !hasReachedTarget)
-            {
-                if (animationController != null)
-                {
-                    animationController.PlayIdle();
-                }
-                
-                StartCoroutine(RotateToTargetAndContinue());
+            if (NavMesh.SamplePosition(currentTarget.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+                navAgent.SetDestination(hit.position);
 
-                // Fire task changed event when we first reach the target
-                if (onTaskChanged != null)
-                {
-                    onTaskChanged.Invoke(currentTask);
-                }
+            animationController?.PlayWalk();
+
+            float dist = Vector3.Distance(transform.position, currentTarget.position);
+            if (!hasReachedTarget && dist <= currentTask.acceptanceRadius)
+            {
+                navAgent.ResetPath();                // stop NavMeshAgent steering so it doesn't drift during task
+                navAgent.velocity = Vector3.zero;
+                animationController?.PlayIdle();
+                StartCoroutine(RotateThenPerform());
             }
         }
-        
-        IEnumerator RotateToTargetAndContinue()
+
+        private IEnumerator RotateThenPerform()
         {
             if (animationController != null && currentTarget != null)
-            {
                 yield return animationController.RotateToTargetCoroutine(currentTarget, 0.5f);
-            }
-            
+
             hasReachedTarget = true;
             CurrentState = NPCState.PerformingTask;
         }
 
-        void UpdatePerformingState()
+        private void UpdatePerforming()
         {
             if (!hasStartedTask)
             {
                 hasStartedTask = true;
-                taskTimer = 0f;
+                onTaskChanged?.Invoke(currentTask);
 
-                // Play task-specific animation
-                if (animationController != null && currentTask != null && !string.IsNullOrEmpty(currentTask.animationName))
-                {
-                    animationController.PlayTaskAnimation(currentTask.animationName);
-                }
-                else if (currentTask != null)
-                {
-                    Debug.Log($"No animation specified for task: {currentTask.taskName}");
-                }
+                if (currentTask != null && !string.IsNullOrEmpty(currentTask.animationName))
+                    animationController?.PlayTaskAnimation(currentTask.animationName);
             }
 
             taskTimer += Time.deltaTime;
 
-            if (currentTask && taskTimer >= currentTask.taskDuration)
+            if (currentTask == null || taskTimer >= currentTask.taskDuration)
             {
-                Debug.Log($"Task completed: {currentTask.taskName}");
+                Debug.Log($"[NPC] Task complete: {currentTask?.taskName}");
                 ClearCurrentTask();
             }
-            else if (!currentTask)
+        }
+
+        // Pick a random task using runRandom generator.
+        // This produces a deterministic sequence across episodes for a given seed.
+        private void PickRandomTask()
+        {
+            if (allTasks.Count == 0)
             {
-                Debug.Log($"No task available");
-                ClearCurrentTask();
+                CurrentState = NPCState.Idle;
+                return;
             }
+
+            int taskIndex = runRandom.Next(0, allTasks.Count);
+            currentTask = allTasks[taskIndex];
+            currentTarget = null;
+            hasReachedTarget = false;
+            hasStartedTask = false;
+            tasksSelectedThisEpisode++;
+
+            Debug.Log(
+                $"[NPC] Episode {episodeCount}, Task #{tasksSelectedThisEpisode}: {currentTask.taskName} (index {taskIndex})");
+            CurrentState = NPCState.Transitioning;
+        }
+
+        /// Force-start a task, skipping the wait timer.
+        public void ForceStartTask()
+        {
+            if (allTasks.Count == 0)
+            {
+                Debug.LogWarning("[NPC] ForceStartTask: no tasks assigned.");
+                CurrentState = NPCState.Idle;
+                return;
+            }
+
+            int taskIndex = runRandom.Next(0, allTasks.Count);
+            currentTask = allTasks[taskIndex];
+            currentTarget = null;
+            hasReachedTarget = false;
+            hasStartedTask = false;
+            waitTimer = 0f;
+            taskTimer = 0f;
+            tasksSelectedThisEpisode++;
+
+            Debug.Log(
+                $"[NPC] Episode {episodeCount}, Force-starting task #{tasksSelectedThisEpisode}: {currentTask.taskName}");
+            CurrentState = NPCState.Transitioning;
         }
 
         public void ClearCurrentTask()
@@ -222,94 +377,11 @@ namespace Agents.NPC
             CurrentState = NPCState.WaitingBetweenTasks;
         }
 
-        public void StopNavMeshAgent()
+        public void StopMovement()
         {
-            
-            if (agent != null)
-            {
-                agent.ResetPath();
-                agent.velocity = Vector3.zero;
-            }
-        }
-        
-        void UpdateSearchingState()
-        {
-            if (currentTask == null)
-            {
-                CurrentState = NPCState.WaitingBetweenTasks;
-                return;
-            }
-
-            // Try to find the target
-            if (string.IsNullOrEmpty(currentTask.targetObjectName))
-            {
-                // No target specified, just perform the task
-                CurrentState = NPCState.PerformingTask;
-                return;
-            }
-
-            GameObject targetObj = GameObject.Find(currentTask.targetObjectName);
-            if (targetObj != null)
-            {
-                currentTarget = targetObj.transform;
-                CurrentState = NPCState.MovingToTask;
-            }
-            else
-            {
-                // Target not found, skip this task after a delay
-                if (taskTimer > 5f) // 5 second search timeout
-                {
-                    Debug.LogWarning(
-                        $"Target '{currentTask.targetObjectName}' not found for task '{currentTask.taskName}'");
-                    currentTask = null;
-                    currentTarget = null;
-                    CurrentState = NPCState.WaitingBetweenTasks;
-                }
-
-                taskTimer += Time.deltaTime;
-            }
-        }
-
-        void UpdateIdleState()
-        {
-            // No tasks available, just idle
-            if (allTasks.Count > 0)
-            {
-                CurrentState = NPCState.WaitingBetweenTasks;
-            }
-        }
-
-        void UpdateTransitioningState()
-        {
-            // This state is for any transitions or setup
-            // Immediately move to next appropriate state
-            if (currentTask != null)
-            {
-                CurrentState = NPCState.SearchingForTarget;
-            }
-            else
-            {
-                CurrentState = NPCState.WaitingBetweenTasks;
-            }
-        }
-
-        void PickRandomTask()
-        {
-            if (allTasks.Count == 0)
-            {
-                CurrentState = NPCState.Idle;
-                return;
-            }
-
-            int randomIndex = Random.Range(0, allTasks.Count);
-            currentTask = allTasks[randomIndex];
-            currentTarget = null;
-            hasReachedTarget = false;
-            hasStartedTask = false;
-
-            Debug.Log($"NPC now doing: {currentTask.taskName}");
-
-            CurrentState = NPCState.Transitioning;
+            if (navAgent == null) return;
+            navAgent.ResetPath();
+            navAgent.velocity = Vector3.zero;
         }
     }
 }

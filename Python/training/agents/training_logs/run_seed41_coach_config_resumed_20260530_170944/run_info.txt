@@ -1,0 +1,8 @@
+Run started      : 20260530_170944
+Device           : cuda
+Config file      : ..\..\configs\Finetune\coach_config.yaml
+Resumed model    : training_logs/run_seed42_config3 (2)_fresh_20260529_202921/model_final.pt
+Step offset      : 150000
+Episode offset   : 9574
+Max steps (run)  : 500
+Entropy start    : 0.5000

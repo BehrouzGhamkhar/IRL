@@ -1,0 +1,8 @@
+Run started      : 20260522_170922
+Device           : cuda
+Config file      : ..\..\configs\config10.yaml
+Resumed model    : scratch
+Step offset      : 0
+Episode offset   : 0
+Max steps (run)  : 150000
+Entropy start    : 0.1000

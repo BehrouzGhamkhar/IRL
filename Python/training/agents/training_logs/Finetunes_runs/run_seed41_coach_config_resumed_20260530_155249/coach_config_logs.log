@@ -1,0 +1,30 @@
+
+Training on cuda | logs -> training_logs/run_seed41_coach_config_resumed_20260530_155249
+Config: ..\..\configs\Finetune\coach_config.yaml
+Episodes: 9260 -> ...
+Steps: 150100 -> 150200
+
+Loaded 9260 accuracy episodes from training_logs/run_seed41_coach_config_resumed_20260530_151052/accuracy_final.csv
+
+Training error: Communicator has exited.
+  [COACH] Gradient updates performed: 96
+Final model -> training_logs/run_seed41_coach_config_resumed_20260530_155249\model_final.pt
+Rewards saved -> training_logs/run_seed41_coach_config_resumed_20260530_155249\rewards_final.csv (episodes=9260, steps=150105)
+Accuracy saved -> training_logs/run_seed41_coach_config_resumed_20260530_155249\accuracy_final.csv (episodes=9260)
+
+ --- Lifetime Accuracy --------------------------
+  #######.......................  25.0%
+  Correct: 1  |  Wrong: 3  |  Total scored: 4
+------------------------------------------
+
+=======================================================
+TRAINING SUMMARY
+=======================================================
+Config file      : ..\..\configs\Finetune\coach_config.yaml
+Steps total      : 150105
+Episodes total   : 9260
+Best reward      : 9.198
+Avg reward       : 3.042
+Last 100 avg     : 3.369
+Output dir       : training_logs/run_seed41_coach_config_resumed_20260530_155249
+=======================================================

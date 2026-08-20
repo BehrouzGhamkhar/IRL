@@ -1,0 +1,4 @@
+Config,Final Accuracy (%),Steps to 80%,Max Avg100 Reward
+config3,77.4 +- 0.0,2k +- 0k,6.55 +- 0.00
+config4,75.7 +- 0.0,3k +- 0k,6.24 +- 0.00
+config9,72.5 +- 0.0,8k +- 0k,6.00 +- 0.00

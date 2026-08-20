@@ -1,0 +1,377 @@
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+    \section{Methodology}
+    \label{sec:methodology}
+
+    This section describes the complete experimental setup across all three training conditions. The autonomous PPO baseline (Section~\ref{sec:methodology:pipeline}) is trained first to establish performance benchmarks and identify failure modes. The two COACH fine-tuning conditions (keyboard and VR) then independently load the same best-performing PPO checkpoint, allowing direct comparison of feedback modalities without any dependency between them.
+
+    \subsection{System Architecture}
+
+    The system architecture comprises three primary components: the Unity simulation environment (providing the greeting task and agent controller), the Python training framework (implementing PPO and COACH), and the ML-Agents communication protocol (enabling real-time interaction between Unity and Python). Figure~\ref{fig:architecture} illustrates the data flow.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\linewidth]{figures/architecture.drawio.png}
+        \caption{System Architecture Overview. The Unity environment (left) hosts the \texttt{CommunicationManager}, human agent (NPC or VR participant), \texttt{IRewardProvider}, \texttt{PepperAgent}, and \texttt{PepperController}. The ML-Agents protocol (centre) carries the 12-dimensional observation vector, discrete action, and scalar reward between Unity and Python. The Python trainer (right) runs \texttt{train.py} with the \texttt{PPOAgent} or \texttt{COACHAgent}, both backed by the shared \texttt{SimplePPO} network, and saves checkpoints that are reloaded for COACH fine-tuning.}
+        \label{fig:architecture}
+    \end{figure}
+
+    The Unity environment implements the \texttt{CommunicationManager} as the central coordinator, responsible for: (1) forwarding the agent's chosen action to \texttt{PepperController}, (2) computing rewards based on task–action matching (autonomous mode) or routing human feedback signals (IRL mode), (3) resetting the scene at episode boundaries, and (4) exposing body-signal observations for the RL policy. The \texttt{PepperAgent} class inherits from ML-Agents' \texttt{Agent} class and implements observation collection, action execution, and episode termination logic.
+
+    \subsection{Training Conditions}
+    \label{sec:methodology:pipeline}
+
+    Three conditions are evaluated. The two COACH conditions branch independently from the same PPO checkpoint and do not depend on each other:
+
+    \begin{enumerate}
+        \item \textbf{Autonomous PPO Baseline:} The agent trains from scratch using PPO for $\sim$150k steps against a hand-crafted reward function (Table~\ref{tab:reward}). An NPC character presents tasks; no human is involved. Ten configurations are swept; the best-performing checkpoint (config3, lr=0.001) is saved and used as the starting point for both fine-tuning conditions.
+
+        \item \textbf{COACH Keyboard Fine-Tuning:} The PPO checkpoint is loaded into a fresh COACH agent. A human teacher provides scalar feedback (+1/$-$1) via keyboard arrow keys. The shared \texttt{SimplePPO} network architecture allows direct weight transfer. COACH updates the policy immediately on every non-trivial feedback event, targeting correction of the Talk action bias identified in the baseline.
+
+        \item \textbf{COACH VR Fine-Tuning:} The same PPO checkpoint is independently loaded into a second fresh COACH agent. Feedback is delivered multimodally via a VR headset (controller buttons, head gestures, voice commands). The Unity environment uses the \texttt{VR} scene instead of the \texttt{Baseline} scene; the Python training loop is otherwise identical to condition (2).
+    \end{enumerate}
+
+    Both COACH conditions use the same \texttt{train.py} loop as PPO—the algorithm is selected via the \texttt{algorithm: coach} field in the configuration file, which routes instantiation to \texttt{COACHAgent} through the \texttt{ALGORITHMS} registry. The \texttt{RESUME\_FROM} field points to the PPO checkpoint, causing the agent to load PPO weights while resetting the optimiser state to the COACH learning rate. The two COACH runs are executed separately and produce independent fine-tuned checkpoints, both evaluated against the same autonomous baseline.
+
+    \subsection{Environment Specification}
+
+    \subsubsection{Greeting Task Definition}
+
+    The greeting interaction task was implemented in the Unity game engine. A Pepper robot agent occupies a fixed position in the arena; a human agent (NPC during training, VR participant during IRL) approaches from varying distances and presents one of four situational cues, each associated with a socially appropriate greeting response. In autonomous and keyboard modes, the NPC's behaviour cycle is governed by \texttt{NPCController}, which selects tasks uniformly at random from its task pool and navigates to target positions via Unity's NavMesh system. In VR mode, the human participant manually selects and performs tasks via controller input, replacing the NPC entirely. The episode terminates upon a successful handshake completion, after reaching the maximum step limit (2000 steps per episode), or after a wall-clock timeout of 60 seconds.
+
+    \subsubsection{Observation Space (12 Dimensions)}
+
+    The agent receives a 12-dimensional observation vector at each decision step, as detailed in Table~\ref{tab:obs}. The body-signal features replace an earlier task one-hot encoding, allowing the agent to infer the human's intent from posture rather than requiring explicit task labels. Critically, features [8] and [9] are normalised relative to the person's own standing height (see Section~\ref{sec:methodology:normalisation}), making them scale-invariant across the NPC rig and VR participants of differing heights.
+
+    \begin{table*}[t]
+        \centering
+        \caption{Complete Observation Space Definition}
+        \label{tab:obs}
+        \begin{tabular}{cllc}
+            \toprule
+            \textbf{Idx} & \textbf{Feature} & \textbf{Range} & \textbf{Meaning} \\
+            \midrule
+            0--4 & PepperState & one-hot (5) & Idle / Looking / Waving / Handshaking / PerformingAction \\
+            5 & Distance to human & {[}0, 1{]} & Normalised by 10\,m; 0=at Pepper, 1=far away \\
+            6 & HandshakeInProgress & \{0, 1\} & 1 when a handshake sequence is active \\
+            7 & CanHandshake & \{0, 1\} & 1 when handshake cooldown (3\,s) has elapsed \\
+            8 & WristHeight & {[}0, 1{]} & Wrist height above floor / person standing height \\
+            9 & WristToCoreDistance & {[}0, 1{]} & Wrist-to-hip distance / person standing height \\
+            10 & BodyOrientation & {[}$-1$, 1{]} & Body facing Pepper (+1) vs away ($-$1) \\
+            11 & GazeDirection & {[}$-1$, 1{]} & Head/gaze towards Pepper (+1) vs away ($-$1) \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    \subsubsection{Action Space (5 Discrete Actions)}
+
+    The agent operates in a discrete action space of five actions, as defined in \texttt{PepperController.AgentAction}. Actions are selected at each decision step by the policy network and forwarded to \texttt{PepperController}, which triggers the corresponding animation and state transition.
+
+    \begin{table}[H]
+        \centering
+        \caption{Action Space Definition}
+        \label{tab:actions}
+        \begin{tabular}{cll}
+            \toprule
+            \textbf{Action ID} & \textbf{Name} & \textbf{Appropriate Context} \\
+            \midrule
+            0 & DoNothing & NPC $>$ 5\,m away (far) \\
+            1 & Talk & Task ID 6 (talk request) \\
+            2 & Look & NPC $\leq$ 5\,m away (near) \\
+            3 & Wave & Task ID 7 (wave request) \\
+            4 & HandShake & Task ID 2 (handshake request) \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsubsection{Reward Function Definition}
+
+    The autonomous reward signal is computed by \texttt{CommunicationManager.EvaluateReward()}. A reward gate ensures that only the first action performed per task event receives a reward, preventing reward hacking through action repetition. Table~\ref{tab:reward} shows the complete mapping.
+
+    \begin{table*}[t]
+        \centering
+        \caption{Complete Reward Mapping (Autonomous Baseline)}
+        \label{tab:reward}
+        \begin{tabular}{lllll}
+            \toprule
+            \textbf{Task ID} & \textbf{NPC Situation} & \textbf{Correct Action} & \textbf{Correct Reward} & \textbf{Wrong Action Reward} \\
+            \midrule
+            2 & NPC requests handshake & HandShake & +1.0 & $-$0.2 \\
+            7 & NPC requests wave & Wave & +1.0 & $-$0.2 \\
+            6 & NPC requests talk & Talk & +1.0 & $-$0.2 \\
+            Other / nearby & NPC $\leq$ 5\,m from Pepper & Look & +1.0 & $-$0.2 \\
+            Other / far & NPC $>$ 5\,m from Pepper & DoNothing & +0.001 & $-$0.2 \\
+            Any & Per step (any) & --- (penalty) & $-$0.0001 & Always applied \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    The per-step penalty of $-$0.0001 encourages timely responses. In VR and keyboard IRL modes, the autonomous reward function is replaced entirely by the human feedback signal; \texttt{EvaluateReward()} returns immediately without assigning any reward, and all reward delivery is handled by the active \texttt{IRewardProvider}.
+
+    \subsection{Body-Relative Observation Normalisation}
+    \label{sec:methodology:normalisation}
+
+    \subsubsection{Motivation}
+
+    Initial training used fixed normalisation constants for body-signal features: wrist height was divided by a global maximum of 2.5\,m, and wrist-to-core distance by 1.5\,m. These constants were calibrated for the NPC rig. When a live human replaces the NPC in VR mode, two problems arise: (1) the human's absolute wrist height for the same proportional gesture differs with their height, and (2) the NPC's hip bone (used as the core reference) has no direct equivalent in the XR rig—a static empty GameObject placed at the XR Origin root approximates the core at floor level ($\approx 0$\,m) rather than hip level ($\approx 1$\,m), causing \texttt{WristToCoreDistance} to be systematically overestimated for VR participants.
+
+    \subsubsection{Body-Relative Scheme}
+
+    Both features are now normalised by the person's own standing height, computed dynamically as:
+
+    \begin{equation}
+        h_{\text{person}} = \max(0.1,\; y_{\text{head}} - y_{\text{floor}})
+        \label{eq:personheight}
+    \end{equation}
+
+    where $y_{\text{head}}$ is the world-space $y$-coordinate of the head bone (NPC) or Main Camera (VR), and $y_{\text{floor}}$ is the configured floor reference (default: 0). The revised features become:
+
+    \begin{align}
+        \texttt{WristHeight} &= \frac{y_{\text{wrist}} - y_{\text{floor}}}{h_{\text{person}}} + \eta \label{eq:wristheight} \\[4pt]
+        \texttt{WristToCoreDistance} &= \frac{\|\mathbf{p}_{\text{wrist}} - \mathbf{p}_{\text{hip}}\|}{h_{\text{person}}} + \eta \label{eq:wristcore}
+    \end{align}
+
+    where $\eta \sim \mathcal{U}(-\nu, +\nu)$ is additive noise ($\nu = 0.05$) and $\mathbf{p}_{\text{hip}}$ is an approximate hip position derived as:
+
+    \begin{equation}
+        \mathbf{p}_{\text{hip}} = \left(x_{\text{head}},\; y_{\text{floor}} + 0.55\, h_{\text{person}},\; z_{\text{head}}\right)
+        \label{eq:hipapprox}
+    \end{equation}
+
+    The constant 0.55 was chosen, because hip height is seems to be approximately 55\% of standing height for an adult. This approximation is applied identically for NPC and VR participants, requiring only the head transform to be assigned in the Unity Inspector for each scene—no separate hip bone assignment is needed.
+
+    \subsubsection{Properties}
+
+    Under this scheme, two people performing the same proportional gesture---regardless of absolute height---produce near-identical observation values, with remaining variation absorbed by the $\pm 0.05$ noise already present during training. The normalisation is also robust to VR headset floor-level calibration drift, since both $y_{\text{wrist}}$ and $y_{\text{head}}$ share the same world-space origin.
+
+    \subsection{Observation Robustness: Temporal Sampling and Input Noise}
+    \label{sec:methodology:observation_robustness}
+
+    Two additional measures improve the reliability of body-signal observations and reduce the sim-to-real gap when transitioning from NPC-based training to a live human teacher in the VR condition.
+
+    \textbf{Delayed observation sampling.} Observations are collected after a per-task delay (\texttt{observationDelay}, default: 1.0\,s) so that observations are sampled once the animation has reached a recognisable mid-gesture state. The delay is jittered by $\pm$\texttt{observationDelayNoise} (default: 0.2\,s) each episode to prevent the agent from overfitting to a single animation frame.
+
+    \textbf{Observation value noise.} Small additive noise $\eta \sim \mathcal{U}(-\nu, +\nu)$ ($\nu = 0.05$) is applied to \texttt{WristHeight} and \texttt{WristToCoreDistance} before they enter the observation vector, broadening the training distribution in a manner analogous to domain randomisation~\citep{8202133}.
+
+    Together, these measures ensure the agent trains on a distribution of body-signal values rather than a deterministic trajectory, improving robustness to the human motion variability expected in VR deployment.
+
+    \subsection{Training Algorithm - Stage 1: PPO}
+
+    Training used Proximal Policy Optimisation (PPO) as implemented in \texttt{algorithms/ppo.py}. The policy and value networks share a fully-connected architecture (\texttt{SimplePPO}) with a shared trunk of two hidden layers, separate actor and critic heads, and orthogonal weight initialisation with gain $\sqrt{2}$. The actor head outputs logits over 5 discrete actions; the critic head outputs a scalar value estimate.
+
+    Key hyperparameters for the baseline configuration (config1.yaml) are shown in Table~\ref{tab:baseline}.
+
+    \begin{table*}[t]
+        \centering
+        \caption{Baseline Hyperparameters (config1.yaml)}
+        \label{tab:baseline}
+        \begin{tabular}{lcl}
+            \toprule
+            \textbf{Parameter} & \textbf{Value} & \textbf{Notes} \\
+            \midrule
+            learning\_rate & 0.0003 & Adam optimiser \\
+            epsilon (clip) & 0.2 & PPO clip parameter \\
+            num\_epoch & 4 & PPO update epochs per rollout \\
+            num\_mini\_batch & 4 & Mini-batches per epoch \\
+            value\_loss\_coef & 0.5 & Critic loss weight \\
+            entropy\_start & 0.1 & Initial exploration bonus \\
+            entropy\_end & 0.02 & Final entropy after full training \\
+            lambda (GAE $\lambda$) & 0.95 & Advantage estimation decay \\
+            gamma & 0.99 & Discount factor \\
+            hidden\_units & 128 & Neurons per hidden layer \\
+            rollout\_steps & 256 & Steps collected before each update \\
+            max\_steps & 150,000 & Total training steps \\
+            max\_grad\_norm & 0.5 & Gradient clipping threshold \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    \subsection{Experimental Configurations — Hyperparameter Sweep}
+
+    To characterise the task and identify optimal settings, a hyperparameter sweep was conducted across 10 configurations, as shown in Table~\ref{tab:variants}. Each configuration varies exactly one hyperparameter group relative to the baseline to ensure interpretable comparisons.
+
+    \begin{table*}[t]
+        \centering
+        \caption{Hyperparameter Sweep Configurations}
+        \label{tab:variants}
+        \begin{tabular}{llcll}
+            \toprule
+            \textbf{Config} & \textbf{What Changes} & \textbf{Changed Value} & \textbf{Baseline} & \textbf{Hypothesis} \\
+            \midrule
+            config1 & Baseline (reference) & --- & --- & Establishes learning floor/ceiling \\
+            config2 & Lower learning rate & lr = 0.0001 & 0.0003 & More stable but slower convergence \\
+            config3 & Higher learning rate & lr = 0.001 & 0.0003 & Faster early learning, possible instability \\
+            config4 & Larger network & hidden = 256 & 128 & More capacity for body-signal features \\
+            config5 & Smaller network & hidden = 64 & 128 & Test if task is simple enough \\
+            config6 & High entropy & ent\_start=0.3, end=0.05 & 0.1/0.02 & More exploration of less common actions \\
+            config7 & Low entropy & ent\_start=0.05, end=0.005 & 0.1/0.02 & Faster exploitation, risk of premature convergence \\
+            config8 & Longer rollout & rollout = 512 & 256 & Smoother gradient estimates \\
+            config9 & Shorter rollout & rollout = 128 & 256 & More frequent updates, higher variance \\
+            config10 & Tighter clip & epsilon = 0.1 & 0.2 & More conservative policy updates \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    To ensure robust results, each configuration was run with 3 random seeds (total 30 training runs). The parallel training runner in \texttt{train.py} executed configurations simultaneously on separate Unity instances with unique worker ports, respecting the \texttt{MAX\_PARALLEL} limit.
+
+    \subsection{Training Algorithm — Stage 2: COACH Fine-Tuning}
+    \label{sec:methodology:coach}
+
+    \subsubsection{Motivation}
+
+    Analysis of the PPO baseline revealed a persistent Talk action bias: despite achieving 76.0\% overall accuracy, the Talk action was selected in only 7.2\% of decisions (compared to Look at 38.3\%), leading to reduced accuracy specifically on task ID 6. This arises because the body-signal features for a talk request (neutral posture, facing Pepper at close range) overlap substantially with the Look condition, causing the policy to favour the more frequently rewarded Look action.
+
+    PPO cannot correct this bias through VR human feedback alone: the algorithm requires batches of 256--2048 steps per gradient update, yet the total available VR feedback budget is $\sim$150--300 interaction steps. At a natural task distribution, only $\sim$7--22 of those steps involve a Talk-state event—far too few for PPO's batch normalisation and advantage estimation to produce a useful gradient. COACH (Section~\ref{sec:background:coach}) is chosen instead, as its immediate per-event update requires no buffer and directly weights the policy gradient by the human's scalar feedback signal.
+
+    \subsubsection{Implementation}
+
+    The COACH agent (\texttt{algorithms/coach.py}) shares the \texttt{SimplePPO} network architecture with the PPO agent, preserving both the actor and critic heads for weight-loading compatibility. Only the actor head participates in COACH updates; the critic output is discarded. The update rule applied after each non-trivial feedback event ($|r| > 0.05$) is:
+
+    \begin{equation}
+        \theta \leftarrow \theta - \alpha \nabla_\theta \left[ -f_t \log \pi_\theta(a_t \mid s_t) - c_2 \mathcal{H}[\pi_\theta(\cdot \mid s_t)] \right]
+        \label{eq:coach_update}
+    \end{equation}
+
+    where $\alpha = 0.0005$ (higher than PPO's 0.0003 to compensate for the small number of updates), $c_2 = 0.05$ (reset from PPO's decayed value to maintain exploration), and gradients are clipped to max norm 0.5.
+
+    The \texttt{COACHAgent} interface is fully compatible with \texttt{train.py}'s training loop: \texttt{act()} returns a fake value of 0.0 to satisfy the loop's three-tuple unpack; \texttt{store\_transition()} triggers \texttt{\_coach\_update()} internally when feedback is non-trivial; \texttt{update()} and \texttt{get\_value()} are no-ops. This means the entire PPO training loop in \texttt{train.py} runs unchanged for COACH sessions—only the \texttt{algorithm: coach} field in the configuration file and the \texttt{RESUME\_FROM} checkpoint path need to be set.
+
+    \subsubsection{COACH Configuration}
+
+    Key COACH fine-tuning hyperparameters are shown in Table~\ref{tab:coach-config}. The \texttt{hidden\_units} value must match the PPO checkpoint exactly (128) for weight loading to succeed.
+
+    \begin{table}[H]
+        \centering
+        \caption{COACH Fine-Tuning Hyperparameters (coach\_config.yaml)}
+        \label{tab:coach-config}
+        \begin{tabular}{lcl}
+            \toprule
+            \textbf{Parameter} & \textbf{Value} & \textbf{Notes} \\
+            \midrule
+            learning\_rate & 0.0002 & Higher than PPO; sparse updates \\
+            entropy\_start & 0.5 & Reset from PPO's decayed value \\
+            entropy\_end & 0.2 & Gentle decay over session \\
+            hidden\_units & 128 & Must match PPO checkpoint \\
+            max\_steps & 164 & VR interaction steps \\
+            max\_grad\_norm & 0.5 & Same as PPO \\
+            time\_scale & 2 & Near-real-time for live human feedback \\
+            algorithm & coach & Selects COACHAgent \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsubsection{COACH Training Loop}
+
+    \begin{algorithm}[H]
+        \caption{COACH Fine-Tuning Loop}
+        \label{alg:coach}
+        \begin{algorithmic}[1]
+            \Require Pre-trained policy $\pi_\theta$ (loaded from PPO checkpoint), COACH hyperparameters
+            \State Reset optimiser state (fresh Adam at COACH learning rate)
+            \For{each VR interaction step $t$}
+                \State Observe $s_t$ from Unity environment
+                \State Sample $a_t \sim \pi_\theta(\cdot \mid s_t)$
+                \State Execute $a_t$; receive human feedback $f_t$
+                \If{$|f_t| > 0.05$} \Comment{Non-trivial feedback only}
+                    \State Compute $\mathcal{L} = -f_t \log \pi_\theta(a_t \mid s_t) - c_2 \mathcal{H}[\pi_\theta(\cdot \mid s_t)]$
+                    \State Update $\theta$ via Adam with gradient clipping
+                \EndIf
+            \EndFor
+            \State Save fine-tuned checkpoint
+        \end{algorithmic}
+    \end{algorithm}
+
+    \subsubsection{Expected Convergence}
+
+    Because the system is event-driven (one NPC task or VR gesture = one agent decision = one feedback signal), every step carries a complete $(s_t, a_t, f_t)$ tuple. Prior to the VR session, the NPC task scheduler is configured to over-sample Talk-state events ($\sim$50\% of encounters) so that the human's feedback budget is concentrated on the problematic action. Under this setting, 150--200 VR interaction steps are expected to yield 75--100 Talk-specific feedback events—sufficient for COACH to meaningfully shift the policy's logits in Talk states without degrading performance on the remaining actions, which continue to receive sparse or no corrective feedback.
+
+    \subsection{Training Implementation Details}
+
+    The training loop follows the standard PPO workflow for Stage 1 and the COACH immediate-update pattern for Stages 2a and 2b:
+
+    \begin{algorithm}[H]
+        \caption{PPO Training Loop (Stage 1)}
+        \label{alg:ppo}
+        \begin{algorithmic}[1]
+            \Require Initial policy $\pi_\theta$, value function $V_\phi$, hyperparameters
+            \For{each iteration}
+                \State Collect $\{s_t, a_t, r_t, s_{t+1}\}$ for $T$ steps using $\pi_\theta$
+                \State Compute advantages $\hat{A}_t$ using GAE($\gamma, \lambda$)
+                \For{each PPO epoch}
+                    \State Sample mini-batches from collected data
+                    \State Compute policy loss $L^{CLIP}(\theta)$
+                    \State Compute value loss $L^{VF}(\phi)$
+                    \State Update $\theta, \phi$ using Adam optimiser
+                \EndFor
+                \State Update entropy coefficient $c_2$ (linear schedule)
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+
+    Key implementation features include:
+    \begin{itemize}
+        \item \textbf{Reward gate:} Only the first action per task event receives a reward, preventing action spamming.
+        \item \textbf{Entropy annealing:} Linear schedule from \texttt{entropy\_start} to \texttt{entropy\_end} over total steps; applies to both PPO and COACH.
+        \item \textbf{Handshake cooldown:} 3-second cooldown prevents repeated handshake attempts.
+        \item \textbf{Action logging:} Action distribution recorded periodically to detect action collapse or bias correction progress.
+        \item \textbf{Checkpoint compatibility:} PPO and COACH use the same \texttt{torch.save} dictionary format, enabling seamless weight transfer between stages.
+    \end{itemize}
+
+    \subsection{Metrics and Evaluation Protocol}
+
+    The following metrics are recorded during training and used for cross-condition comparison:
+
+    \begin{table*}[t]
+        \centering
+        \caption{Training Metrics and Their Sources}
+        \label{tab:metrics}
+        \begin{tabular}{p{3.5cm}p{3cm}p{7cm}}
+            \toprule
+            \textbf{Metric} & \textbf{Source} & \textbf{Purpose} \\
+            \midrule
+            Episode reward (raw) & train.py log & Primary performance signal \\
+            Rolling avg reward (last 100) & train.py log & Smoothed convergence indicator \\
+            Episode accuracy (\% correct) & AccuracyTracker & Task success rate per episode \\
+            Lifetime accuracy & AccuracyTracker & Overall correct/wrong ratio \\
+            Action distribution (\%) & agent.action\_counts & Detect action collapse or bias \\
+            Talk task accuracy (\%) & test\_compare\_models.py & Primary COACH correction target \\
+            HandShake task accuracy (\%) & test\_compare\_models.py & Verify no regression \\
+            Action distribution entropy (bits) & test\_compare\_models.py & Policy diversity measure \\
+            COACH updates performed & coach.py save() & Confirm fine-tuning activity \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    The evaluation protocol defines four criteria for assessing all conditions:
+
+    \begin{enumerate}
+        \item \textbf{Task Accuracy:} Percentage of correct actions across all task contexts.
+        \item \textbf{Talk Task Accuracy:} Per-task accuracy specifically for task ID 6, the primary COACH correction target.
+        \item \textbf{Sample Efficiency:} Number of training steps (PPO) or feedback events (COACH) required to reach 80\% overall accuracy.
+        \item \textbf{Policy Stability:} Standard deviation of rolling average reward post-convergence; action distribution entropy.
+    \end{enumerate}
+
+    \subsection{Reproducibility and Configuration Files}
+
+    All experiments are reproducible via the provided configuration files. The file structure is:
+
+    \begin{verbatim}
+    configs/
+    ├── config1.yaml         # PPO Baseline
+    ├── config2.yaml         # Lower learning rate
+    ├── config3.yaml         # Higher learning rate (best)
+    ├── config4.yaml         # Larger network (256 units)
+    ├── config5.yaml         # Smaller network (64 units)
+    ├── config6.yaml         # High entropy schedule
+    ├── config7.yaml         # Low entropy schedule
+    ├── config8.yaml         # Longer rollout (512 steps)
+    ├── config9.yaml         # Shorter rollout (128 steps)
+    └── config10.yaml        # Tighter clip (epsilon=0.1)
+    configs/Finetune/
+    └── coach_config.yaml    # COACH fine-tuning (keyboard + VR)
+    \end{verbatim}
+
+    Each YAML file specifies the complete hyperparameter set for a given condition. The \texttt{train.py} script discovers all YAML files in the target directory and executes them in parallel (PPO) or sequentially (COACH/VR) using Python's \texttt{multiprocessing.Pool}.
+
+\end{document}

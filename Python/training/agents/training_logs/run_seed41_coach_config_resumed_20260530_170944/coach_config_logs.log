@@ -1,0 +1,62 @@
+
+Training on cuda | logs -> training_logs/run_seed41_coach_config_resumed_20260530_170944
+Config: ..\..\configs\Finetune\coach_config.yaml
+Episodes: 9574 -> ...
+Steps: 150000 -> 150500
+
+Loaded 9574 accuracy episodes from training_logs/run_seed42_config3 (2)_fresh_20260529_202921/accuracy_final.csv
+  [Step 150010] Action dist: A0:50% | A1:0% | A2:30% | A3:20% | A4:0%
+Episode  9574 | Steps:  150014 | Reward:   4.000 | Avg(100):   4.270 | Entropy: 0.5000 | Acc: 66.7% (8+ 4-) | Lifetime: 66.7%
+  [Step 150020] Action dist: A0:40% | A1:0% | A2:30% | A3:30% | A4:0%
+Episode  9575 | Steps:  150028 | Reward:   2.000 | Avg(100):   4.259 | Entropy: 0.5000 | Acc: 62.5% (5+ 3-) | Lifetime: 65.0%
+  [Step 150030] Action dist: A0:40% | A1:0% | A2:10% | A3:30% | A4:20%
+  [Step 150040] Action dist: A0:10% | A1:0% | A2:0% | A3:90% | A4:0%
+Episode  9576 | Steps:  150041 | Reward:  -2.000 | Avg(100):   4.205 | Entropy: 0.5000 | Acc: 37.5% (3+ 5-) | Lifetime: 57.1%
+  [Step 150050] Action dist: A0:40% | A1:0% | A2:30% | A3:30% | A4:0%
+Episode  9577 | Steps:  150055 | Reward:   9.000 | Avg(100):   4.249 | Entropy: 0.5000 | Acc: 66.7% (8+ 4-) | Lifetime: 60.0%
+  [Step 150060] Action dist: A0:0% | A1:0% | A2:50% | A3:30% | A4:20%
+Episode  9578 | Steps:  150069 | Reward:   5.000 | Avg(100):   4.248 | Entropy: 0.5000 | Acc: 69.2% (9+ 4-) | Lifetime: 62.3%
+  [Step 150070] Action dist: A0:30% | A1:0% | A2:50% | A3:20% | A4:0%
+  [Step 150080] Action dist: A0:40% | A1:0% | A2:40% | A3:20% | A4:0%
+Episode  9579 | Steps:  150083 | Reward:  -1.000 | Avg(100):   4.177 | Entropy: 0.5000 | Acc: 60.0% (6+ 4-) | Lifetime: 61.9%
+  [Step 150090] Action dist: A0:50% | A1:0% | A2:30% | A3:20% | A4:0%
+Episode  9580 | Steps:  150097 | Reward: -13.000 | Avg(100):   3.996 | Entropy: 0.5000 | Acc: 61.5% (8+ 5-) | Lifetime: 61.8%
+  [Step 150100] Action dist: A0:10% | A1:0% | A2:50% | A3:40% | A4:0%
+  [Step 150110] Action dist: A0:40% | A1:0% | A2:40% | A3:20% | A4:0%
+Episode  9581 | Steps:  150112 | Reward: -15.000 | Avg(100):   3.799 | Entropy: 0.5000 | Acc: 50.0% (7+ 7-) | Lifetime: 60.0%
+  [Step 150120] Action dist: A0:40% | A1:0% | A2:10% | A3:40% | A4:10%
+Episode  9582 | Steps:  150126 | Reward:   4.000 | Avg(100):   3.796 | Entropy: 0.5000 | Acc: 55.6% (5+ 4-) | Lifetime: 59.6%
+  [Step 150130] Action dist: A0:30% | A1:0% | A2:30% | A3:30% | A4:10%
+  [Step 150140] Action dist: A0:60% | A1:10% | A2:10% | A3:20% | A4:0%
+Episode  9583 | Steps:  150141 | Reward:  11.000 | Avg(100):   3.862 | Entropy: 0.4232 | Acc: 91.7% (11+ 1-) | Lifetime: 63.1%
+  [Step 150150] Action dist: A0:20% | A1:0% | A2:0% | A3:70% | A4:10%
+Episode  9584 | Steps:  150155 | Reward:   2.000 | Avg(100):   3.865 | Entropy: 0.4232 | Acc: 50.0% (6+ 6-) | Lifetime: 61.8%
+  [Step 150160] Action dist: A0:10% | A1:0% | A2:20% | A3:60% | A4:10%
+Episode  9585 | Steps:  150164 | Reward:   1.000 | Avg(100):   3.815 | Entropy: 0.4232 | Acc: 60.0% (3+ 2-) | Lifetime: 61.7%
+
+Training error: The Unity environment took too long to respond. Make sure that :
+	 The environment does not need user interaction to launch
+	 The Agents' Behavior Parameters > Behavior Type is set to "Default"
+	 The environment and the Python interface have compatible versions.
+	 If you're running on a headless server without graphics support, turn off display by either passing --no-graphics option or build your Unity executable as server build.
+  [COACH] Gradient updates performed: 128
+Final model -> training_logs/run_seed41_coach_config_resumed_20260530_170944\model_final.pt
+Rewards saved -> training_logs/run_seed41_coach_config_resumed_20260530_170944\rewards_final.csv (episodes=9586, steps=150166)
+Accuracy saved -> training_logs/run_seed41_coach_config_resumed_20260530_170944\accuracy_final.csv (episodes=9586)
+
+ --- Lifetime Accuracy --------------------------
+  ##################............  61.7%
+  Correct: 79  |  Wrong: 49  |  Total scored: 128
+------------------------------------------
+
+=======================================================
+TRAINING SUMMARY
+=======================================================
+Config file      : ..\..\configs\Finetune\coach_config.yaml
+Steps total      : 150166
+Episodes total   : 9586
+Best reward      : 11.000
+Avg reward       : 3.251
+Last 100 avg     : 3.815
+Output dir       : training_logs/run_seed41_coach_config_resumed_20260530_170944
+=======================================================

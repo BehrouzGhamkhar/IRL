@@ -1,0 +1,79 @@
+%!TEX root = ../report.tex
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+    \section{Introduction}
+    \label{sec:introduction}
+
+    \subsection{Motivation}
+    \label{sec:introduction:motivation}
+
+    Robots have the potential to become important partners in human environments, assisting with tasks at home or in complex collaborative work \cite{Chetouani2021, Akalin2021}. However, enabling robots to operate well in open-world environments---with unknown tasks, new objects, and dynamic human interactions---remains a central challenge. Robots often lack the common-sense contextual understanding that humans use effortlessly to generalise skills and interpret underspecified instructions.
+
+    A promising direction to address this challenge is Interactive Reinforcement Learning (IRL), which incorporates human feedback directly into the robot's learning loop \cite{Lin2020, BradleyKnox2008}. By learning from evaluative or instructive feedback, IRL agents can adapt to complex, real-world constraints more effectively than autonomous RL agents that rely solely on engineered reward functions, while also improving sample efficiency and aligning behaviour with human preferences \cite{Lin2020}.
+
+    Despite its potential, a significant bottleneck in IRL is the interface through which feedback is delivered. Most existing systems rely on low-bandwidth, explicit channels such as keyboard presses or button clicks \cite{Faulkner2020, Loftin2014}. These methods are unnatural for the human teacher and fail to capture the rich details of human communication---gesture, gaze, tone of voice---creating an \emph{expressiveness gap} that limits the quality of information transferred from human to robot \cite{9794595, Lin2020a}.
+
+    At the same time, advances in consumer-grade Virtual Reality (VR) technology offer new opportunities for human-computer interaction. Modern VR headsets provide dense multimodal sensing: head pose, hand gestures, eye gaze, and voice input within a single, immersive platform \cite{Winkler2022, Luo2024}. Despite this potential, VR and IRL have mostly developed in parallel. VR has been used for collecting demonstration data \cite{10904309, Mosbach2022} and, more recently, for preference-based learning \cite{Heuvel2025}, but its use for real-time scalar feedback within an IRL framework remains largely unexplored.
+
+    \subsection{Problem Statement}
+    \label{sec:introduction:problem_statement}
+
+    The combination of the expressiveness gap in existing IRL interfaces, the limited exploitation of VR's real-time sensing capabilities for feedback, and the unresolved challenge of multimodal signal fusion defines the core problem addressed in this work. Specifically:
+
+    \begin{itemize}
+        \item Current IRL feedback interfaces are narrow-bandwidth (typically binary key presses) and unnatural, limiting the quality of human supervision.
+        \item VR headsets provide rich, synchronised multimodal signals (head pose, gaze, hand gestures, voice) that have not been systematically leveraged for real-time IRL.
+        \item It is unclear which combinations of VR signals are most effective as reward proxies, or how to fuse them robustly in the presence of noise and conflicts.
+        \item Standard on-policy RL algorithms (e.g., PPO) require large batches of environment interactions per gradient update, making them impractical when the human feedback budget is limited to a small number of interaction steps.
+    \end{itemize}
+
+    This work addresses these gaps through the following research questions:
+    \begin{enumerate}
+        \item \textbf{Feasibility:} Can multimodal feedback from a VR headset be effectively translated into a robust and informative reward signal for an RL agent in a greeting interaction task?
+        \item \textbf{Performance Comparison:} How does the learning efficiency and final performance of an agent fine-tuned with VR feedback compare to one trained with traditional keyboard input or an autonomous reward function?
+        \item \textbf{User Experience:} What are the qualitative differences in the teaching experience between a VR interface and a keyboard interface for providing IRL feedback?
+    \end{enumerate}
+
+    \subsection{Proposed Approach}
+    \label{sec:introduction:proposed_approach}
+
+    We develop a proof-of-concept IRL system built around a social robot greeting task implemented in the Unity game engine. A Pepper robot agent must learn to select the contextually appropriate greeting behaviour---DoNothing, Talk, Look, Wave, or HandShake---in response to cues provided by an approaching human. Three conditions are designed:
+
+    \begin{enumerate}
+        \item \textbf{Autonomous RL Baseline:} The agent learns from scratch using PPO with a hand-crafted reward function (+1.0 for correct actions, $-$0.2 for incorrect actions, $-$0.0001 per-step penalty) for $\sim$150k steps. This establishes performance benchmarks and exposes the Talk action suppression that motivates the fine-tuning conditions.
+
+        \item \textbf{Keyboard IRL:} The best PPO checkpoint is loaded into the COACH agent. A human teacher provides scalar feedback (+1/$-$1) via keyboard arrow keys. COACH performs immediate per-event policy gradient updates suited to the limited human interaction budget; the session ran for 164 steps.
+
+        \item \textbf{VR IRL:} The same PPO checkpoint is independently loaded into a second COACH agent. A human teacher wearing a VR headset provides feedback through multiple modalities: controller buttons (explicit $\pm$1), head gestures (nod for positive, shake for negative), and voice commands (``good''/``bad''). This condition was fully implemented but could not be executed due to a physical body incompatibility between the NPC rig and the VR person controller.
+    \end{enumerate}
+
+    Conditions (2) and (3) both branch from the same PPO baseline checkpoint independently---neither depends on the other. This allows a direct comparison of feedback modality (keyboard vs VR) against each other and against the autonomous baseline. Body-signal observations are normalised relative to each person's standing height, ensuring scale-invariant features across the NPC training rig and VR participants of differing heights.
+
+    \subsection{Contributions}
+    \label{sec:introduction:contributions}
+
+    This report makes the following specific contributions:
+
+    \begin{enumerate}
+        \item \textbf{Complete System Architecture:} Integration of Unity ML-Agents with PyTorch PPO and COACH, including a 12-dimensional observation space with body-signal features (wrist height, wrist-to-core distance, body orientation, gaze direction) that replace explicit task IDs.
+
+        \item \textbf{Hyperparameter Characterisation:} Systematic sweep of 10 configurations varying learning rate ($10^{-4}$ to $10^{-3}$), network capacity (64, 128, 256 units), entropy schedule, rollout length, and PPO clip parameter, providing guidance for future social greeting tasks.
+
+        \item \textbf{Performance Benchmarking:} Quantitative results establishing final training accuracy (66.4\%), test accuracy (74.14\%), sample efficiency ($\sim$9k steps to 80\% accuracy), and policy stability ($\sigma = 0.72$) for the autonomous condition as reference values for IRL comparison.
+
+        \item \textbf{COACH Fine-Tuning Pipeline:} Implementation of COACH as a targeted fine-tuning mechanism that corrects the Talk action suppression (0\% distribution) introduced by body-signal feature overlap with the Look condition, using only 164 human feedback events loaded from the pre-trained PPO checkpoint.
+
+        \item \textbf{Body-Relative Observation Normalisation:} A scale-invariant normalisation scheme in which wrist height and wrist-to-core distance are expressed as fractions of the person's own standing height, enabling consistent feature representations across NPC training and live VR human participants.
+
+        \item \textbf{Multimodal VR Feedback Interface:} A priority-based fusion of controller buttons, head gestures, and voice commands into a scalar reward signal, with per-modality reward magnitudes and timeout gating to prevent signal duplication.
+
+        \item \textbf{Reproducible Configuration:} Complete YAML configuration files (config1.yaml--config10.yaml and coach\_config.yaml) and training code for replication and extension to further IRL conditions.
+    \end{enumerate}
+
+    \subsection{Report Structure}
+    \label{sec:introduction:structure}
+
+    Section~\ref{sec:related_work} reviews related work in IRL, VR-based robot learning, and avatar motion estimation. Section~\ref{sec:background} introduces background concepts in reinforcement learning, PPO, IRL, and the COACH algorithm. Section~\ref{sec:methodology} describes the complete system design, including the training conditions, observation/action spaces, reward function, body-relative normalisation, and COACH fine-tuning methodology. Section~\ref{sec:evaluation} presents experimental results from the hyperparameter sweep, definitive PPO run, and keyboard COACH fine-tuning evaluation. Section~\ref{sec:conclusions} summarises findings and discusses implications for VR-based IRL research.
+
+\end{document}

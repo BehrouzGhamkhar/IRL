@@ -1,0 +1,3550 @@
+C:\Users\User\anaconda3\envs\mlagents310\python.exe D:\jozavat\MAS\Semester4\R&D\docs\gitlab\Python\training\agents\train.py
+
+======================================================================
+MULTI-CONFIG TRAINING
+======================================================================
+Found 4 config files:
+  1. ..\..\configs\config1-test.yaml
+  2. ..\..\configs\config1.yaml
+  3. ..\..\configs\config2-test.yaml
+  4. ..\..\configs\config2.yaml
+Running up to 4 configs in parallel
+======================================================================
+
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=4194304"
+    "memorysetup-bucket-allocator-block-count=1"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=4194304"
+    "memorysetup-profiler-bucket-allocator-block-count=1"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=4194304"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Mono path[0] = 'D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/InteractiveRL_Data/Managed'
+Mono config path = 'D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/MonoBleedingEdge/etc'
+Found 1 interfaces on host : 0) 192.168.132.29
+Player connection [16348]  Target information:
+
+Player connection [16348]  * "[IP] 192.168.132.29 [Port] 55000 [Flags] 2 [Guid] 813313988 [EditorId] 3333295334 [Version] 1048832 [Id] WindowsServer(44,MyCoolPC) [Debug] 0 [PackageName] WindowsServer [ProjectName] InteractiveRL"
+
+Player connection [16348] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Initialize engine version: 6000.0.59f2 (ef281c76c3c1)
+[Subsystems] Discovering subsystems at path D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/InteractiveRL_Data/UnitySubsystems
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json.
+[Subsystems] 1 'inputs' descriptors matched in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json
+[Subsystems] 1 'displays' descriptors matched in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  meshings in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json.
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+[Subsystems] 1 'inputs' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] 1 'displays' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  meshings in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory is not a mono symbol file
+- Loaded All Assemblies, in  0.144 seconds
+- Finished resetting the current domain, in  0.002 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Microsoft Media Foundation video decoding to texture disabled: graphics device is Null, only Direct3D 11 and Direct3D 12 (only on desktop) are supported for hardware-accelerated video decoding.
+UnloadTime: 0.521700 ms
+Failed to create agent because there is no valid NavMesh
+Trying to access a shader but no shaders were included in the build because Dedicated Server Optimizations is enabled.
+Trying to access a shader but no shaders were included in the build because Dedicated Server Optimizations is enabled.
+Registered Communicator in Agent.
+[SeedReceiver] Received seed from Python: 41
+[CommManager] NPC mode - autonomous rewards active
+[CommManager] Mode 0: Autonomous Baseline - Robot gets automatic rewards
+[NPC] SetMasterSeed called with seed: 41
+[NPC] Random initialized with seed: 41
+[CommManager] Master seed set to: 41
+[NPC] Random initialized with seed: 41
+[NPC] Episode 1, Force-starting task #1: ExitRoom
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 1 started.
+Playing animation clip: anim_idle
+[NPC] Episode 2, Force-starting task #1: WaveFromDistance
+Total Tasks Performed in episode: 1
+[PepperAgent] Episode 2 started.
+[AutoReward] -0.2 for task 7 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] 0.5 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_WavingNPC
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.2 for task 7 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 2, Task #2: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #3: Handshake (index 1)
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=4194304"
+    "memorysetup-bucket-allocator-block-count=1"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=4194304"
+    "memorysetup-profiler-bucket-allocator-block-count=1"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=4194304"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Playing animation clip: anim_HandshakeNPC
+Mono path[0] = 'D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/InteractiveRL_Data/Managed'
+Mono config path = 'D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/MonoBleedingEdge/etc'
+Found 1 interfaces on host : 0) 192.168.132.29
+Player connection [1668]  Target information:
+
+Player connection [1668]  * "[IP] 192.168.132.29 [Port] 55001 [Flags] 2 [Guid] 2178086215 [EditorId] 3333295334 [Version] 1048832 [Id] WindowsServer(44,MyCoolPC) [Debug] 0 [PackageName] WindowsServer [ProjectName] InteractiveRL"
+
+Player connection [1668] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Initialize engine version: 6000.0.59f2 (ef281c76c3c1)
+[Subsystems] Discovering subsystems at path D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/InteractiveRL_Data/UnitySubsystems
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json.
+[Subsystems] 1 'inputs' descriptors matched in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json
+[Subsystems] 1 'displays' descriptors matched in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  meshings in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json.
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+[Subsystems] 1 'inputs' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] 1 'displays' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  meshings in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Begin MonoManager ReloadAssembly
+[NPC] Task complete: Handshake
+[NPC] Episode 2, Task #4: TalkInMiddle (index 4)
+Symbol file LoadedFromMemory is not a mono symbol file
+- Loaded All Assemblies, in  0.162 seconds
+- Finished resetting the current domain, in  0.002 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Playing animation clip: anim_TalkNPC
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 6 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: TalkInMiddle
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+Microsoft Media Foundation video decoding to texture disabled: graphics device is Null, only Direct3D 11 and Direct3D 12 (only on desktop) are supported for hardware-accelerated video decoding.
+[NPC] Episode 2, Task #5: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[AutoReward] 1 for task 3 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 2, Task #6: Handshake (index 1)
+UnloadTime: 0.475600 ms
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 2 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Failed to create agent because there is no valid NavMesh
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+Trying to access a shader but no shaders were included in the build because Dedicated Server Optimizations is enabled.
+Trying to access a shader but no shaders were included in the build because Dedicated Server Optimizations is enabled.
+Registered Communicator in Agent.
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 2 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[SeedReceiver] Received seed from Python: 41
+[CommManager] NPC mode - autonomous rewards active
+[NPC] Task complete: Handshake
+[CommManager] Mode 0: Autonomous Baseline - Robot gets automatic rewards
+[NPC] SetMasterSeed called with seed: 41
+[NPC] Random initialized with seed: 41
+[CommManager] Master seed set to: 41
+[NPC] Random initialized with seed: 41
+[NPC] Episode 1, Force-starting task #1: ExitRoom
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 1 started.
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete:
+[NPC] Episode 2, Task #7: ExitRoom (index 0)
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Too far to complete handshake.
+[AutoReward] 0.0005 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: ExitRoom
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 0 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #8: ExitRoom (index 0)
+[Pepper] Too far to complete handshake.
+Playing animation clip: anim_idle
+[Pepper] Talking
+[AutoReward] -0.1 for task 1 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+[NPC] Episode 2, Task #9: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Force-starting task #1: WaveFromDistance
+Total Tasks Performed in episode: 1
+[PepperAgent] Episode 2 started.
+[AutoReward] -0.2 for task 7 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #10: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Waving
+[AutoReward] 0.5 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_WavingNPC
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: WaveFromDistance
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #11: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 2, Task #2: MoveToCouch (index 2)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=4194304"
+    "memorysetup-bucket-allocator-block-count=1"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=4194304"
+    "memorysetup-profiler-bucket-allocator-block-count=1"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=4194304"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Mono path[0] = 'D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/InteractiveRL_Data/Managed'
+Mono config path = 'D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/MonoBleedingEdge/etc'
+[NPC] Episode 2, Task #12: TalkInMiddle (index 4)
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: MoveToCouch
+Found 1 interfaces on host : 0) 192.168.132.29
+Player connection [24688]  Target information:
+
+Player connection [24688]  * "[IP] 192.168.132.29 [Port] 55002 [Flags] 2 [Guid] 4010176189 [EditorId] 3333295334 [Version] 1048832 [Id] WindowsServer(44,MyCoolPC) [Debug] 0 [PackageName] WindowsServer [ProjectName] InteractiveRL"
+
+Player connection [24688] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 6 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 6 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Initialize engine version: 6000.0.59f2 (ef281c76c3c1)
+[Subsystems] Discovering subsystems at path D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/InteractiveRL_Data/UnitySubsystems
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json.
+[Subsystems] 1 'inputs' descriptors matched in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json
+[Subsystems] 1 'displays' descriptors matched in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  meshings in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json.
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+[Subsystems] 1 'inputs' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] 1 'displays' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  meshings in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Begin MonoManager ReloadAssembly
+[NPC] Episode 2, Task #3: Handshake (index 1)
+[PepperAgent] Episode ended - Handshake success | Steps: 39 | Time: 115.6s | Total reward: -2.703
+[NPC] Episode 3, Force-starting task #1: TalkInMiddle
+Total Tasks Performed in episode: 12
+[PepperAgent] Episode 3 started.
+[NPC] Episode 4, Force-starting task #1: TalkInMiddle
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 4 started.
+[Pepper] Waving
+[AutoReward] -0.2 for task 6 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_TalkNPC
+[Pepper] Too far to complete handshake.
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: TalkInMiddle
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #2: MoveToTV (index 3)
+Symbol file LoadedFromMemory is not a mono symbol file
+- Loaded All Assemblies, in  0.187 seconds
+- Finished resetting the current domain, in  0.002 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+[NPC] Task complete: Handshake
+Playing animation clip: anim_idle
+[Pepper] Talking
+[AutoReward] -0.1 for task 5 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #4: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 6 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+Microsoft Media Foundation video decoding to texture disabled: graphics device is Null, only Direct3D 11 and Direct3D 12 (only on desktop) are supported for hardware-accelerated video decoding.
+[Pepper] Too far to complete handshake.
+[NPC] Episode 4, Task #3: ExitRoom (index 0)
+[NPC] Task complete: TalkInMiddle
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #5: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+[AutoReward] -0.1 for task 1 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_StandToSitNPC
+[AutoReward] 1 for task 3 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+[NPC] Task complete: ExitRoom
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #4: MoveToCouch (index 2)
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 2, Task #6: Handshake (index 1)
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 2 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+UnloadTime: 0.746500 ms
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Failed to create agent because there is no valid NavMesh
+Trying to access a shader but no shaders were included in the build because Dedicated Server Optimizations is enabled.
+Trying to access a shader but no shaders were included in the build because Dedicated Server Optimizations is enabled.
+Registered Communicator in Agent.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 0 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #5: TalkInMiddle (index 4)
+[Pepper] Too far to complete handshake.
+[Pepper] Talking
+[AutoReward] 1 for task 6 action Talk
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 2 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete:
+[SeedReceiver] Received seed from Python: 45
+[CommManager] NPC mode - autonomous rewards active
+[CommManager] Mode 0: Autonomous Baseline - Robot gets automatic rewards
+[NPC] SetMasterSeed called with seed: 45
+[NPC] Random initialized with seed: 45
+[CommManager] Master seed set to: 45
+[NPC] Random initialized with seed: 45
+[NPC] Episode 1, Force-starting task #1: Handshake
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 1 started.
+[NPC] Episode 2, Task #7: ExitRoom (index 0)
+[Pepper] Waving
+[AutoReward] -0.1 for task 1 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #6: Handshake (index 1)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[AutoReward] -0.2 for task 2 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[AutoReward] 0.0005 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+[Pepper] Waving
+[AutoReward] -0.2 for task 2 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #8: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: Handshake
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 0 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[NPC] Episode 4, Task #7: Handshake (index 1)
+[Pepper] Handshake successful!
+[NPC] Task complete: ExitRoom
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 0 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[PepperAgent] Episode ended - Handshake success | Steps: 16 | Time: 53.6s | Total reward: -0.602
+[NPC] Episode 5, Force-starting task #1: WaveFromDistance
+Total Tasks Performed in episode: 6
+[PepperAgent] Episode 5 started.
+[NPC] Episode 6, Force-starting task #1: WaveFromDistance
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 6 started.
+[Pepper] Talking
+[AutoReward] -0.2 for task 7 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 2, Task #9: MoveToCouch (index 2)
+[Pepper] Too far to complete handshake.
+[Pepper] Talking
+[AutoReward] -0.1 for task 3 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 7 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 6, Task #2: MoveToCouch (index 2)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_StandToSitNPC
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: MoveToCouch
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #10: MoveToCouch (index 2)
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 2, Force-starting task #1: ExitRoom
+Total Tasks Performed in episode: 1
+[PepperAgent] Episode 2 started.
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 0 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 6, Task #3: TalkInMiddle (index 4)
+[Pepper] Too far to complete handshake.
+[AutoReward] -0.2 for task 6 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToCouch
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #11: MoveToCouch (index 2)
+[Pepper] Waving
+[AutoReward] -0.2 for task 6 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=4194304"
+    "memorysetup-bucket-allocator-block-count=1"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=4194304"
+    "memorysetup-profiler-bucket-allocator-block-count=1"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=4194304"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+[NPC] Task complete: ExitRoom
+Mono path[0] = 'D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/InteractiveRL_Data/Managed'
+Mono config path = 'D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/MonoBleedingEdge/etc'
+[Pepper] Too far to complete handshake.
+[NPC] Episode 6, Task #4: WaveFromDistance (index 5)
+[Pepper] Too far to complete handshake.
+Found 1 interfaces on host : 0) 192.168.132.29
+Player connection [23908]  Target information:
+
+Player connection [23908]  * "[IP] 192.168.132.29 [Port] 55003 [Flags] 2 [Guid] 1293283506 [EditorId] 3333295334 [Version] 1048832 [Id] WindowsServer(44,MyCoolPC) [Debug] 0 [PackageName] WindowsServer [ProjectName] InteractiveRL"
+
+Player connection [23908] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+
+[NPC] Episode 2, Task #2: Handshake (index 1)
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Initialize engine version: 6000.0.59f2 (ef281c76c3c1)
+[Subsystems] Discovering subsystems at path D:/jozavat/MAS/Semester4/R&D/docs/gitlab/Data/Build2/InteractiveRL_Data/UnitySubsystems
+[AutoReward] -0.2 for task 2 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json.
+[Subsystems] 1 'inputs' descriptors matched in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json
+[Subsystems] 1 'displays' descriptors matched in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  meshings in UnitySubsystems/UnityMockHMD/UnitySubsystemsManifest.json.
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+[Subsystems] 1 'inputs' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] 1 'displays' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  meshings in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Begin MonoManager ReloadAssembly
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 7 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] 0.5 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_WavingNPC
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #12: TalkInMiddle (index 4)
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: Handshake
+[NPC] Task complete: WaveFromDistance
+[AutoReward] -0.2 for task 6 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 6 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Symbol file LoadedFromMemory is not a mono symbol file
+Playing animation clip: anim_TalkNPC
+- Loaded All Assemblies, in  0.204 seconds
+- Finished resetting the current domain, in  0.003 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+[NPC] Episode 2, Task #3: ExitRoom (index 0)
+[NPC] Episode 6, Task #5: Handshake (index 1)
+[Pepper] Too far to complete handshake.
+[Pepper] Waving
+[AutoReward] -0.2 for task 6 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[PepperAgent] Episode ended - Max duration reached | Steps: 40 | Time: 120.1s | Total reward: -2.804
+[NPC] Episode 3, Force-starting task #1: TalkInMiddle
+Total Tasks Performed in episode: 13
+[PepperAgent] Episode 3 started.
+[NPC] Episode 4, Force-starting task #1: TalkInMiddle
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 4 started.
+[Pepper] Talking
+[AutoReward] 1 for task 6 action Talk
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Attempting handshake…
+[AutoReward] 1 for task 2 action HandShake
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_idle
+[AutoReward] 0.001 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Handshake successful!
+[NPC] Task complete: TalkInMiddle
+Microsoft Media Foundation video decoding to texture disabled: graphics device is Null, only Direct3D 11 and Direct3D 12 (only on desktop) are supported for hardware-accelerated video decoding.
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #2: MoveToTV (index 3)
+[NPC] Episode 2, Task #4: MoveToTV (index 3)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_idle
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 6, Task #6: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[Pepper] Talking
+[AutoReward] -0.1 for task 5 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.1 for task 5 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #3: ExitRoom (index 0)
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: ExitRoom
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #5: WaveFromDistance (index 5)
+Playing animation clip: anim_idle
+[NPC] Episode 6, Task #7: WaveFromDistance (index 5)
+[AutoReward] -0.1 for task 1 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_WavingNPC
+[Pepper] Talking
+[AutoReward] -0.2 for task 7 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] 1 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: ExitRoom
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #4: MoveToCouch (index 2)
+[NPC] Task complete: WaveFromDistance
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #6: ExitRoom (index 0)
+UnloadTime: 0.526500 ms
+[NPC] Episode 6, Task #8: ExitRoom (index 0)
+Failed to create agent because there is no valid NavMesh
+Playing animation clip: anim_idle
+Trying to access a shader but no shaders were included in the build because Dedicated Server Optimizations is enabled.
+Trying to access a shader but no shaders were included in the build because Dedicated Server Optimizations is enabled.
+[Pepper] Talking
+[AutoReward] -0.1 for task 1 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] 0.001 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Registered Communicator in Agent.
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: ExitRoom
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #7: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[Pepper] Waving
+[AutoReward] -0.1 for task 1 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 6, Task #9: Handshake (index 1)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: ExitRoom
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 0 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_HandshakeNPC
+[AutoReward] -0.2 for task 2 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 2 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #5: TalkInMiddle (index 4)
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] 0.5 for task 2 action HandShake
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Too far to complete handshake.
+[SeedReceiver] Received seed from Python: 45
+[Pepper] Talking
+[AutoReward] 1 for task 6 action Talk
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Handshake successful!
+[CommManager] NPC mode - autonomous rewards active
+[CommManager] Mode 0: Autonomous Baseline - Robot gets automatic rewards
+[NPC] SetMasterSeed called with seed: 45
+[NPC] Random initialized with seed: 45
+[CommManager] Master seed set to: 45
+[NPC] Random initialized with seed: 45
+[NPC] Episode 1, Force-starting task #1: Handshake
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 1 started.
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 6, Task #10: Handshake (index 1)
+[NPC] Episode 4, Task #6: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[AutoReward] -0.2 for task 2 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] 0.5 for task 2 action HandShake
+[Pepper] Waving
+[CommManager] Reward delivered to PepperAgent: +1
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_HandshakeNPC
+[AutoReward] -0.2 for task 2 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #8: MoveToTV (index 3)
+[Pepper] Talking
+[AutoReward] -0.1 for task 5 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Handshake successful!
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] 0.0005 for task 5 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.2 for task 2 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: Handshake
+Playing animation clip: anim_idle
+[Pepper] Talking
+[AutoReward] -0.1 for task 5 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: Handshake
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 6, Task #11: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #7: Handshake (index 1)
+Playing animation clip: anim_TalkNPC
+[AutoReward] -0.2 for task 6 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Waving
+[AutoReward] -0.2 for task 6 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+[NPC] Episode 2, Task #9: WaveFromDistance (index 5)
+[NPC] Task complete: TalkInMiddle
+[AutoReward] -0.1 for task 0 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_WavingNPC
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: Handshake
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 6, Task #12: ExitRoom (index 0)
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.2 for task 7 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #8: WaveFromDistance (index 5)
+[NPC] Task complete: WaveFromDistance
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 2, Task #10: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+Playing animation clip: anim_WavingNPC
+[Pepper] Waving
+[AutoReward] 1 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Too far to complete handshake.
+[Pepper] Waving
+[AutoReward] -0.1 for task 1 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: WaveFromDistance
+[AutoReward] 1 for task 3 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+[NPC] Episode 2, Force-starting task #1: ExitRoom
+Total Tasks Performed in episode: 1
+[PepperAgent] Episode 2 started.
+[NPC] Episode 6, Task #13: WaveFromDistance (index 5)
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] 1 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #9: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[AutoReward] -0.2 for task 7 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 7 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 2, Task #11: MoveToTV (index 3)
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[AutoReward] -0.1 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 6, Task #14: MoveToTV (index 3)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #10: MoveToCouch (index 2)
+[AutoReward] 0.001 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[NPC] Episode 2, Task #2: Handshake (index 1)
+[Pepper] Too far to complete handshake.
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 2 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToTV
+[Pepper] Too far to complete handshake.
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 6, Task #15: WaveFromDistance (index 5)
+[NPC] Episode 2, Task #12: MoveToTV (index 3)
+[Pepper] Waving
+[AutoReward] 1 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+[PepperAgent] Episode ended - Max duration reached | Steps: 35 | Time: 122.7s | Total reward: 1.498
+[NPC] Episode 7, Force-starting task #1: Handshake
+Total Tasks Performed in episode: 14
+[PepperAgent] Episode 7 started.
+[NPC] Episode 8, Force-starting task #1: MoveToCouch
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 8 started.
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[Pepper] Too far to complete handshake.
+[AutoReward] 1 for task 0 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+[NPC] Episode 4, Task #11: TalkInMiddle (index 4)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: Handshake
+[NPC] Task complete: MoveToTV
+[Pepper] Too far to complete handshake.
+[NPC] Episode 2, Task #3: ExitRoom (index 0)
+Playing animation clip: anim_TalkNPC
+[Pepper] Waving
+[AutoReward] -0.2 for task 6 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 0 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[PepperAgent] Episode ended - Max duration reached | Steps: 32 | Time: 122.2s | Total reward: -1.802
+[NPC] Episode 3, Force-starting task #1: WaveFromDistance
+Total Tasks Performed in episode: 12
+[PepperAgent] Episode 3 started.
+[NPC] Episode 4, Force-starting task #1: MoveToCouch
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 4 started.
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] 0.5 for task 3 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+[AutoReward] 0.001 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 8, Task #2: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Waving
+[AutoReward] -0.2 for task 2 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.1 for task 3 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.1 for task 3 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #12: WaveFromDistance (index 5)
+[NPC] Episode 2, Task #4: MoveToTV (index 3)
+[AutoReward] 0.5 for task 3 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Waving
+[AutoReward] 1 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Waving
+[AutoReward] -0.2 for task 2 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[Pepper] Talking
+[AutoReward] -0.1 for task 5 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 8, Task #3: WaveFromDistance (index 5)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #2: ExitRoom (index 0)
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #13: Handshake (index 1)
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 2, Task #5: WaveFromDistance (index 5)
+[Pepper] Waving
+[AutoReward] 0.5 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Attempting handshake…
+[AutoReward] 1 for task 2 action HandShake
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[Pepper] Talking
+[AutoReward] -0.2 for task 7 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[Pepper] Handshake successful!
+[NPC] Episode 8, Task #4: ExitRoom (index 0)
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #3: TalkInMiddle (index 4)
+[NPC] Task complete: Handshake
+[NPC] Episode 2, Task #6: ExitRoom (index 0)
+[NPC] Episode 4, Task #14: ExitRoom (index 0)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_idle
+[Pepper] Talking
+[AutoReward] -0.1 for task 1 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 0 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete:
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 8, Task #5: MoveToTV (index 3)
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[PepperAgent] Episode ended - Max duration reached | Steps: 29 | Time: 124.4s | Total reward: 3.398
+[NPC] Episode 5, Force-starting task #1: WaveFromDistance
+Total Tasks Performed in episode: 14
+[PepperAgent] Episode 5 started.
+[NPC] Episode 6, Force-starting task #1: ExitRoom
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 6 started.
+[Pepper] Waving
+[AutoReward] -0.1 for task 1 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #4: WaveFromDistance (index 5)
+[NPC] Episode 2, Task #7: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[Pepper] Too far to complete handshake.
+[Pepper] Waving
+[AutoReward] -0.1 for task 1 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: ExitRoom
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] 0.0005 for task 5 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+[NPC] Episode 6, Task #2: Handshake (index 1)
+[Pepper] Too far to complete handshake.
+[AutoReward] -0.2 for task 2 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[AutoReward] -0.2 for task 2 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 2 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+[Pepper] Attempting handshake…
+[AutoReward] 0.5 for task 2 action HandShake
+[CommManager] Reward delivered to PepperAgent: +1
+[PepperAgent] Episode ended - Handshake success | Steps: 7 | Time: 7.8s | Total reward: -0.501
+[NPC] Episode 7, Force-starting task #1: Handshake
+Total Tasks Performed in episode: 1
+[PepperAgent] Episode 7 started.
+[NPC] Episode 8, Force-starting task #1: TalkInMiddle
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 8 started.
+Playing animation clip: anim_TalkNPC
+[AutoReward] -0.2 for task 6 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #5: WaveFromDistance (index 5)
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 6 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[Pepper] Too far to complete handshake.
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 8, Task #6: WaveFromDistance (index 5)
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 7 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: TalkInMiddle
+[AutoReward] -0.1 for task 0 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+Playing animation clip: anim_WavingNPC
+[AutoReward] -0.2 for task 7 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[Pepper] Waving
+[AutoReward] 0.5 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+[NPC] Episode 8, Task #2: ExitRoom (index 0)
+[AutoReward] 0.001 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #6: TalkInMiddle (index 4)
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_idle
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 2, Task #8: MoveToTV (index 3)
+[Pepper] Talking
+[AutoReward] -0.1 for task 5 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 8, Task #7: MoveToTV (index 3)
+[AutoReward] 0.0005 for task 5 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+[Pepper] Waving
+[AutoReward] -0.1 for task 1 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 5 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[AutoReward] 0.001 for task 0 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete:
+[Pepper] Talking
+[AutoReward] -0.1 for task 5 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #7: TalkInMiddle (index 4)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 0 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 8, Task #3: WaveFromDistance (index 5)
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+[Pepper] Talking
+[AutoReward] -0.2 for task 7 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: MoveToTV
+[Pepper] Too far to complete handshake.
+[NPC] Episode 8, Task #8: WaveFromDistance (index 5)
+[Pepper] Talking
+[AutoReward] -0.2 for task 7 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #8: WaveFromDistance (index 5)
+[NPC] Episode 2, Task #9: WaveFromDistance (index 5)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_WavingNPC
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 8, Task #4: MoveToTV (index 3)
+[NPC] Task complete: WaveFromDistance
+[Pepper] Talking
+[AutoReward] -0.2 for task 7 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_idle
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 8, Task #9: Handshake (index 1)
+[NPC] Episode 4, Task #9: MoveToTV (index 3)
+[NPC] Episode 2, Task #10: MoveToCouch (index 2)
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[AutoReward] -0.2 for task 2 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 8, Task #5: WaveFromDistance (index 5)
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 7 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_StandToSitNPC
+[AutoReward] 1 for task 3 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Attempting handshake…
+[AutoReward] 0.5 for task 2 action HandShake
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Too far to complete handshake.
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToTV
+[Pepper] Waving
+[AutoReward] 0.5 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Handshake successful!
+[NPC] Episode 4, Task #10: TalkInMiddle (index 4)
+[NPC] Task complete: Handshake
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 8, Task #10: ExitRoom (index 0)
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 2, Task #11: MoveToTV (index 3)
+[NPC] Episode 8, Task #6: Handshake (index 1)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 1 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Waving
+[AutoReward] -0.2 for task 2 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #11: ExitRoom (index 0)
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: ExitRoom
+[Pepper] Too far to complete handshake.
+[AutoReward] -0.2 for task 2 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: Handshake
+[NPC] Episode 2, Task #12: MoveToTV (index 3)
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[Pepper] Waving
+[AutoReward] -0.1 for task 0 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 8, Task #11: ExitRoom (index 0)
+[NPC] Episode 8, Task #7: MoveToCouch (index 2)
+[Pepper] Talking
+[AutoReward] -0.1 for task 1 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.1 for task 1 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 1 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #12: MoveToCouch (index 2)
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[PepperAgent] Episode ended - Max duration reached | Steps: 31 | Time: 120.3s | Total reward: -1.702
+[NPC] Episode 3, Force-starting task #1: WaveFromDistance
+Total Tasks Performed in episode: 12
+[PepperAgent] Episode 3 started.
+[NPC] Episode 4, Force-starting task #1: MoveToCouch
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 4 started.
+[AutoReward] 1 for task 3 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_StandToSitNPC
+[AutoReward] 0.0005 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: ExitRoom
+[Pepper] Talking
+[AutoReward] -0.1 for task 3 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Waving
+[AutoReward] -0.1 for task 3 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 8, Task #12: MoveToTV (index 3)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 8, Task #8: Handshake (index 1)
+Playing animation clip: anim_idle
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Waving
+[AutoReward] -0.2 for task 2 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Talking
+[AutoReward] -0.1 for task 3 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #13: MoveToTV (index 3)
+[Pepper] Talking
+[AutoReward] -0.1 for task 3 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] 0.5 for task 3 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #2: ExitRoom (index 0)
+[Pepper] Too far to complete handshake.
+[NPC] Episode 8, Task #13: Handshake (index 1)
+[Pepper] Waving
+[AutoReward] -0.2 for task 2 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] 0.5 for task 2 action HandShake
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Attempting handshake…
+[AutoReward] 0.5 for task 2 action HandShake
+[CommManager] Reward delivered to PepperAgent: +1
+[PepperAgent] Episode ended - Handshake success | Steps: 32 | Time: 116.3s | Total reward: -0.702
+[NPC] Episode 9, Force-starting task #1: Handshake
+Total Tasks Performed in episode: 13
+[PepperAgent] Episode 9 started.
+[NPC] Task complete: Handshake
+[NPC] Episode 10, Force-starting task #1: MoveToCouch
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 10 started.
+[Pepper] Handshake successful!
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[Pepper] Talking
+[AutoReward] -0.1 for task 3 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+[Pepper] Too far to complete handshake.
+[NPC] Episode 8, Task #9: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #14: MoveToTV (index 3)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+Playing animation clip: anim_WavingNPC
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 7 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #3: TalkInMiddle (index 4)
+[Pepper] Too far to complete handshake.
+[NPC] Episode 10, Task #2: WaveFromDistance (index 5)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToTV
+[Pepper] Waving
+[AutoReward] 0.5 for task 7 action Wave
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: WaveFromDistance
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 7 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #15: WaveFromDistance (index 5)
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 8, Task #10: ExitRoom (index 0)
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 7 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[AutoReward] 0.001 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #4: WaveFromDistance (index 5)
+[Pepper] Too far to complete handshake.
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 10, Task #3: MoveToCouch (index 2)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: WaveFromDistance
+[Pepper] Too far to complete handshake.
+[NPC] Episode 8, Task #11: MoveToTV (index 3)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #16: Handshake (index 1)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Too far to complete handshake.
+[NPC] Episode 4, Task #5: WaveFromDistance (index 5)
+Playing animation clip: anim_idle
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Attempting handshake…
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[Pepper] Too far to complete handshake.
+[Pepper] Too far to complete handshake.
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: WaveFromDistance
+[Pepper] Too far to complete handshake.
+[NPC] Episode 8, Task #12: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #6: TalkInMiddle (index 4)
+[NPC] Task complete: Handshake
+[AutoReward] -0.2 for task 7 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 7 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] -0.1 for task 3 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #17: TalkInMiddle (index 4)
+Playing animation clip: anim_WavingNPC
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 7 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #7: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[Pepper] Too far to complete handshake.
+[NPC] Episode 8, Task #13: MoveToTV (index 3)
+[NPC] Episode 4, Task #18: Handshake (index 1)
+[Pepper] Talking
+[AutoReward] -0.1 for task 5 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[Physics::Module] Cleanup current backned.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1778502860099,"processId":19816,"allocatedMemory":54708,"memoryLabels":[{"Default":168},{"NewDelete":2464},{"Manager":12119},{"VFX":-104},{"GfxDevice":72},{"Serialization":144},{"JobScheduler":32768},{"String":301},{"DynamicArray":512},{"HashMap":3584},{"PoolAlloc":672},{"VR":2080},{"Subsystems":-192},{"CoreBusinessMetrics":120}]}
+[NPC] Episode 4, Task #8: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: Handshake
+[NPC] Episode 8, Task #14: WaveFromDistance (index 5)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #19: MoveToCouch (index 2)
+Playing animation clip: anim_WavingNPC
+[AutoReward] -0.2 for task 7 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #9: MoveToTV (index 3)
+Playing animation clip: anim_StandToSitNPC
+[AutoReward] -0.2 for task 7 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_idle
+[Pepper] Attempting handshake…
+[AutoReward] -0.2 for task 7 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: WaveFromDistance
+[Pepper] Too far to complete handshake.
+[NPC] Episode 8, Task #15: Handshake (index 1)
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #20: ExitRoom (index 0)
+[NPC] Episode 4, Task #10: TalkInMiddle (index 4)
+[Pepper] Waving
+[AutoReward] -0.2 for task 2 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[PepperAgent] Episode ended - Max duration reached | Steps: 38 | Time: 122.3s | Total reward: -3.101
+[NPC] Episode 9, Force-starting task #1: ExitRoom
+Total Tasks Performed in episode: 15
+[PepperAgent] Episode 9 started.
+[NPC] Episode 10, Force-starting task #1: ExitRoom
+Total Tasks Performed in episode: 0
+[PepperAgent] Episode 10 started.
+[Pepper] Talking
+[AutoReward] -0.1 for task 1 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_TalkNPC
+[Pepper] Talking
+[AutoReward] -0.1 for task 1 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[AutoReward] 0.5 for task 1 action Look
+[CommManager] Reward delivered to PepperAgent: +1
+Playing animation clip: anim_idle
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+[AutoReward] 0.0005 for task 1 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #11: ExitRoom (index 0)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #21: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+[NPC] Episode 10, Task #2: MoveToTV (index 3)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[Pepper] Waving
+[AutoReward] -0.1 for task 5 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #12: MoveToCouch (index 2)
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 5 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: MoveToCouch
+[Pepper] Too far to complete handshake.
+[NPC] Episode 10, Task #3: Handshake (index 1)
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Waving
+[AutoReward] -0.2 for task 2 action Wave
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #22: TalkInMiddle (index 4)
+[AutoReward] -0.2 for task 2 action Look
+[CommManager] Reward delivered to PepperAgent: 0
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToCouch
+[Pepper] Talking
+[AutoReward] -0.2 for task 2 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #13: MoveToTV (index 3)
+[NPC] Episode 4, Task #23: Handshake (index 1)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Episode 10, Task #4: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[Pepper] Attempting handshake…
+[AutoReward] 0.5 for task 2 action HandShake
+[CommManager] Reward delivered to PepperAgent: +1
+[Pepper] Handshake successful!
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #14: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #24: ExitRoom (index 0)
+[NPC] Task complete: Handshake
+[NPC] Episode 10, Task #5: MoveToCouch (index 2)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #15: WaveFromDistance (index 5)
+[Pepper] Too far to complete handshake.
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_WavingNPC
+[Pepper] Attempting handshake…
+[AutoReward] -0.1 for task 3 action HandShake
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 4, Task #25: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[Pepper] Too far to complete handshake.
+[Pepper] Talking
+[AutoReward] -0.1 for task 0 action Talk
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Episode 10, Task #6: WaveFromDistance (index 5)
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #16: Handshake (index 1)
+[NPC] Episode 4, Task #26: MoveToTV (index 3)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[AutoReward] -0.2 for task 7 action DoNothing
+[CommManager] Reward delivered to PepperAgent: 0
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #27: ExitRoom (index 0)
+[NPC] Episode 4, Task #17: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[Physics::Module] Cleanup current backned.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+Playing animation clip: anim_idle
+PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1778502862188,"processId":15604,"allocatedMemory":54708,"memoryLabels":[{"Default":168},{"NewDelete":2464},{"Manager":12119},{"VFX":-104},{"GfxDevice":72},{"Serialization":144},{"JobScheduler":32768},{"String":301},{"DynamicArray":512},{"HashMap":3584},{"PoolAlloc":672},{"VR":2080},{"Subsystems":-192},{"CoreBusinessMetrics":120}]}
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #18: Handshake (index 1)
+[NPC] Episode 4, Task #28: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #19: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #29: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #20: ExitRoom (index 0)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #30: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #21: MoveToCouch (index 2)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #31: MoveToTV (index 3)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #22: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #32: MoveToCouch (index 2)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #23: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #33: MoveToTV (index 3)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #24: ExitRoom (index 0)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #34: ExitRoom (index 0)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #25: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #35: MoveToTV (index 3)
+[NPC] Episode 4, Task #26: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #36: Handshake (index 1)
+[NPC] Episode 4, Task #27: ExitRoom (index 0)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #28: Handshake (index 1)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #37: MoveToTV (index 3)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #29: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #38: ExitRoom (index 0)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #30: MoveToCouch (index 2)
+[NPC] Episode 4, Task #39: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #31: MoveToTV (index 3)
+[NPC] Episode 4, Task #40: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #32: MoveToCouch (index 2)
+[NPC] Episode 4, Task #41: Handshake (index 1)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #33: MoveToTV (index 3)
+[NPC] Episode 4, Task #42: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #34: ExitRoom (index 0)
+[NPC] Episode 4, Task #43: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #35: MoveToTV (index 3)
+[NPC] Episode 4, Task #44: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #45: ExitRoom (index 0)
+[NPC] Episode 4, Task #36: Handshake (index 1)
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #46: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #37: MoveToTV (index 3)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #47: Handshake (index 1)
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #38: ExitRoom (index 0)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #48: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #39: Handshake (index 1)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #49: ExitRoom (index 0)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #40: MoveToTV (index 3)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #50: Handshake (index 1)
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #41: Handshake (index 1)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #51: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #42: MoveToCouch (index 2)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #52: ExitRoom (index 0)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #53: Handshake (index 1)
+[NPC] Episode 4, Task #43: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #44: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #54: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #45: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #55: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #46: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #56: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #47: Handshake (index 1)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #57: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #48: MoveToCouch (index 2)
+[NPC] Episode 4, Task #58: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #59: WaveFromDistance (index 5)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #49: ExitRoom (index 0)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #60: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #50: Handshake (index 1)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #61: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #51: ExitRoom (index 0)
+[NPC] Episode 4, Task #62: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #52: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #63: ExitRoom (index 0)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #53: Handshake (index 1)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #64: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #54: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #65: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #55: MoveToTV (index 3)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #66: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #56: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #67: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #68: MoveToCouch (index 2)
+[NPC] Episode 4, Task #57: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #58: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #69: ExitRoom (index 0)
+[NPC] Episode 4, Task #59: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #60: MoveToCouch (index 2)
+[NPC] Episode 4, Task #70: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #71: TalkInMiddle (index 4)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #61: TalkInMiddle (index 4)
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #72: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #62: MoveToTV (index 3)
+[NPC] Episode 4, Task #73: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #74: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #63: ExitRoom (index 0)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #75: WaveFromDistance (index 5)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #64: Handshake (index 1)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #76: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #77: Handshake (index 1)
+[NPC] Episode 4, Task #65: ExitRoom (index 0)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #66: TalkInMiddle (index 4)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #78: WaveFromDistance (index 5)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #67: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #79: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #68: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #80: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #69: ExitRoom (index 0)
+[NPC] Episode 4, Task #81: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #70: TalkInMiddle (index 4)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #82: MoveToTV (index 3)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #71: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #83: Handshake (index 1)
+[NPC] Episode 4, Task #72: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #73: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #84: MoveToTV (index 3)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #74: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #75: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #85: Handshake (index 1)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #76: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #86: MoveToCouch (index 2)
+[NPC] Episode 4, Task #77: Handshake (index 1)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #87: Handshake (index 1)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #78: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #88: Handshake (index 1)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #79: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #89: MoveToTV (index 3)
+[NPC] Episode 4, Task #80: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #81: Handshake (index 1)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #90: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #82: MoveToTV (index 3)
+[NPC] Episode 4, Task #91: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #83: Handshake (index 1)
+[NPC] Episode 4, Task #92: WaveFromDistance (index 5)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #93: ExitRoom (index 0)
+[NPC] Episode 4, Task #84: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #94: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #85: Handshake (index 1)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #95: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #96: MoveToTV (index 3)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #86: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #97: Handshake (index 1)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #87: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #98: Handshake (index 1)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #88: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #99: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #89: MoveToTV (index 3)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #100: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #90: TalkInMiddle (index 4)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #101: Handshake (index 1)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #91: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #102: TalkInMiddle (index 4)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #92: WaveFromDistance (index 5)
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #103: MoveToCouch (index 2)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #93: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #104: Handshake (index 1)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #94: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #105: MoveToTV (index 3)
+[NPC] Episode 4, Task #95: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #96: MoveToTV (index 3)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #106: Handshake (index 1)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #97: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #107: ExitRoom (index 0)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #98: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #108: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #99: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #109: MoveToTV (index 3)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #100: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #101: Handshake (index 1)
+[NPC] Episode 4, Task #110: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #111: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #102: TalkInMiddle (index 4)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #103: MoveToCouch (index 2)
+[NPC] Episode 4, Task #112: WaveFromDistance (index 5)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #104: Handshake (index 1)
+[NPC] Episode 4, Task #113: TalkInMiddle (index 4)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #114: WaveFromDistance (index 5)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #105: MoveToTV (index 3)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #115: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #106: Handshake (index 1)
+[NPC] Episode 4, Task #116: ExitRoom (index 0)
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #117: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #107: ExitRoom (index 0)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #118: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #108: MoveToCouch (index 2)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #119: WaveFromDistance (index 5)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #109: MoveToTV (index 3)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #120: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #110: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #121: MoveToCouch (index 2)
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #111: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #122: MoveToTV (index 3)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #112: WaveFromDistance (index 5)
+Playing animation clip: anim_idle
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #123: TalkInMiddle (index 4)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #113: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #124: Handshake (index 1)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #114: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #125: MoveToCouch (index 2)
+[NPC] Episode 4, Task #115: ExitRoom (index 0)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #116: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #126: TalkInMiddle (index 4)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #117: MoveToCouch (index 2)
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #127: MoveToTV (index 3)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #118: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #128: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #119: WaveFromDistance (index 5)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #129: TalkInMiddle (index 4)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #130: Handshake (index 1)
+[NPC] Episode 4, Task #120: MoveToTV (index 3)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #121: MoveToCouch (index 2)
+[NPC] Episode 4, Task #131: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #132: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #122: MoveToTV (index 3)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #133: MoveToCouch (index 2)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #123: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #134: MoveToTV (index 3)
+[NPC] Episode 4, Task #124: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #135: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #125: MoveToCouch (index 2)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #136: MoveToCouch (index 2)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #126: TalkInMiddle (index 4)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #137: ExitRoom (index 0)
+[NPC] Episode 4, Task #127: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #128: ExitRoom (index 0)
+[NPC] Episode 4, Task #138: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #139: ExitRoom (index 0)
+[NPC] Episode 4, Task #129: TalkInMiddle (index 4)
+Playing animation clip: anim_idle
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #140: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #130: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #141: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #131: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #132: ExitRoom (index 0)
+[NPC] Episode 4, Task #142: TalkInMiddle (index 4)
+Playing animation clip: anim_idle
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #133: MoveToCouch (index 2)
+[NPC] Episode 4, Task #143: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #144: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #134: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #145: Handshake (index 1)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #135: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #146: MoveToCouch (index 2)
+[NPC] Episode 4, Task #136: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #147: Handshake (index 1)
+[NPC] Episode 4, Task #137: ExitRoom (index 0)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #148: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #138: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #139: ExitRoom (index 0)
+[NPC] Episode 4, Task #149: TalkInMiddle (index 4)
+Playing animation clip: anim_idle
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #140: ExitRoom (index 0)
+[NPC] Episode 4, Task #150: WaveFromDistance (index 5)
+Playing animation clip: anim_idle
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #141: MoveToCouch (index 2)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #151: Handshake (index 1)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #142: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #152: WaveFromDistance (index 5)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #143: MoveToTV (index 3)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #153: Handshake (index 1)
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #144: ExitRoom (index 0)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #154: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #145: Handshake (index 1)
+[NPC] Episode 4, Task #155: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #156: MoveToTV (index 3)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #146: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #157: WaveFromDistance (index 5)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #147: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #158: Handshake (index 1)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #148: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #159: TalkInMiddle (index 4)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #149: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #160: TalkInMiddle (index 4)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #150: WaveFromDistance (index 5)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #161: MoveToTV (index 3)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #151: Handshake (index 1)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #162: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #152: WaveFromDistance (index 5)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #163: TalkInMiddle (index 4)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #153: Handshake (index 1)
+[NPC] Episode 4, Task #164: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #165: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #154: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #166: MoveToCouch (index 2)
+[NPC] Episode 4, Task #155: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #156: MoveToTV (index 3)
+[NPC] Episode 4, Task #167: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #157: WaveFromDistance (index 5)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #168: ExitRoom (index 0)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #158: Handshake (index 1)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #169: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #170: TalkInMiddle (index 4)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #159: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #171: ExitRoom (index 0)
+[NPC] Episode 4, Task #160: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #161: MoveToTV (index 3)
+[NPC] Episode 4, Task #172: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #162: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #173: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #163: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #174: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #164: Handshake (index 1)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #175: Handshake (index 1)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #165: TalkInMiddle (index 4)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #166: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #176: TalkInMiddle (index 4)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #177: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #167: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #178: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #168: ExitRoom (index 0)
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #179: WaveFromDistance (index 5)
+Playing animation clip: anim_idle
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #169: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #180: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #170: TalkInMiddle (index 4)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #181: MoveToTV (index 3)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #171: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #182: MoveToCouch (index 2)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #172: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #183: Handshake (index 1)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #173: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #184: WaveFromDistance (index 5)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #174: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #185: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #175: Handshake (index 1)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #186: TalkInMiddle (index 4)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #187: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #176: TalkInMiddle (index 4)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #177: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #188: TalkInMiddle (index 4)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #189: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #178: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #190: ExitRoom (index 0)
+[NPC] Episode 4, Task #179: WaveFromDistance (index 5)
+Playing animation clip: anim_idle
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #191: MoveToCouch (index 2)
+[NPC] Episode 4, Task #180: ExitRoom (index 0)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #181: MoveToTV (index 3)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #192: WaveFromDistance (index 5)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #182: MoveToCouch (index 2)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #193: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #183: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #194: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #184: WaveFromDistance (index 5)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #195: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #185: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #196: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #186: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #197: ExitRoom (index 0)
+[NPC] Episode 4, Task #187: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #198: MoveToCouch (index 2)
+[NPC] Episode 4, Task #188: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #189: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #199: Handshake (index 1)
+[NPC] Episode 4, Task #190: ExitRoom (index 0)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #191: MoveToCouch (index 2)
+[NPC] Episode 4, Task #200: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #201: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #192: WaveFromDistance (index 5)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #202: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #193: Handshake (index 1)
+[NPC] Episode 4, Task #203: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #194: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #204: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #195: MoveToCouch (index 2)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #205: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #196: Handshake (index 1)
+[NPC] Episode 4, Task #206: TalkInMiddle (index 4)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #207: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #197: ExitRoom (index 0)
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #208: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #198: MoveToCouch (index 2)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #209: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #210: Handshake (index 1)
+[NPC] Episode 4, Task #199: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #211: MoveToTV (index 3)
+[NPC] Episode 4, Task #200: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #201: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #212: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #202: ExitRoom (index 0)
+Playing animation clip: anim_idle
+
+[NPC] Task complete: Handshake
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #213: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #203: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #214: MoveToTV (index 3)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #204: ExitRoom (index 0)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #215: ExitRoom (index 0)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #205: TalkInMiddle (index 4)
+Playing animation clip: anim_idle
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #216: Handshake (index 1)
+[NPC] Episode 4, Task #206: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #207: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #217: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #208: MoveToCouch (index 2)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #218: TalkInMiddle (index 4)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #209: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #219: Handshake (index 1)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #210: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #220: ExitRoom (index 0)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #211: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #221: MoveToTV (index 3)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #212: Handshake (index 1)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #222: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #213: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #223: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #214: MoveToTV (index 3)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #224: WaveFromDistance (index 5)
+Playing animation clip: anim_idle
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #215: ExitRoom (index 0)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #225: Handshake (index 1)
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #216: Handshake (index 1)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #226: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #217: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #227: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #218: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #228: WaveFromDistance (index 5)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #219: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #229: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #220: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #230: ExitRoom (index 0)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #221: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #231: TalkInMiddle (index 4)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #222: TalkInMiddle (index 4)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #232: MoveToTV (index 3)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #223: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #233: MoveToCouch (index 2)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #224: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #234: ExitRoom (index 0)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #225: Handshake (index 1)
+Playing animation clip: anim_idle
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #235: Handshake (index 1)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #226: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #236: MoveToTV (index 3)
+[NPC] Episode 4, Task #227: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #228: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #237: ExitRoom (index 0)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #229: MoveToCouch (index 2)
+[NPC] Episode 4, Task #238: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #239: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #240: Handshake (index 1)
+[NPC] Episode 4, Task #230: ExitRoom (index 0)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #231: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #241: ExitRoom (index 0)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #232: MoveToTV (index 3)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #242: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #233: MoveToCouch (index 2)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #243: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #234: ExitRoom (index 0)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #244: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #235: Handshake (index 1)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #245: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #246: Handshake (index 1)
+[NPC] Episode 4, Task #236: MoveToTV (index 3)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #237: ExitRoom (index 0)
+[NPC] Episode 4, Task #247: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #238: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #248: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #239: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #249: Handshake (index 1)
+[NPC] Episode 4, Task #240: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #250: ExitRoom (index 0)
+[NPC] Episode 4, Task #241: ExitRoom (index 0)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #251: MoveToCouch (index 2)
+[NPC] Episode 4, Task #242: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #252: Handshake (index 1)
+[NPC] Episode 4, Task #243: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #253: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #244: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #254: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #245: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #255: MoveToCouch (index 2)
+[NPC] Episode 4, Task #246: Handshake (index 1)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #256: ExitRoom (index 0)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #247: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #257: TalkInMiddle (index 4)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #248: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #258: Handshake (index 1)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #249: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #259: WaveFromDistance (index 5)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #250: ExitRoom (index 0)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #260: MoveToTV (index 3)
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #251: MoveToCouch (index 2)
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #261: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #252: Handshake (index 1)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #262: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #253: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #263: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #264: MoveToCouch (index 2)
+[NPC] Episode 4, Task #254: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #255: MoveToCouch (index 2)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #265: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #256: ExitRoom (index 0)
+[NPC] Episode 4, Task #266: ExitRoom (index 0)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #257: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #267: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #258: Handshake (index 1)
+[NPC] Episode 4, Task #268: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #259: WaveFromDistance (index 5)
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #269: MoveToCouch (index 2)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #260: MoveToTV (index 3)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #270: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #261: MoveToCouch (index 2)
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #271: ExitRoom (index 0)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #262: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #272: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #263: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #273: MoveToTV (index 3)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #264: MoveToCouch (index 2)
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #274: WaveFromDistance (index 5)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #275: ExitRoom (index 0)
+[NPC] Episode 4, Task #265: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #276: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #266: ExitRoom (index 0)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #277: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #267: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #278: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #268: Handshake (index 1)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #279: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #269: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #280: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #270: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #281: MoveToTV (index 3)
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #271: ExitRoom (index 0)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #282: TalkInMiddle (index 4)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #272: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #283: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #273: MoveToTV (index 3)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #284: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #274: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #285: TalkInMiddle (index 4)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #275: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #286: MoveToCouch (index 2)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #276: ExitRoom (index 0)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #277: MoveToCouch (index 2)
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #287: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #288: Handshake (index 1)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #278: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #289: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #279: MoveToCouch (index 2)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #290: ExitRoom (index 0)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #280: ExitRoom (index 0)
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #291: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #281: MoveToTV (index 3)
+[NPC] Episode 4, Task #292: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #293: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #282: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #294: MoveToTV (index 3)
+[NPC] Episode 4, Task #283: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #284: MoveToCouch (index 2)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #295: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #285: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #296: Handshake (index 1)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #286: MoveToCouch (index 2)
+[NPC] Task complete: Handshake
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #297: MoveToTV (index 3)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #287: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #298: WaveFromDistance (index 5)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #288: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #299: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #289: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #300: MoveToCouch (index 2)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #290: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #301: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #291: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #302: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Episode 4, Task #292: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #303: ExitRoom (index 0)
+[NPC] Episode 4, Task #293: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: Handshake
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #294: MoveToTV (index 3)
+[NPC] Episode 4, Task #304: MoveToTV (index 3)
+Playing animation clip: anim_idle
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #305: WaveFromDistance (index 5)
+[NPC] Episode 4, Task #295: TalkInMiddle (index 4)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #296: Handshake (index 1)
+[NPC] Episode 4, Task #306: MoveToTV (index 3)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: MoveToTV
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #307: TalkInMiddle (index 4)
+[NPC] Episode 4, Task #297: MoveToTV (index 3)
+Playing animation clip: anim_TalkNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #308: Handshake (index 1)
+[NPC] Task complete: MoveToTV
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #298: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: Handshake
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #309: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+[NPC] Episode 4, Task #299: ExitRoom (index 0)
+Playing animation clip: anim_idle
+[NPC] Task complete: ExitRoom
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #300: MoveToCouch (index 2)
+[NPC] Episode 4, Task #310: Handshake (index 1)
+Playing animation clip: anim_HandshakeNPC
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: Handshake
+[NPC] Episode 4, Task #311: TalkInMiddle (index 4)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #301: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: TalkInMiddle
+[NPC] Episode 4, Task #312: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #302: MoveToCouch (index 2)
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #313: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: MoveToCouch
+[NPC] Episode 4, Task #303: ExitRoom (index 0)
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #314: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+Playing animation clip: anim_idle
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: ExitRoom
+[NPC] Episode 4, Task #315: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #304: MoveToTV (index 3)
+[NPC] Task complete: WaveFromDistance
+Playing animation clip: anim_idle
+[NPC] Episode 4, Task #316: TalkInMiddle (index 4)
+Playing animation clip: anim_TalkNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #305: WaveFromDistance (index 5)
+[NPC] Task complete: TalkInMiddle
+Playing animation clip: anim_WavingNPC
+[NPC] Episode 4, Task #317: WaveFromDistance (index 5)
+Playing animation clip: anim_WavingNPC
+[NPC] Task complete: WaveFromDistance
+[NPC] Task complete: WaveFromDistance
+[NPC] Episode 4, Task #306: MoveToTV (index 3)
+[NPC] Episode 4, Task #318: MoveToCouch (index 2)
+Playing animation clip: anim_idle
+Playing animation clip: anim_StandToSitNPC
+[NPC] Task complete: MoveToTV
+[NPC] Episode 4, Task #307: TalkInMiddle (index 4)
+[NPC] Task complete: MoveToCouch
+Playing animation clip: anim_TalkNPC
+[NPC] Episode 4, Task #319: TalkInMiddle (index 4)

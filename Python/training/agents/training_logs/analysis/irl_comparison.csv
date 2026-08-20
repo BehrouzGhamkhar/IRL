@@ -1,0 +1,9 @@
+Metric,Autonomous RL,IRL
+Final task accuracy (%),74.14,72.37
+Best episode reward,7.90,8.50
+Avg reward,4.55,4.38
+Action distribution entropy (bits),1.39,1.79
+HandShake occurrences (n),20,137
+HandShake task accuracy (%),85.00,81.75
+Talk occurrences (n),0,0
+Talk task accuracy (%),N/A,N/A

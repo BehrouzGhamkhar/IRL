@@ -1,0 +1,44 @@
+
+Training on cuda | logs -> training_logs/run_seed41_coach_config_resumed_20260530_163812
+Config: ..\..\configs\Finetune\coach_config.yaml
+Episodes: 9256 -> ...
+Steps: 150000 -> 150100
+
+Loaded 9256 accuracy episodes from training_logs/run_seed41_config4_fresh_20260529_233648/accuracy_final.csv
+  [Step 150010] Action dist: A0:50% | A1:0% | A2:30% | A3:20% | A4:0%
+Episode  9256 | Steps:  150014 | Reward:   4.000 | Avg(100):   4.241 | Entropy: 0.0100 | Acc: 66.7% (8+ 4-) | Lifetime: 66.7%
+  [Step 150020] Action dist: A0:70% | A1:0% | A2:20% | A3:10% | A4:0%
+Episode  9257 | Steps:  150028 | Reward:   5.000 | Avg(100):   4.264 | Entropy: 0.0100 | Acc: 69.2% (9+ 4-) | Lifetime: 68.0%
+  [Step 150030] Action dist: A0:30% | A1:0% | A2:30% | A3:40% | A4:0%
+  [Step 150040] Action dist: A0:40% | A1:0% | A2:30% | A3:30% | A4:0%
+Episode  9258 | Steps:  150042 | Reward:  -1.000 | Avg(100):   4.203 | Entropy: 0.0100 | Acc: 46.2% (6+ 7-) | Lifetime: 60.5%
+  [Step 150050] Action dist: A0:60% | A1:0% | A2:0% | A3:40% | A4:0%
+Episode  9259 | Steps:  150057 | Reward:   6.000 | Avg(100):   4.201 | Entropy: 0.0100 | Acc: 75.0% (9+ 3-) | Lifetime: 64.0%
+  [Step 150060] Action dist: A0:70% | A1:0% | A2:0% | A3:30% | A4:0%
+  [Step 150070] Action dist: A0:40% | A1:0% | A2:10% | A3:50% | A4:0%
+Episode  9260 | Steps:  150072 | Reward:   0.000 | Avg(100):   4.168 | Entropy: 0.0100 | Acc: 50.0% (6+ 6-) | Lifetime: 61.3%
+  [Step 150080] Action dist: A0:60% | A1:0% | A2:0% | A3:40% | A4:0%
+Episode  9261 | Steps:  150085 | Reward:   3.000 | Avg(100):   4.150 | Entropy: 0.0100 | Acc: 71.4% (5+ 2-) | Lifetime: 62.3%
+  [Step 150090] Action dist: A0:70% | A1:0% | A2:20% | A3:10% | A4:0%
+  [Step 150100] Action dist: A0:60% | A1:0% | A2:30% | A3:10% | A4:0%
+  [COACH] Gradient updates performed: 78
+Final model -> training_logs/run_seed41_coach_config_resumed_20260530_163812\model_final.pt
+Rewards saved -> training_logs/run_seed41_coach_config_resumed_20260530_163812\rewards_final.csv (episodes=9262, steps=150100)
+Accuracy saved -> training_logs/run_seed41_coach_config_resumed_20260530_163812\accuracy_final.csv (episodes=9262)
+
+ --- Lifetime Accuracy --------------------------
+  ###################...........  65.4%
+  Correct: 51  |  Wrong: 27  |  Total scored: 78
+------------------------------------------
+
+=======================================================
+TRAINING SUMMARY
+=======================================================
+Config file      : ..\..\configs\Finetune\coach_config.yaml
+Steps total      : 150100
+Episodes total   : 9262
+Best reward      : 9.198
+Avg reward       : 3.050
+Last 100 avg     : 4.150
+Output dir       : training_logs/run_seed41_coach_config_resumed_20260530_163812
+=======================================================

@@ -8,24 +8,25 @@ namespace Agents.Robot
 {
     public class PepperAgent : Agent
     {
-        [SerializeField] private PepperController pepperController;
+        // Inspector 
+        [Header("References")] [SerializeField]
+        private PepperController pepperController;
+
         [SerializeField] private CommunicationManager communicationManager;
 
-        [Header("Episode Settings")]
-        [SerializeField, Tooltip("Max number of decisions before timeout")]
-        private int maxDecisionSteps = 400;           // ~8–25 seconds depending on Decision Period
+        [Header("Episode Limits")] [SerializeField]
+        private int maxDecisionSteps = 2000;
 
-        [SerializeField, Tooltip("Max real time per episode (safety)")]
-        private float maxEpisodeDurationSeconds = 60f;
+        [SerializeField] private float maxEpisodeDurationSeconds = 60f;
 
         private float episodeStartTime;
-        private int decisionStepCount;
+        private int stepCount;
 
-        
         private void Start()
         {
             if (pepperController == null)
                 pepperController = GetComponent<PepperController>();
+
             if (communicationManager == null)
                 communicationManager = FindFirstObjectByType<CommunicationManager>();
         }
@@ -33,120 +34,105 @@ namespace Agents.Robot
         public override void OnEpisodeBegin()
         {
             episodeStartTime = Time.time;
-            decisionStepCount = 0;
+            stepCount = 0;
 
-            if (communicationManager != null)
-            {
-                communicationManager.ResetSimulation();
-            }
+            // Let CommunicationManager know a new episode is starting
+            communicationManager?.OnEpisodeBegin();
+            communicationManager?.ResetSimulation();
+            communicationManager?.ResetRewardGate();
 
-            Debug.Log("[PepperAgent] Episode begin – environment reset");
+            Debug.Log($"[PepperAgent] Episode {communicationManager?.GetCurrentEpisodeNumber()} started.");
         }
 
         public override void CollectObservations(VectorSensor sensor)
         {
             if (communicationManager == null)
             {
-                sensor.AddObservation(new float[16]); // safety padding
+                sensor.AddObservation(new float[12]); 
                 return;
             }
 
-            // 1. Pepper state (one-hot) – 5 values
+            // [0-4] Pepper state (one-hot, 5 values)
             sensor.AddOneHotObservation((int)communicationManager.CurrentPepperState, 5);
+            
+            // sensor.AddOneHotObservation(communicationManager.CurrentNPCTaskId, 10);
 
-            // 2. Current NPC Task - 1 value (task id)
-            sensor.AddObservation(communicationManager.CurrentNPCTaskId);                      // single float = task id (0 = no task)
+            // [5] Normalised distance to human
+            sensor.AddObservation(Mathf.Clamp01(communicationManager.CurrentDistance / 10f));
 
-            // 3. Normalized distance – 1 value
-            float normDist = Mathf.Clamp01(communicationManager.CurrentDistance / 10f);
-            sensor.AddObservation(normDist);
-
-            // 4. Handshake flags
+            // [6] Handshake in progress
             sensor.AddObservation(communicationManager.IsHandshakeInProgress ? 1f : 0f);
+
+            // [7] Handshake available
             sensor.AddObservation(communicationManager.CanHandshake ? 1f : 0f);
 
-            // 5. Relative position (x,z) normalized
-            if (pepperController && communicationManager.NpcController)
-            {
-                Vector3 relPos = communicationManager.NpcController.transform.position -
-                                 pepperController.transform.position;
-                sensor.AddObservation(Mathf.Clamp(relPos.x / 10f, -1f, 1f));
-                sensor.AddObservation(Mathf.Clamp(relPos.z / 10f, -1f, 1f));
-            }
-            else
-            {
-                sensor.AddObservation(0f);
-                sensor.AddObservation(0f);
-            }
+            // ── Body-signal observations (replace the old 8-value task one-hot) ──
 
-            // Total ~ 5 + 1 + 1 + 2 + 2 = 11 observations 
-             // Debug.Log($"[ML-Agents] Collecting {sensor.GetObservationSpec().Shape[0]} observations");
+            // [8]  Wrist height above floor, normalised [0, 1]
+            //       Low  (0.0) -> hand at hip / side
+            //       High (1.0) -> hand raised above head
+             sensor.AddObservation(communicationManager.WristHeight);
 
+            // [9]  Wrist-to-core distance, normalised [0, 1]
+            //       Low  (0.0) -> arm folded / crossed
+            //       High (1.0) -> arm fully extended away from body
+             sensor.AddObservation(communicationManager.WristToCoreDistance);
+
+            // [10] Body orientation relative to Pepper, normalised [-1, 1]
+            //       +1 -> human facing directly towards Pepper
+            //       -1 -> human facing directly away from Pepper
+             sensor.AddObservation(communicationManager.BodyOrientation);
+
+            // [11] Gaze direction relative to Pepper, normalised [-1, 1]
+            //       +1 -> human looking directly at Pepper
+            //       -1 -> human looking directly away from Pepper
+             sensor.AddObservation(communicationManager.GazeDirection);
+
+            
+            // Total: 5 (PepperState) + 1 (distance) + 2 (handshake) + 4 (body data) = 12
         }
 
         public override void OnActionReceived(ActionBuffers actionBuffers)
         {
             if (communicationManager == null) return;
 
-            int actionIndex = actionBuffers.DiscreteActions[0]; // 0..4
+            var action = (PepperController.AgentAction)actionBuffers.DiscreteActions[0];
+            communicationManager.ExecutePepperAction(action);
 
-            PepperController.AgentAction selectedAction = actionIndex switch
-            {
-                0 => PepperController.AgentAction.DoNothing,
-                1 => PepperController.AgentAction.Talk,
-                2 => PepperController.AgentAction.Look,
-                3 => PepperController.AgentAction.Wave,
-                4 => PepperController.AgentAction.HandShake,
-                _ => PepperController.AgentAction.DoNothing
-            };
+            stepCount++;
 
-            communicationManager.ExecutePepperAction(selectedAction);
-            
-            // 1. Count this decision
-            decisionStepCount++;
-
-            // 2. Small living penalty → encourages finishing quickly
-            AddReward(-0.002f);  
-
-            // 3. Check termination conditions
-            if (decisionStepCount >= maxDecisionSteps)
-            {
-                AddReward(-0.2f);
-                EndEpisodeWithReason("Timeout: max steps");
-                return;
-            }
-
-            if (Time.time - episodeStartTime >= maxEpisodeDurationSeconds)
-            {
-                AddReward(-0.3f);
-                EndEpisodeWithReason("Timeout: max duration");
-            }
+            // Episode termination checks
+            if (stepCount >= maxDecisionSteps)
+                EndEpisodeWithReason("Max steps reached");
+            else if (Time.time - episodeStartTime >= maxEpisodeDurationSeconds)
+                EndEpisodeWithReason("Max duration reached");
         }
-        
+
         public override void Heuristic(in ActionBuffers actionsOut)
         {
-            var discrete = actionsOut.DiscreteActions;
+            // Keyboard override for manual testing
+            var d = actionsOut.DiscreteActions;
+            d[0] = 0; // default: DoNothing
 
-            discrete[0] = 0; // default = DoNothing
-
-            if (Input.GetKey(KeyCode.Alpha1) || Input.GetKey(KeyCode.Keypad1)) discrete[0] = 0; // DoNothing
-            if (Input.GetKey(KeyCode.Alpha2) || Input.GetKey(KeyCode.Keypad2)) discrete[0] = 1; // Wait
-            if (Input.GetKey(KeyCode.Alpha3) || Input.GetKey(KeyCode.Keypad3)) discrete[0] = 2; // Look
-            if (Input.GetKey(KeyCode.Alpha4) || Input.GetKey(KeyCode.Keypad4)) discrete[0] = 3; // Wave
-            if (Input.GetKey(KeyCode.Alpha5) || Input.GetKey(KeyCode.Keypad5)) discrete[0] = 4; // HandShake
+            if (Input.GetKey(KeyCode.Alpha1) || Input.GetKey(KeyCode.Keypad1)) d[0] = 0;
+            if (Input.GetKey(KeyCode.Alpha2) || Input.GetKey(KeyCode.Keypad2)) d[0] = 1;
+            if (Input.GetKey(KeyCode.Alpha3) || Input.GetKey(KeyCode.Keypad3)) d[0] = 2;
+            if (Input.GetKey(KeyCode.Alpha4) || Input.GetKey(KeyCode.Keypad4)) d[0] = 3;
+            if (Input.GetKey(KeyCode.Alpha5) || Input.GetKey(KeyCode.Keypad5)) d[0] = 4;
         }
-
-        // Public methods called from CommunicationManager
-
+        
         public void EndEpisodeWithReason(string reason)
         {
-            Debug.Log($"[Episode End] {reason} | Step: {decisionStepCount} | Time: {(Time.time - episodeStartTime):F1}s | Reward so far: {GetCumulativeReward():F3}");
+            Debug.Log($"[PepperAgent] Episode ended - {reason} | " +
+                      $"Steps: {stepCount} | " +
+                      $"Time: {(Time.time - episodeStartTime):F1}s | " +
+                      $"Total reward: {GetCumulativeReward():F3}");
             EndEpisode();
         }
 
-        public void SetCommunicationManager(CommunicationManager comManager)
+        public void SetCommunicationManager(CommunicationManager manager)
         {
-            communicationManager = comManager;
+            communicationManager = manager;
         }
     }
 }

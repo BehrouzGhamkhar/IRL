@@ -1,0 +1,8 @@
+Run started      : 20260530_155458
+Device           : cuda
+Config file      : ..\..\configs\Finetune\coach_config.yaml
+Resumed model    : scratch
+Step offset      : 0
+Episode offset   : 0
+Max steps (run)  : 100
+Entropy start    : 0.0100

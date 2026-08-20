@@ -1,0 +1,41 @@
+%!TEX root = ../report.tex
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+    \section{Related Work}
+    \label{sec:related_work}
+
+    Our work sits at the intersection of IRL, HRI, and VR interfaces. We review key contributions across these domains.
+
+    \subsection{Interactive Reinforcement Learning (IRL)}
+    The foundation of this review is based on important papers that shaped the IRL field. Key work by \citet{BradleyKnox2008} introduced TAMER, showing that human evaluative feedback could train agents much faster than autonomous RL. This was extended into social domains by \citet{Lin2020a} and \citet{Lin2020} who provide a comprehensive review of IRL from human social feedback, distinguishing between evaluative feedback (e.g., rewards or punishments that signal approval or disapproval) and instructive feedback (e.g., advice, corrections, or demonstrations that guide the learner toward desired behaviors).
+
+    A number of IRL frameworks have been proposed to integrate human feedback in different ways. COACH uses human feedback directly to calculate the policy gradient in an actor-critic algorithm. This allows for more flexible guidance, particularly in continuous action spaces, as it enables the human teacher to provide feedback on the appropriateness of specific actions in given states, rather than just binary reward signals \citep{Lin2020}. This approach supports real-time corrective feedback during learning, allowing the agent to adjust its policy immediately based on human input.
+
+    Early work by \citet{6147010} explored augmented reinforcement learning for interaction with non-experts. A significant challenge in IRL is the quality of human input; \citet{Loftin2014} investigated using implicit human feedback strategies, while \citet{Faulkner2020} and \citet{KesslerFaulkner2021} developed specific algorithms for learning from inaccurate or imperfect teachers. The field has explored various feedback modalities, including haptics \citep{10490256} and even bio-signals, such as the use of EEG-based implicit human feedback to accelerate learning \citep{Xu2021}.
+
+    \subsection{VR for Data Collection and Demonstration}
+    The use of VR as a powerful tool for collecting human data for robot learning is well-established. A primary application has been in Learning from Demonstration (LfD) and robot programming, where methods range from multi-resolution corrective demonstration \citep{6225294} and learning responsive behavior by imitation \citep{6696819} to Bayesian fusion of multimodal advice \citep{9794595}. \citet{Christen2019} used motion capture data from human-human interactions to guide the reward function for training dexterous HRI policies. \citet{Mosbach2022} used GPU-based simulation and high-quality demonstrations, often collected in VR, to accelerate manipulation learning. More recently, \citet{10904309} developed RAMPA, a system using Augmented Reality for machine programming by demonstration, highlighting the trend towards immersive technologies for intuitive teaching. This approach is also used in neurorehabilitation, as shown by \citet{8009418}, who developed a learning-based agent for home therapy using EMG and avatar-based feedback.
+
+    \subsection{VR for Preference and Feedback}
+    While VR for demonstration is mature, its use for providing evaluative feedback is an emerging area. The most directly related work is by \citet{Heuvel2025}, who investigated the impact of VR and 2D interfaces on human feedback in \textit{preference-based} robot learning. Their work focuses on comparing interfaces for offline, comparative feedback. Our project aims to extend this line of inquiry into the domain of real-time, in-the-loop \textit{scalar} feedback, which is a distinct and unexplored challenge.
+
+    \subsection{Avatar and Motion Control in VR}
+    A critical technical challenge is interpreting the sparse sensor data from a VR headset into a meaningful representation of human state. This is an area of intense research in computer vision and graphics. Recent breakthroughs have employed Reinforcement Learning to create physically plausible avatars. \citet{Winkler2022} presented QuestSim, an RL framework that takes sparse signals from a Head-Mounted Display and two controllers to simulate full-body motion. This work was advanced by \citet{Luo2024}, who developed a method for a real-time simulated avatar from head-mounted sensors, a technology crucial for providing the context-aware feedback our system intends to use. Further foundational work includes that of \citet{Ye2022} on generating physically realistic full-body motion for VR users.
+
+    \subsection{Other Relevant Works}
+    Other relevant works include the integration of feedback in latent space for skill learning \citep{8624972} and the use of fairness-sensitive policy gradients to reduce bias in robotic assistance \citep{10731257}. The method of using adversarial motion priors as substitutes for complex reward functions \citep{Escontrela2022} is also relevant for shaping agent behavior without manually engineering rewards.
+
+    \subsection{Limitation and Deficits in the State of the Art}
+    The current state of the art reveals several significant limitations that our project aims to address:
+    \begin{enumerate}
+        \item \textbf{Expressiveness Gap in IRL}: Existing IRL methods predominantly rely on low-dimensional, often binary feedback mechanisms such as keyboard presses or button clicks \citep{Faulkner2020, Loftin2014}. These interfaces fail to capture the rich, nuanced feedback that humans can naturally provide through gestures, gaze, and body language, creating an expressiveness bottleneck in human-robot communication.
+        
+        \item \textbf{Underutilization of VR's Potential for Real-time Feedback}: While VR has been successfully used for collecting demonstration data \citep{10904309, Mosbach2022} and more recently for preference elicitation \citep{Heuvel2025}, its potential for capturing real-time, in-the-loop scalar feedback within IRL frameworks remains largely unexplored. The multimodal sensing capabilities of modern VR headsets offer distinct advantages over camera-based solutions for IRL applications: inherent 3D spatial awareness with precise head and hand tracking without calibration drift, and robust performance that is unaffected by lighting conditions, occlusions, or camera viewpoint limitations. Additionally, multimodal sensing combining pose, gaze, voice, and controller inputs in a single synchronized platform. These capabilities have not been fully leveraged for interactive machine learning.
+        
+        \item \textbf{Lack of Multimodal Signal Fusion for Feedback}: While VR provides a multitude of signals (gaze, pose, voice), no existing work in RL systematically investigates which combinations are most effective for providing feedback or how to fuse them robustly for simple HRI tasks.
+    \end{enumerate}
+
+    This project directly addresses these deficits by developing a novel VR-based IRL framework that uses the expressiveness of immersive interfaces and incorporates multimodal signal fusion for a greeting interaction task.
+
+\end{document}

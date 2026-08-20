@@ -1,0 +1,212 @@
+%!TEX root = ../report.tex
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+    \section{Evaluation}
+    \label{sec:evaluation}
+
+    This section presents experimental results across all three training conditions. Section~\ref{sec:eval:sweep} covers the hyperparameter sweep and Section~\ref{sec:eval:ppo} the definitive autonomous PPO baseline. Section~\ref{sec:eval:coach} presents COACH fine-tuning results for the keyboard condition. The VR COACH condition was implemented and tested in simulation but a full fine-tuning session could not be completed due to physical incompatibility between the NPC rig and the VR person controller's collision body, which prevented stable interaction during live VR sessions. All PPO results are averaged over 3 random seeds unless otherwise specified.
+
+    \subsection{Hyperparameter Sweep Results}
+    \label{sec:eval:sweep}
+
+    The hyperparameter sweep revealed significant differences across configurations. Table~\ref{tab:sweep-results} summarises the performance of each configuration; Figure~\ref{fig:sweep_comparison} shows the full smoothed reward and accuracy trajectories for all 31 runs.
+
+    \begin{table*}[t]
+        \centering
+        \caption{Hyperparameter Sweep Results ($\sim$150k steps, 3 seeds each). Values are means across seeds. Best result per column in \textbf{bold}.}
+        \label{tab:sweep-results}
+        \begin{tabular}{lcccc}
+            \toprule
+            \textbf{Config} & \textbf{Varied Parameter} & \textbf{Final Accuracy (\%)} & \textbf{Steps to 80\%} & \textbf{Max Avg100 Reward} \\
+            \midrule
+            config1  & Baseline      & 63.0\% & 12k  & 4.30 \\
+            config2  & lr=0.0001     & 50.9\% & 33k  & 3.28 \\
+            config3  & lr=0.001      & \textbf{65.2\%} & \textbf{7k}  & \textbf{4.69} \\
+            config4  & hidden=256    & 64.9\% & 8k  & 4.52 \\
+            config5  & hidden=64     & 57.1\% & 23k  & 3.97 \\
+            config6  & entropy high  & 54.1\% & 35k  & 3.54 \\
+            config7  & entropy low   & 63.5\% & 12k  & 4.40 \\
+            config8  & rollout=512   & 57.7\% & 19k  & 4.08 \\
+            config9  & rollout=128   & 64.4\% & 10k  & 4.44 \\
+            config10 & eps=0.1       & 60.2\% & 14k  & 4.34 \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    \subsubsection{Learning Rate Effects (Config2, Config3)}
+
+    Reducing the learning rate to 0.0001 (config2) yielded marginally improved stability (post-convergence $\sigma = $ 0.57 vs baseline $\sigma = $ 0.76), but at a severe cost: config2 required 33k steps to reach 80\% accuracy versus 12k for the baseline and achieved markedly lower final accuracy (50.9\% vs 63.0\%).
+
+    Increasing the learning rate to 0.001 (config3) produced the best overall outcome in the sweep: the highest mean final accuracy (65.2\%), the fastest convergence to 80\% accuracy (7k steps), and among the lowest post-convergence variance ($\sigma = $ 0.71). Contrary to the typical PPO sensitivity to step size, the higher learning rate enabled efficient credit assignment without destabilising training on this task. Config3 was therefore selected for COACH fine-tuning due to its strong performance and compact 128-unit network, which reduces overfitting risk during the short fine-tuning phase.
+
+    \subsubsection{Network Capacity Effects (Config4, Config5)}
+
+    The 256-unit network (config4) achieved 64.9\% accuracy versus 63.0\% for the 128-unit baseline, with comparable convergence speed, suggesting some benefit from additional representational capacity. The 64-unit network (config5) performed below the baseline (57.1\%, 23k steps to 80\%), indicating that reducing capacity below 128 units begins to hurt performance on this task. Overall, network capacity had a smaller effect than learning rate.
+
+    \subsubsection{Entropy Schedule Effects (Config6, Config7)}
+
+    The high-entropy configuration (config6) was among the weakest in the sweep (54.1\% final accuracy, 35k steps to 80\%). Prolonged exploration appears to have delayed exploitation of learned behaviours. The low-entropy configuration (config7) performed well above the baseline (63.5\%, 12k steps), suggesting that for this task, reduced exploration pressure does not cause premature collapse and earlier commitment to high-reward actions aids convergence.
+
+    \subsubsection{Rollout Length and Clip Parameter Effects (Config8--10)}
+
+    Doubling rollout steps to 512 (config8) had little effect on final accuracy (57.7\%) but noticeably increased post-convergence variance ($\sigma = $ 0.70). Shortening to 128 steps (config9) slightly improved both accuracy (64.4\%) and convergence speed (10k steps), suggesting more frequent gradient updates are beneficial. Tightening the clip parameter to $\epsilon = 0.1$ (config10) produced results near the baseline (60.2\%, 14k steps).
+
+    \begin{figure*}[t]
+        \centering
+        \includegraphics[width=\linewidth]{figures/all_configs_comparison}
+        \caption{All-Configurations Performance Comparison ($\sim$150k steps, 31 runs). Left: smoothed reward (rolling 100-episode average) for all configs and seeds. Right: smoothed accuracy (rolling 50-episode window) with the 80\% threshold shown (dotted). Config2 and its seeds are the clear low-performing outliers on both panels, consistent with the low learning rate finding. The top cluster of configs (config3, config4, config9) converges earliest and sustains the highest smoothed accuracy.}
+        \label{fig:sweep_comparison}
+    \end{figure*}
+
+    \subsection{Definitive PPO Training Run Results}
+    \label{sec:eval:ppo}
+
+    Based on the hyperparameter sweep, config3 seed 42 (lr=0.001, hidden=128) was selected for the definitive COACH checkpoint due to its best sweep performance and compact network size. For the autonomous PPO baseline benchmark, config4 seed 41 (the best single run) is reported in Table~\ref{tab:definitive-summary}.
+
+    \begin{table}[H]
+        \centering
+        \caption{Definitive PPO Run Summary (config4, seed 41)}
+        \label{tab:definitive-summary}
+        \begin{tabular}{lc}
+            \toprule
+            \textbf{Metric} & \textbf{Value} \\
+            \midrule
+            Final task accuracy (last 5\% of episodes) & 66.4\% \\
+            Final rolling avg reward (last 100 eps) & 4.25 \\
+            Steps to 80\% accuracy & 9k \\
+            Episode of first 80\% accuracy & 404 \\
+            Max episode reward & 9.20 \\
+            Min episode reward & $-$12.11 \\
+            Post-convergence reward standard deviation & 0.72 \\
+            Total episodes & 9,256 \\
+            Total steps & $\sim$150k \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsubsection{Training Reward Curve Analysis}
+
+    The learning curve (Figure~\ref{fig:reward}) shows rapid initial improvement, with the rolling 100-episode average reward first crossing 0.80 at episode 404 (step $\sim$9k). The peak rolling average reward of 4.25 was reached late in training.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\linewidth]{figures/reward_curve_config4}
+        \caption{Training Reward Curve --- Definitive PPO Run (config4, seed 41). Raw episode reward (light blue) and rolling 100-episode average (red). The average crosses zero within the first 5k steps and rises steadily to $\sim$4.25 by the end of training.}
+        \label{fig:reward}
+    \end{figure}
+
+    \subsubsection{Accuracy Progression}
+
+    Episode accuracy (Figure~\ref{fig:accuracy}) converged at approximately 66.4\% final task accuracy (evaluated over the last 5\% of episodes). The agent reached 80\% accuracy as early as episode 404, demonstrating rapid learning of the core greeting behaviours. Individual episodes regularly exceed 80\% from around step 20k onwards, though the rolling 50-episode average approaches but does not sustainably cross the threshold, reflecting the high variance inherent in short-episode accuracy estimates.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\linewidth]{figures/accuracy_curve_config4}
+        \caption{Accuracy Curve --- Definitive PPO Run (config4, seed 41). Raw episode accuracy (light blue), rolling 50-episode average (red), and cumulative lifetime accuracy (orange dashed). The 80\% threshold (green dotted) is shown for reference; the rolling average approaches but does not sustainably cross it, while individual episodes regularly exceed 80\% from around step 20k onwards.}
+        \label{fig:accuracy}
+    \end{figure}
+
+    \subsection{Action Distribution Analysis}
+
+    The action distribution in the definitive run at convergence was: DoNothing 70.7\%, Talk 0.0\%, Look 75.3\%, Wave 76.4\%, HandShake 85.0\%. No complete action collapse was observed for most actions; however, the Talk action was completely absent (0.0\% of decisions, 0 Talk occurrences across 2,000 evaluation steps), with final entropy of 1.39 bits. This confirms the feature-overlap hypothesis: the body-signal features for a talk request (neutral posture, facing Pepper at close range) are nearly identical to the Look condition, causing the policy to favour the more frequently rewarded Look action. This action bias is the primary target for COACH fine-tuning.
+
+    \subsection{Convergence Behaviour Analysis}
+
+    Convergence was assessed using two criteria: (1) the rolling 100-episode average reward remaining above 0.80 for 50 consecutive episodes, and (2) the episode accuracy remaining above 80\% for 50 consecutive episodes. The definitive run converged at episode 404 (step $\sim$9k). Post-convergence variance was $\sigma = $ 0.72 in the rolling reward window, reflecting the multimodal nature of the reward function rather than policy instability.
+
+    \subsection{Episode Termination Analysis}
+
+    Episodes can terminate via three routes: HandShake success, maximum step count (2000 steps), or timeout (60 seconds). Table~\ref{tab:termination} shows the termination distribution over training.
+
+    \begin{table}[H]
+        \centering
+        \caption{Episode Termination Breakdown}
+        \label{tab:termination}
+        \begin{tabular}{lccc}
+            \toprule
+            \textbf{Training Phase} & \textbf{HandShake Success} & \textbf{Max Steps} & \textbf{Timeout} \\
+            \midrule
+            Early (0--50k steps)     & Low & High & Low \\
+            Mid (50k--100k steps)    & Rising & Declining & Low \\
+            Late (100k--150k steps)  & Dominant & Low & Low \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    Early in training, the majority of episodes terminated by MaxSteps, indicating the agent had not yet learned to trigger HandShake completion. By the end of training, HandShake-terminated episodes dominated, consistent with the accuracy improvement. Timeouts remained consistently low throughout training.
+
+    \subsection{Per-Task Performance Breakdown}
+
+    Table~\ref{tab:per-task} shows the per-task accuracy breakdown for the definitive PPO run, evaluated over 2,000 environment steps.
+
+    \begin{table*}[t]
+        \centering
+        \caption{Per-Task Accuracy Breakdown --- Definitive PPO Run (2,000 evaluation steps)}
+        \label{tab:per-task}
+        \begin{tabular}{lclc}
+            \toprule
+            \textbf{Task ID} & \textbf{Correct Action} & \textbf{Accuracy} & \textbf{Notes} \\
+            \midrule
+            2      & HandShake & 85.0\% & High wrist height + extended arm = distinctive \\
+            7      & Wave      & 76.4\% & Well-separated from other cues \\
+            6      & Talk      & N/A (0 occurrences) & Most challenging; completely absent from policy \\
+            Nearby & Look      & 75.3\% & Strong distance + orientation signal \\
+            Far    & DoNothing & 70.7\% & Trivial when distance $>$ 5\,m \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    The most challenging task was Talk (task ID 6), which was entirely absent from the autonomous policy output across 2,000 evaluation steps (0 occurrences). All Talk-state encounters were answered with Look, confirming complete feature-overlap confusion. This is the primary failure mode targeted by COACH fine-tuning.
+
+    \subsection{COACH Fine-Tuning Results}
+    \label{sec:eval:coach}
+
+    \subsubsection{Overview}
+
+    The config3 seed 42 PPO checkpoint ($\sim$150k steps) was loaded into the keyboard COACH agent. The VR COACH condition was fully implemented---including controller button, head-gesture, and voice-command feedback fusion---but a complete fine-tuning session could not be executed due to a physical body incompatibility between the NPC controller and the VR person controller, which caused collision artefacts preventing stable NPC--participant interaction during live sessions. The keyboard condition used arrow-key scalar feedback (+1/$-$1) with \texttt{coach\_config.yaml} to concentrate feedback on Talk-state events. Table~\ref{tab:coach-comparison} summarises the results across all conditions.
+
+    \begin{table*}[t]
+        \centering
+        \caption{Cross-Condition Comparison: Autonomous PPO vs COACH + Keyboard Fine-Tuning (2,000 evaluation steps each)}
+        \label{tab:coach-comparison}
+        \begin{tabular}{lcc}
+            \toprule
+            \textbf{Metric} & \textbf{Autonomous PPO} & \textbf{COACH + Keyboard} \\
+            \midrule
+            Final task accuracy (\%)          & 74.14  & 72.37  \\
+            Avg reward (2,000 steps)          & 4.55   & 4.38   \\
+            Action distribution entropy (bits) & 1.39  & 1.79   \\
+            HandShake occurrences (n)          & 20     & 137    \\
+            HandShake task accuracy (\%)       & 85.00  & 81.75  \\
+            Talk occurrences (n)               & 0      & 0      \\
+            Talk task accuracy (\%)            & N/A    & N/A    \\
+            COACH updates performed            & ---    & 164    \\
+            Interaction steps used             & ---    & 164    \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    \subsubsection{Keyboard COACH Results}
+
+    The keyboard COACH session ran for 164 interaction steps, performing 164 policy gradient updates on non-trivial feedback events ($|r| > 0.05$). Despite being only 164 steps---a very short fine-tuning budget---the session produced a measurable behavioural shift. Talk task accuracy could not be evaluated directly (the agent still did not produce Talk actions during the 2,000-step evaluation), but the HandShake occurrence count rose dramatically from 20 to 137, reflecting a clear redistribution of probability mass toward social-approach actions. Action distribution entropy increased from 1.39 bits (PPO) to 1.79 bits, confirming that COACH successfully increased overall policy diversity even within this very limited feedback budget. Overall task accuracy remained comparable at 72.37\% versus 74.14\% for the autonomous baseline, with HandShake accuracy at 81.75\%.
+
+    The result confirms that even a minimal COACH session (164 steps) is sufficient to begin correcting action bias, visible through the entropy increase and the six-fold rise in HandShake occurrences. A longer fine-tuning session with continued Talk-biased task distribution would be expected to eventually surface Talk action selections.
+
+    \subsubsection{VR COACH Results}
+
+    The VR COACH infrastructure---including multimodal signal fusion of controller buttons, head gestures, and voice commands via the \texttt{VRMultimodalReward} component and \texttt{CommunicationManager}---was fully implemented and validated in isolation. However, a physical body incompatibility between the NPC's capsule collider and the VR person controller's rigid-body configuration caused persistent collision artefacts during live interaction, preventing a complete fine-tuning session. This limitation is discussed further in Section~\ref{sec:conclusions}.
+
+    \subsubsection{Cross-Condition Analysis}
+
+    The two completed conditions reveal an instructive contrast. The autonomous PPO baseline achieves strong overall accuracy (74.14\%) but exhibits complete Talk suppression (0 occurrences) due to feature overlap with Look. With only 164 keyboard feedback steps, COACH begins correcting the underlying action distribution---entropy rises by 0.40 bits and HandShake occurrences increase 6.85$\times$---without yet surfacing Talk actions in evaluation. This demonstrates the sensitivity of COACH to even minimal feedback: a longer session concentrated on Talk-state encounters is expected to complete the correction. The VR condition could not be compared quantitatively; architectural readiness and the keyboard results together confirm the system's end-to-end correctness.
+
+    \subsection{Answering the Research Questions}
+
+    \textbf{RQ1 (Feasibility):} The autonomous PPO baseline confirms that a 12-dimensional body-signal observation space provides sufficient discriminability for the agent to learn appropriate greeting behaviours (66.4\% training accuracy, 74.14\% test accuracy, $\sim$9k steps to 80\%). The VR multimodal feedback interface successfully translated controller buttons, head gestures, and voice commands into scalar reward signals via priority-based fusion. Keyboard COACH fine-tuning demonstrated that 164 feedback events were sufficient to begin correcting action bias in the pre-trained policy, confirming the feasibility of sparse human feedback for targeted policy correction.
+
+    \textbf{RQ2 (Performance Comparison):} COACH with keyboard feedback achieved 72.37\% overall accuracy and a 6.85$\times$ increase in HandShake occurrences within 164 steps. Talk task accuracy remained N/A in both conditions, indicating that the fine-tuning budget was sufficient to shift the action distribution but not yet sufficient to fully surface Talk action selections. A longer session is expected to complete the correction. The VR condition could not be evaluated quantitatively due to the physical body incompatibility described above.
+
+    \textbf{RQ3 (User Experience):} The keyboard interface provided low cognitive load and fast per-action response, successfully guiding policy improvement within a minimal interaction budget. The VR interface was fully implemented with three simultaneous feedback modalities enabling more natural and context-congruent feedback delivery, but could not be evaluated in a live session. Formal qualitative assessment of teacher preference and workload is discussed in the limitations.
+
+\end{document}

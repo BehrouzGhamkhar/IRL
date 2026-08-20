@@ -1,0 +1,12 @@
+Metric,Value
+Final task accuracy (last 5.0% of episodes),66.4%
+Final rolling avg reward (last 100),4.25
+Steps to 80% accuracy,9k
+Episode of first 80% accuracy,404
+Max episode reward,9.20
+Min episode reward,-12.11
+Post-convergence reward std dev,0.72
+Total episodes,9256
+Total steps,149k
+Seed,41
+Folder,run_seed41_config4_fresh_20260529_233648

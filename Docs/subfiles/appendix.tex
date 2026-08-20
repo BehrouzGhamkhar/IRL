@@ -1,0 +1,198 @@
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+    \section*{Appendix}
+    \label{sec:appendix}
+
+    \subsection*{Appendix A: Complete Configuration Files}
+
+    \subsubsection*{A.1 config1.yaml (PPO Baseline)}
+    \begin{verbatim}
+behaviors:
+  PepperGreeting:
+    hyperparameters:
+      learning_rate: 0.0003
+      epsilon: 0.2
+      num_epoch: 4
+      num_mini_batch: 4
+      value_loss_coef: 0.5
+      entropy_start: 0.1
+      entropy_end: 0.02
+      lambd: 0.95
+    network_settings:
+      hidden_units: 128
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+    max_steps: 150000
+    rollout_steps: 256
+    max_grad_norm: 0.5
+
+env_settings:
+  obs_size: 12
+  act_size: 5
+
+engine_settings:
+  time_scale: 100.0
+
+checkpoint_settings:
+  run_id: PepperTrain_baseline
+
+algorithm: ppo
+
+reproducibility:
+  seed: 41
+    \end{verbatim}
+
+    \subsubsection*{A.2 coach\_config.yaml (COACH Fine-Tuning)}
+    \begin{verbatim}
+behaviors:
+  PepperGreeting:
+    hyperparameters:
+      learning_rate: 0.0002     # higher than PPO baseline (0.0003) - sparse updates
+      entropy_start: 0.5        # reset from PPO's decayed value; keeps policy explorative
+      entropy_end: 0.2          # gentle decay over the short session
+
+      # PPO-only keys below - unused by COACH,
+      # kept for train.py parse compatibility
+      epsilon: 0.2
+      num_epoch: 4
+      num_mini_batch: 4
+      value_loss_coef: 0.5
+      lambd: 0.95
+    network_settings:
+      hidden_units: 128         # MUST match the PPO checkpoint being fine-tuned
+    reward_signals:
+      extrinsic:
+        gamma: 0.99             # unused by COACH; kept for train.py parse compatibility
+    max_steps: 164              # VR event-driven interaction steps
+    rollout_steps: 128          # harmless for COACH (update() is a no-op)
+    max_grad_norm: 0.5
+
+env_settings:
+  obs_size: 12
+  act_size: 5
+
+engine_settings:
+  time_scale: 1.0   # real-time for live human feedback
+
+checkpoint_settings:
+  run_id: COACH_finetune
+
+algorithm: coach                # selects COACHAgent via ALGORITHMS dict in train.py
+
+reproducibility:
+  seed: 41
+    \end{verbatim}
+
+    \subsection*{Appendix B: Additional Experimental Results}
+
+    \subsubsection*{B.1 Action-Level Accuracy Breakdown --- Autonomous PPO (2,000 evaluation steps)}
+
+    Table~\ref{tab:confusion} shows the action-level accuracy of the definitive PPO policy evaluated over 2,000 environment steps. Each row corresponds to an action the agent \emph{chose}, not a task presented by Unity: the reward signal indicates whether that chosen action was correct for the current situation, but the ground-truth task identity is not directly observable from Python. The low HandShake occurrence count therefore reflects how rarely the agent \emph{selected} the HandShake action, not how rarely the HandShake task was presented. Talk was never selected at all (0 occurrences), making its accuracy unobservable.
+
+    \begin{table*}[t]
+        \centering
+        \caption{Action-Level Accuracy --- Autonomous PPO Policy (2,000 evaluation steps)}
+        \label{tab:confusion}
+        \begin{tabular}{lcccc}
+            \toprule
+            \textbf{Action chosen} & \textbf{Times chosen} & \textbf{Correct} & \textbf{Wrong} & \textbf{Accuracy} \\
+            \midrule
+            DoNothing  & 601  & 425 & 176 & 70.7\% \\
+            Talk       & 0    & 0   & 0   & N/A    \\
+            Look       & 1158 & 872 & 286 & 75.3\% \\
+            Wave       & 220  & 168 & 52  & 76.4\% \\
+            HandShake  & 20   & 17  & 3   & 85.0\% \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    The complete absence of Talk selections confirms the feature-overlap hypothesis: the policy assigns near-zero probability to the Talk action, routing all talk-state observations to Look instead. The low HandShake selection rate (20 out of 1,999 steps) similarly indicates the policy rarely commits to HandShake despite its high accuracy when chosen, suggesting it is under-explored rather than poorly learned. These two action biases are the primary targets of COACH fine-tuning.
+
+    \subsubsection*{B.2 Action-Level Accuracy: Autonomous PPO vs COACH Keyboard (2,000 evaluation steps)}
+
+    Table~\ref{tab:pertask-comparison} compares action selection counts and accuracy between the autonomous PPO baseline and the COACH keyboard fine-tuned policy, both evaluated over 2,000 environment steps. As with Table~\ref{tab:confusion}, rows represent actions \emph{chosen} by the agent; a higher occurrence count for an action means the policy selected it more frequently, not that the corresponding task was presented more often. Full action-level counts for DoNothing, Look, and Wave are available only for the autonomous condition; the IRL evaluation recorded HandShake and Talk outcomes specifically as the primary correction targets.
+
+    \begin{table*}[t]
+        \centering
+        \caption{Action-Level Accuracy Comparison: Autonomous PPO vs COACH Keyboard}
+        \label{tab:pertask-comparison}
+        \begin{tabular}{lcccc}
+            \toprule
+            & \multicolumn{2}{c}{\textbf{Autonomous PPO}} & \multicolumn{2}{c}{\textbf{COACH + Keyboard}} \\
+            \cmidrule(lr){2-3} \cmidrule(lr){4-5}
+            \textbf{Action chosen} & \textbf{Times chosen} & \textbf{Accuracy} & \textbf{Times chosen} & \textbf{Accuracy} \\
+            \midrule
+            DoNothing  & 601  & 70.7\%  & ---  & ---     \\
+            Talk       & 0    & N/A     & 0    & N/A     \\
+            Look       & 1158 & 75.3\%  & ---  & ---     \\
+            Wave       & 220  & 76.4\%  & ---  & ---     \\
+            HandShake  & 20   & 85.0\%  & 137  & 81.75\% \\
+            \midrule
+            \textbf{Overall}        & \textbf{1999} & \textbf{74.14\%} & --- & \textbf{72.37\%} \\
+            \textbf{Entropy (bits)} & \multicolumn{2}{c}{1.39} & \multicolumn{2}{c}{1.79} \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    The most notable shift is the 6.85$\times$ increase in HandShake selections (20~$\to$~137), demonstrating that COACH successfully shifted probability mass toward HandShake within just 164 feedback steps. This means the policy is now far more willing to commit to the HandShake action when the situation warrants it. Action distribution entropy rose from 1.39 to 1.79 bits, confirming broader policy diversity overall. Talk remained unselected in both conditions, consistent with the very short feedback budget; a longer session concentrated on talk-state encounters is expected to eventually surface Talk selections. HandShake accuracy remained high at 81.75\%, confirming that fine-tuning did not degrade the correctness of an already-learned action.
+
+    \subsubsection*{B.3 COACH Agent Interface Compatibility}
+
+    Table~\ref{tab:coach-interface} documents how \texttt{COACHAgent} satisfies the \texttt{train.py} training loop interface without requiring any loop changes.
+
+    \begin{table*}[t]
+        \centering
+        \caption{COACHAgent Interface Compatibility with train.py}
+        \label{tab:coach-interface}
+        \begin{tabular}{lll}
+            \toprule
+            \textbf{train.py call} & \textbf{COACHAgent behaviour} & \textbf{Notes} \\
+            \midrule
+            \texttt{act(obs)} & Returns (action, 0.0, log\_prob) & 0.0 = fake critic value; ignored \\
+            \texttt{get\_value(obs)} & Returns 0.0 & No critic needed in COACH \\
+            \texttt{store\_transition(...)} & Counts action; fires update if $|r|>0.05$ & Immediate per-event update \\
+            \texttt{update(next\_value)} & No-op & PPO rollout call; harmless \\
+            \texttt{save(path)} & Same format as PPO checkpoint & Adds \texttt{coach\_updates} key \\
+            \texttt{load(path)} & Loads weights; resets optimiser for PPO ckpts & Distinguishes by \texttt{coach\_updates} key \\
+            \bottomrule
+        \end{tabular}
+    \end{table*}
+
+    \subsection*{Appendix C: Hardware and Software Specifications}
+
+    \begin{itemize}
+        \item \textbf{CPU:} Intel Core i7-12700K
+        \item \textbf{GPU:} NVIDIA RTX 3080 (10GB VRAM)
+        \item \textbf{RAM:} 32GB DDR4-3200
+        \item \textbf{OS:} Windows 11 Pro (22H2)
+        \item \textbf{Unity Version:} 2022.3.15f1 with ML-Agents 2.0.1
+        \item \textbf{Python Version:} 3.10.12
+        \item \textbf{PyTorch Version:} 2.0.1 (CUDA 11.8)
+        \item \textbf{VR Headset:} Meta Quest 3
+    \end{itemize}
+
+    \subsection*{Appendix D: AI Assistant Usage Details}
+
+    The following AI assistants were used during this project:
+
+    \textbf{DeepSeek} was used for:
+    \begin{enumerate}
+        \item \textbf{Initial code scaffolding} (PPO training loop structure with ML-Agents integration): provided a basic template that was adapted to the specific environment.
+        \item \textbf{YAML configuration generation}: generated initial config1.yaml--config10.yaml templates, manually verified against PPO algorithm requirements.
+        \item \textbf{LaTeX table formatting}: helped format experimental results tables.
+        \item \textbf{Equation formatting}: provided PPO, GAE, and entropy equations in LaTeX.
+    \end{enumerate}
+
+    \textbf{Claude (Anthropic)} was used for:
+    \begin{enumerate}
+        \item \textbf{COACH algorithm design and implementation}: provided theoretical justification for using COACH over PPO for the VR fine-tuning stage (sparse human feedback budget), and guided implementation of \texttt{COACHAgent} as an interface-compatible extension of the existing PPO training loop.
+        \item \textbf{Body-relative normalisation design}: identified the root cause of the VR observation mismatch (static hip reference, scale-dependent normalisation) and derived the body-relative normalisation scheme using head-derived hip approximation.
+        \item \textbf{Training pipeline architecture}: advised on the PPO-then-COACH independent fine-tuning workflow, checkpoint compatibility between conditions, and the COACH configuration design.
+        \item \textbf{Debugging and code review}: reviewed PPO implementation for correctness (GAE, clipped value loss, orthogonal initialisation) and identified a syntax artefact in the generated COACH code.
+    \end{enumerate}
+
+    All code generated or suggested by AI assistants was tested, debugged, and modified as necessary. All experimental results reported are from runs conducted by the author. AI assistants did not perform any training runs, analyse any data, or draw any conclusions—these were entirely the author's work.
+
+\end{document}

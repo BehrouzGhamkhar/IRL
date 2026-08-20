@@ -1,0 +1,40 @@
+
+Training on cuda | logs -> training_logs/run_seed41_coach_config_fresh_20260530_155458
+Config: ..\..\configs\Finetune\coach_config.yaml
+Episodes: 0 -> ...
+Steps: 0 -> 100
+
+  [Step 10] Action dist: A0:10% | A1:20% | A2:20% | A3:30% | A4:20%
+  [Step 20] Action dist: A0:0% | A1:30% | A2:10% | A3:60% | A4:0%
+Episode     0 | Steps:      25 | Reward: -20.000 | Avg(100): -20.000 | Entropy: 0.0100 | Acc: 16.0% (4+ 21-) | Lifetime: 16.0%
+  [Step 30] Action dist: A0:30% | A1:10% | A2:0% | A3:40% | A4:20%
+  [Step 40] Action dist: A0:60% | A1:0% | A2:0% | A3:30% | A4:10%
+  [Step 50] Action dist: A0:20% | A1:0% | A2:10% | A3:60% | A4:10%
+Episode     1 | Steps:      50 | Reward:  -2.250 | Avg(100): -11.125 | Entropy: 0.0100 | Acc: 37.5% (9+ 15-) | Lifetime: 26.5%
+  [Step 60] Action dist: A0:20% | A1:0% | A2:10% | A3:50% | A4:20%
+  [Step 70] Action dist: A0:20% | A1:0% | A2:10% | A3:60% | A4:10%
+Episode     2 | Steps:      77 | Reward: -21.000 | Avg(100): -14.417 | Entropy: 0.0100 | Acc: 8.3% (2+ 22-) | Lifetime: 20.5%
+  [Step 80] Action dist: A0:80% | A1:0% | A2:0% | A3:20% | A4:0%
+  [Step 90] Action dist: A0:20% | A1:10% | A2:0% | A3:60% | A4:10%
+  [Step 100] Action dist: A0:40% | A1:0% | A2:20% | A3:40% | A4:0%
+  [COACH] Gradient updates performed: 95
+Final model -> training_logs/run_seed41_coach_config_fresh_20260530_155458\model_final.pt
+Rewards saved -> training_logs/run_seed41_coach_config_fresh_20260530_155458\rewards_final.csv (episodes=3, steps=100)
+Accuracy saved -> training_logs/run_seed41_coach_config_fresh_20260530_155458\accuracy_final.csv (episodes=3)
+
+ --- Lifetime Accuracy --------------------------
+  ######........................  21.1%
+  Correct: 20  |  Wrong: 75  |  Total scored: 95
+------------------------------------------
+
+=======================================================
+TRAINING SUMMARY
+=======================================================
+Config file      : ..\..\configs\Finetune\coach_config.yaml
+Steps total      : 100
+Episodes total   : 3
+Best reward      : -2.250
+Avg reward       : -14.417
+Last 100 avg     : -14.417
+Output dir       : training_logs/run_seed41_coach_config_fresh_20260530_155458
+=======================================================

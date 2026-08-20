@@ -1,0 +1,31 @@
+behaviors:
+  PepperGreeting:
+    hyperparameters:
+      learning_rate: 0.0003
+      epsilon: 0.2          # clip_param
+      num_epoch: 4          # ppo_epoch
+      num_mini_batch: 4
+      value_loss_coef: 0.5
+      entropy_start: 0.1
+      entropy_end: 0.02
+      lambd: 0.95           # tau / GAE lambda
+    network_settings:
+      hidden_units: 128
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+    max_steps: 2000
+    rollout_steps: 512
+    max_grad_norm: 0.5
+
+env_settings:
+  obs_size: 12
+  act_size: 5
+
+engine_settings:
+  time_scale: 40.0
+
+checkpoint_settings:
+  run_id: PepperTrain
+
+algorithm: ppo

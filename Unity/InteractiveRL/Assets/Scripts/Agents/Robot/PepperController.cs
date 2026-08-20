@@ -6,27 +6,23 @@ namespace Agents.Robot
 {
     public class PepperController : MonoBehaviour
     {
-        [SerializeField] private PepperAnimationController animationController;
+        [Header("References")] [SerializeField]
+        private PepperAnimationController animationController;
+
         [SerializeField] private Transform headBone;
-        [SerializeField] private float headRotationSpeed = 5f;
+
+        [Header("Look Settings")] [SerializeField]
+        private float headRotationSpeed = 5f;
+
         [SerializeField] private float lookAtDuration = 3f;
+
+        [Header("Handshake Settings")] [SerializeField]
+        private float handshakeAttemptDelay = 2f;
+
+        [SerializeField] private float handshakeReachDistance = 2f;
 
         [Header("State Events")] public UnityEvent<PepperState> onStateChanged;
         public UnityEvent<AgentAction> onActionPerformed;
-
-        private Transform currentLookTarget;
-        private float lookEndTime;
-        private bool isLooking;
-        private PepperState currentState = PepperState.Idle;
-        private AgentAction currentAction = AgentAction.DoNothing;
-
-        public AgentAction CurrentAction
-        {
-            get => currentAction;
-            set => currentAction = value;
-        }
-
-        private PepperState previousState;
 
         public enum AgentAction
         {
@@ -34,8 +30,8 @@ namespace Agents.Robot
             Talk = 1,
             Look = 2,
             Wave = 3,
-            HandShake = 6
-        };
+            HandShake = 4
+        }
 
         public enum PepperState
         {
@@ -46,83 +42,89 @@ namespace Agents.Robot
             PerformingAction
         }
 
+        private PepperState currentState = PepperState.Idle;
+
         public PepperState CurrentState
         {
-            get { return currentState; }
+            get => currentState;
             set
             {
-                if (currentState != value)
-                {
-                    previousState = currentState;
-                    currentState = value;
-                    onStateChanged?.Invoke(currentState);
-                }
+                if (currentState == value) return;
+                currentState = value;
+                onStateChanged?.Invoke(currentState);
             }
         }
 
+        public AgentAction CurrentAction { get; private set; }
+        private Transform currentLookTarget;
+        private float lookEndTime;
+        private bool isLooking;
 
-        void Start()
+        private void Start()
         {
-            if (onStateChanged == null)
-                onStateChanged = new UnityEvent<PepperState>();
-            if (onActionPerformed == null)
-                onActionPerformed = new UnityEvent<AgentAction>();
+            onStateChanged ??= new UnityEvent<PepperState>();
+            onActionPerformed ??= new UnityEvent<AgentAction>();
 
             if (animationController == null)
-            {
                 animationController = GetComponent<PepperAnimationController>();
-                if (animationController == null)
-                    Debug.LogError("Robot Animator not found!");
-            }
+
+            if (animationController == null)
+                Debug.LogError("[Pepper] PepperAnimationController not found!");
 
             CurrentState = PepperState.Idle;
         }
 
-        void Update()
+        private void Update()
         {
-            if (isLooking && Time.time < lookEndTime && currentLookTarget != null)
+            UpdateHeadLook();
+        }
+
+        private void UpdateHeadLook()
+        {
+            if (!isLooking) return;
+
+            if (Time.time < lookEndTime && currentLookTarget != null)
             {
                 CurrentState = PepperState.Looking;
-                Vector3 lookDirection = currentLookTarget.position - headBone.position;
-                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+
+                var direction = currentLookTarget.position - headBone.position;
+                var targetRotation = Quaternion.LookRotation(direction);
                 headBone.rotation = Quaternion.Slerp(
-                    headBone.rotation,
-                    targetRotation,
-                    Time.deltaTime * headRotationSpeed
-                );
+                    headBone.rotation, targetRotation,
+                    Time.deltaTime * headRotationSpeed);
             }
-            else if (isLooking && Time.time >= lookEndTime)
+            else
             {
                 StopLooking();
             }
         }
 
-        public void ExecuteAction(AgentAction rAction)
+        //Execute a single agent action. Called by CommunicationManager.
+        public void ExecuteAction(AgentAction action)
         {
+            CurrentAction = action;
             CurrentState = PepperState.PerformingAction;
-            currentAction = rAction;
-            onActionPerformed?.Invoke(rAction);
+            onActionPerformed?.Invoke(action);
 
-            switch (rAction)
+            switch (action)
             {
                 case AgentAction.Talk:
-                    ActionTalk();
-                    ActionLook();
+                    // DoLook(); // Pepper looks at the person while talking
+                    DoTalk();
                     break;
 
                 case AgentAction.Look:
-                    ActionLook();
+                    DoLook();
                     break;
 
                 case AgentAction.Wave:
-                    ActionLook();
-                    ActionWave();
+                    DoLook();
+                    DoWave();
                     break;
 
                 case AgentAction.HandShake:
-                    float tryHandShakeTime = 2.0f;
-                    ActionLook();
-                    StartCoroutine(ActionHandshake(tryHandShakeTime));
+                    // DoLook();
+                    StartCoroutine(DoHandshake());
                     break;
 
                 case AgentAction.DoNothing:
@@ -130,35 +132,9 @@ namespace Agents.Robot
                     break;
 
                 default:
-                    Debug.LogWarning($"Unhandled action: {rAction}");
+                    Debug.LogWarning($"[Pepper] Unhandled action: {action}");
                     CurrentState = PepperState.Idle;
                     break;
-            }
-        }
-
-        #region Action Implementations
-
-        private void ActionTalk()
-        {
-            animationController.PlayIdle();
-            Debug.Log("[Pepper Action] Talking");
-            CurrentState = PepperState.Idle;
-        }
-
-        private void ActionLook()
-        {
-            currentLookTarget = FindNearestPerson()?.Find("HeadPosition");
-
-            if (currentLookTarget != null)
-            {
-                isLooking = true;
-                lookEndTime = Time.time + lookAtDuration;
-                //Debug.Log("[Pepper Action] Looking at nearest person");
-            }
-            else
-            {
-                //Debug.LogWarning("[Pepper Action] No person found to look at");
-                CurrentState = PepperState.Idle;
             }
         }
 
@@ -169,81 +145,108 @@ namespace Agents.Robot
                 CurrentState = PepperState.Idle;
         }
 
-        private void ActionWave()
+        private void DoTalk()
         {
-            animationController.PlayWave();
-            Debug.Log("[Pepper Action] Waving");
-            CurrentState = PepperState.Waving;
-            StartCoroutine(ResetStateAfterAnimation(PepperState.Waving));
+            animationController?.PlayIdle();
+            Debug.Log("[Pepper] Talking");
+            CurrentState = PepperState.Idle;
         }
 
-        IEnumerator ActionHandshake(float delayTime)
+        private void DoLook()
         {
-            animationController.PlayTryHandshake();
-            Debug.Log("[Pepper Action] Attempting handshake");
-            CurrentState = PepperState.Handshaking;
-
-            var closestPerson = FindNearestPerson();
-            yield return new WaitForSeconds(delayTime);
-
-            if (closestPerson != null &&
-                Vector3.Distance(transform.position, closestPerson.position) < 2.0f)
+            var target = FindNearestPersonHead();
+            if (target != null)
             {
-                animationController.PlayHandshake();
-                Debug.Log("[Pepper Action] Handshake successful");
+                currentLookTarget = target;
+                isLooking = true;
+                lookEndTime = Time.time + lookAtDuration;
             }
             else
             {
-                Debug.LogWarning("[Pepper Action] Too far to handshake");
-                animationController.PlayIdle();
+                CurrentState = PepperState.Idle;
+            }
+        }
+
+        private void DoWave()
+        {
+            animationController?.PlayWave();
+            Debug.Log("[Pepper] Waving");
+            CurrentState = PepperState.Waving;
+            StartCoroutine(ResetAfterAnimation(PepperState.Waving));
+        }
+
+        private IEnumerator DoHandshake()
+        {
+            animationController?.PlayTryHandshake();
+            Debug.Log("[Pepper] Attempting handshake…");
+            CurrentState = PepperState.Handshaking;
+
+            var nearestPerson = FindNearestPerson();
+            yield return new WaitForSeconds(handshakeAttemptDelay);
+
+            if (nearestPerson != null &&
+                Vector3.Distance(transform.position, nearestPerson.position) < handshakeReachDistance)
+            {
+                animationController?.PlayHandshake();
+                Debug.Log("[Pepper] Handshake successful!");
+            }
+            else
+            {
+                Debug.LogWarning("[Pepper] Too far to complete handshake.");
+                animationController?.PlayIdle();
                 CurrentState = PepperState.Idle;
             }
 
-            StartCoroutine(ResetStateAfterAnimation(PepperState.Handshaking));
+            StartCoroutine(ResetAfterAnimation(PepperState.Handshaking));
         }
 
-        IEnumerator ResetStateAfterAnimation(PepperState stateToReset)
+        private IEnumerator ResetAfterAnimation(PepperState stateToReset)
         {
             yield return new WaitForSeconds(1.5f);
             if (CurrentState == stateToReset)
                 CurrentState = PepperState.Idle;
         }
 
-        #endregion
+        //Returns the "HeadPosition" child of the nearest tagged Person.
+        private Transform FindNearestPersonHead()
+        {
+            var person = FindNearestPerson();
+            return person != null ? person.Find("HeadPosition") : null;
+        }
 
         private Transform FindNearestPerson()
         {
-            GameObject[] people = GameObject.FindGameObjectsWithTag("Person");
-            float closestDistance = float.MaxValue;
-            Transform closestPerson = null;
-
-            foreach (var person in people)
+            var people = GameObject.FindGameObjectsWithTag("Person");
+            if (people.Length == 0)
             {
-                float distance = Vector3.Distance(transform.position, person.transform.position);
-                if (distance < closestDistance)
+                Debug.LogWarning("[Pepper] No GameObjects tagged 'Person' found.");
+                return null;
+            }
+
+            Transform closest = null;
+            float minDist = float.MaxValue;
+
+            foreach (var p in people)
+            {
+                float d = Vector3.Distance(transform.position, p.transform.position);
+                if (d < minDist)
                 {
-                    closestDistance = distance;
-                    closestPerson = person.transform;
+                    minDist = d;
+                    closest = p.transform;
                 }
             }
 
-            if (closestPerson == null)
-                Debug.LogWarning("No person found to look at.");
-
-            return closestPerson;
+            return closest;
         }
 
-        public string GetCurrentStateDescription()
+        public string StateDescription() => CurrentState switch
         {
-            switch (CurrentState)
-            {
-                case PepperState.Idle: return "Idle";
-                case PepperState.Looking: return $"Looking at target";
-                case PepperState.Waving: return "Waving";
-                case PepperState.Handshaking: return "Handshaking";
-                case PepperState.PerformingAction: return "Performing action";
-                default: return "Unknown state";
-            }
-        }
+            PepperState.Idle => "Idle",
+            PepperState.Looking => "Looking at target",
+            PepperState.Waving => "Waving",
+            PepperState.Handshaking => "Handshaking",
+            PepperState.PerformingAction => "Performing action",
+            _ => "Unknown"
+        };
     }
 }

@@ -1,0 +1,6 @@
+Action ID,Action Name,Correct,Wrong,Accuracy
+0,DoNothing,424,193,68.7%
+1,Talk,0,0,N/A
+2,Look,602,218,73.4%
+3,Wave,308,116,72.6%
+4,HandShake,112,25,81.8%

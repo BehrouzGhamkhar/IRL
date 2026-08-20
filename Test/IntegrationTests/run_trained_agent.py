@@ -8,12 +8,9 @@ from mlagents_envs.side_channel.engine_configuration_channel import EngineConfig
 from mlagents_envs.base_env import ActionTuple
 
 
-# =========================
 # Model Definition (same as training)
-# =========================
-
 class SimplePPO(nn.Module):
-    def __init__(self, obs_size=11, act_size=5, hidden_size=128):
+    def __init__(self, obs_size=12, act_size=5, hidden_size=128):
         super().__init__()
 
         self.fc1 = nn.Linear(obs_size, hidden_size)
@@ -30,12 +27,9 @@ class SimplePPO(nn.Module):
         return logits, value
 
 
-# =========================
 # Agent for Inference Only
-# =========================
-
 class PPOInferenceAgent:
-    def __init__(self, model_path, obs_size=11, act_size=5, device='cuda'):
+    def __init__(self, model_path, obs_size=12, act_size=5, device='cuda'):
 
         self.device = device
         self.model = SimplePPO(obs_size, act_size).to(device)
@@ -51,15 +45,16 @@ class PPOInferenceAgent:
 
         with torch.no_grad():
             logits, _ = self.model(obs_tensor)
+            probs = F.softmax(logits, dim=-1)
             action = torch.argmax(logits, dim=-1).item()
+
+        # Debug: print what the model sees and decides
+        print(f"Obs: {obs[:5].round(2)} | Probs: {probs.cpu().numpy()[0].round(3)} | Action: {action}")
 
         return action
 
 
-# =========================
 # Run Unity Environment
-# =========================
-
 def run(model_path):
 
     # Speed up simulation
@@ -119,11 +114,9 @@ def run(model_path):
         env.close()
 
 
-# =========================
-# Entry Point
-# =========================
 
+# Entry Point
 if __name__ == "__main__":
 
-    model_path = "../../Python/training/agents/training_logs/run_20260209_023643/ppo_model_final.pt"
+    model_path = "../../Python/training/agents/training_logs/run_seed41_config3_fresh_20260528_003340/model_final.pt"
     run(model_path)
